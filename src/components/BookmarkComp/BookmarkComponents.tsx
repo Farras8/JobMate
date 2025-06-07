@@ -86,7 +86,7 @@ const BookmarkJobCard: React.FC<BookmarkJobCardProps> = ({ bookmark, onRemoveBoo
   const formattedSalary = formatSalaryForCard(jobDetails.salary);
 
   return (
-    <div className="group relative bg-white backdrop-blur-sm border border-gray-100/50 rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 p-8 hover:shadow-blue-500/10 hover:border-blue-200/30">
+    <div className="group relative bg-white backdrop-blur-sm border border-gray-100/50 rounded-3xl lg:rounded-3xl rounded-2xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 p-4 sm:p-6 lg:p-8 hover:shadow-blue-500/10 hover:border-blue-200/30">
       {/* Gradient Background Overlay */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/20"></div>
       
@@ -94,74 +94,74 @@ const BookmarkJobCard: React.FC<BookmarkJobCardProps> = ({ bookmark, onRemoveBoo
       <button
         onClick={handleRemoveClick}
         disabled={isRemoving}
-        className="absolute top-6 right-6 w-12 h-12 rounded-2xl transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 group-hover:scale-110 shadow-lg z-10 bg-red-100 text-red-600 hover:bg-red-200 shadow-red-500/20"
+        className="absolute top-3 right-3 sm:top-4 sm:right-4 lg:top-6 lg:right-6 w-10 h-10 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-xl lg:rounded-2xl transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 group-hover:scale-110 shadow-lg z-10 bg-red-100 text-red-600 hover:bg-red-200 shadow-red-500/20"
         aria-label="Hapus dari Bookmark"
       >
         {isRemoving ? (
-          <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-current border-t-transparent rounded-full animate-spin mx-auto"></div>
         ) : (
-          <Trash2 size={20} className="mx-auto" />
+          <Trash2 size={16} className="sm:w-5 sm:h-5 mx-auto" />
         )}
       </button>
 
       {/* Company Logo and Job Details */}
-      <div className="relative flex items-start gap-6">
+      <div className="relative flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
         {/* Enhanced Company Logo */}
-        <div className="relative group/logo">
-          <div className="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center text-2xl font-bold shadow-lg shadow-blue-900/20 group-hover:shadow-xl group-hover:shadow-blue-900/25 transition-all duration-300 group-hover:scale-105">
+        <div className="relative group/logo w-full sm:w-auto flex justify-center sm:justify-start">
+          <div className="w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 rounded-xl lg:rounded-2xl bg-blue-50 flex items-center justify-center text-lg sm:text-xl lg:text-2xl font-bold shadow-lg shadow-blue-900/20 group-hover:shadow-xl group-hover:shadow-blue-900/25 transition-all duration-300 group-hover:scale-105">
             {jobDetails.companyLogo ? 
-              <img src={jobDetails.companyLogo} alt={jobDetails.companyName} className="w-full h-full object-contain rounded-2xl"/> : 
+              <img src={jobDetails.companyLogo} alt={jobDetails.companyName} className="w-full h-full object-contain rounded-xl lg:rounded-2xl"/> : 
               <span className="text-blue-700">{jobDetails.companyName.charAt(0).toUpperCase()}</span>
             }
           </div>
           {/* Pulse ring effect */}
-          <div className="absolute inset-0 rounded-2xl bg-blue-900/20 scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-700"></div>
+          <div className="absolute inset-0 rounded-xl lg:rounded-2xl bg-blue-900/20 scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-700"></div>
         </div>
 
-        <div className="flex-grow pr-20">
+        <div className="flex-grow w-full sm:pr-16 lg:pr-20">
           {/* Job Title */}
-          <h3 className="text-2xl font-bold text-gray-900 leading-tight mb-3 group-hover:text-blue-700 transition-colors duration-300">{jobDetails.title}</h3>
+          <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 leading-tight mb-2 sm:mb-3 group-hover:text-blue-700 transition-colors duration-300 text-center sm:text-left">{jobDetails.title}</h3>
           
           {/* Job Details Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-            <div className="flex items-center space-x-3 text-gray-700">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
-                <Building2 size={16} className="text-blue-600" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <div className="flex items-center space-x-2 sm:space-x-3 text-gray-700">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 bg-gradient-to-r from-blue-100 to-blue-200 rounded-lg lg:rounded-xl flex items-center justify-center flex-shrink-0">
+                <Building2 size={14} className="sm:w-4 sm:h-4 text-blue-600" />
               </div>
-              <div>
-                <p className="font-semibold text-sm">{jobDetails.companyName}</p>
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold text-xs sm:text-sm truncate">{jobDetails.companyName}</p>
                 <p className="text-xs text-gray-500">Perusahaan</p>
               </div>
             </div>
             
-            <div className="flex items-center space-x-3 text-gray-700">
-              <div className="w-10 h-10 bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl flex items-center justify-center">
-                <MapPin size={16} className="text-gray-600" />
+            <div className="flex items-center space-x-2 sm:space-x-3 text-gray-700">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg lg:rounded-xl flex items-center justify-center flex-shrink-0">
+                <MapPin size={14} className="sm:w-4 sm:h-4 text-gray-600" />
               </div>
-              <div>
-                <p className="font-semibold text-sm">{jobDetails.location}</p>
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold text-xs sm:text-sm truncate">{jobDetails.location}</p>
                 <p className="text-xs text-gray-500">Lokasi</p>
               </div>
             </div>
             
             {formattedSalary && (
-              <div className="flex items-center space-x-3 text-gray-700">
-                <div className="w-10 h-10 bg-gradient-to-r from-green-100 to-green-200 rounded-xl flex items-center justify-center">
-                  <CircleDollarSign size={16} className="text-green-600" />
+              <div className="flex items-center space-x-2 sm:space-x-3 text-gray-700">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 bg-gradient-to-r from-green-100 to-green-200 rounded-lg lg:rounded-xl flex items-center justify-center flex-shrink-0">
+                  <CircleDollarSign size={14} className="sm:w-4 sm:h-4 text-green-600" />
                 </div>
-                <div>
-                  <p className="font-semibold text-sm text-green-600">{formattedSalary}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-xs sm:text-sm text-green-600 truncate">{formattedSalary}</p>
                   <p className="text-xs text-gray-500">Gaji</p>
                 </div>
               </div>
             )}
             
-            <div className="flex items-center space-x-3 text-gray-700">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-100 to-purple-200 rounded-xl flex items-center justify-center">
-                <Clock size={16} className="text-purple-600" />
+            <div className="flex items-center space-x-2 sm:space-x-3 text-gray-700">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg lg:rounded-xl flex items-center justify-center flex-shrink-0">
+                <Clock size={14} className="sm:w-4 sm:h-4 text-purple-600" />
               </div>
-              <div>
-                <p className="font-semibold text-sm">{postedText}</p>
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold text-xs sm:text-sm truncate">{postedText}</p>
                 <p className="text-xs text-gray-500">Dipublikasi</p>
               </div>
             </div>
@@ -171,16 +171,16 @@ const BookmarkJobCard: React.FC<BookmarkJobCardProps> = ({ bookmark, onRemoveBoo
       
       {/* Enhanced Job Type Tags */}
       {jobDetails.type && jobDetails.type.length > 0 && (
-        <div className="relative mt-6 mb-4">
-          <div className="flex items-center space-x-2 mb-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-indigo-100 to-indigo-200 rounded-lg flex items-center justify-center">
-              <TrendingUp size={14} className="text-indigo-600" />
+        <div className="relative mt-4 sm:mt-5 lg:mt-6 mb-3 sm:mb-4">
+          <div className="flex items-center space-x-2 mb-2 sm:mb-3">
+            <div className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 bg-gradient-to-r from-indigo-100 to-indigo-200 rounded-md lg:rounded-lg flex items-center justify-center">
+              <TrendingUp size={12} className="sm:w-3.5 sm:h-3.5 lg:w-3.5 lg:h-3.5 text-indigo-600" />
             </div>
-            <span className="text-sm font-semibold text-gray-700">Tipe Pekerjaan</span>
+            <span className="text-xs sm:text-sm font-semibold text-gray-700">Tipe Pekerjaan</span>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {jobDetails.type.map((typeStr, index) => (
-              <span key={index} className={`text-sm px-4 py-2 rounded-2xl font-semibold transition-all duration-200 hover:scale-105 ${getJobTypeTagClass(typeStr)}`}>
+              <span key={index} className={`text-xs sm:text-sm px-2.5 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-xl lg:rounded-2xl font-semibold transition-all duration-200 hover:scale-105 ${getJobTypeTagClass(typeStr)}`}>
                 {typeStr}
               </span>
             ))}
@@ -190,22 +190,22 @@ const BookmarkJobCard: React.FC<BookmarkJobCardProps> = ({ bookmark, onRemoveBoo
 
       {/* Enhanced Skills Tags */}
       {jobDetails.skillsRequired && jobDetails.skillsRequired.length > 0 && (
-        <div className="relative mt-6 mb-6">
-          <div className="flex items-center space-x-2 mb-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-sky-100 to-sky-200 rounded-lg flex items-center justify-center">
-              <Star size={14} className="text-sky-600" />
+        <div className="relative mt-4 sm:mt-5 lg:mt-6 mb-4 sm:mb-5 lg:mb-6">
+          <div className="flex items-center space-x-2 mb-2 sm:mb-3">
+            <div className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 bg-gradient-to-r from-sky-100 to-sky-200 rounded-md lg:rounded-lg flex items-center justify-center">
+              <Star size={12} className="sm:w-3.5 sm:h-3.5 lg:w-3.5 lg:h-3.5 text-sky-600" />
             </div>
-            <span className="text-sm font-semibold text-gray-700">Keahlian Dibutuhkan</span>
+            <span className="text-xs sm:text-sm font-semibold text-gray-700">Keahlian Dibutuhkan</span>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {jobDetails.skillsRequired.slice(0, 5).map((skill, index) => (
-              <span key={index} className="bg-gradient-to-r from-sky-100 to-sky-200 text-sky-700 text-sm px-4 py-2 rounded-2xl font-semibold border border-sky-200/50 transition-all duration-200 hover:scale-105">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
+            {jobDetails.skillsRequired.slice(0, window.innerWidth < 640 ? 3 : 5).map((skill, index) => (
+              <span key={index} className="bg-gradient-to-r from-sky-100 to-sky-200 text-sky-700 text-xs sm:text-sm px-2.5 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-xl lg:rounded-2xl font-semibold border border-sky-200/50 transition-all duration-200 hover:scale-105">
                 {skill}
               </span>
             ))}
-            {jobDetails.skillsRequired.length > 5 && (
-              <span className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-600 text-sm px-4 py-2 rounded-2xl font-semibold border border-gray-200/50">
-                +{jobDetails.skillsRequired.length - 5} lainnya
+            {jobDetails.skillsRequired.length > (window.innerWidth < 640 ? 3 : 5) && (
+              <span className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-600 text-xs sm:text-sm px-2.5 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-xl lg:rounded-2xl font-semibold border border-gray-200/50">
+                +{jobDetails.skillsRequired.length - (window.innerWidth < 640 ? 3 : 5)} lainnya
               </span>
             )}
           </div>
@@ -213,14 +213,14 @@ const BookmarkJobCard: React.FC<BookmarkJobCardProps> = ({ bookmark, onRemoveBoo
       )}
 
       {/* Enhanced Action Button */}
-      <div className="relative mt-8 pt-6 border-t border-gray-100">
+      <div className="relative mt-6 sm:mt-7 lg:mt-8 pt-4 sm:pt-5 lg:pt-6 border-t border-gray-100">
         <Link 
           to={`/jobdetail/${jobDetails.id}`} 
-          className="group/link w-full bg-blue-900 hover:bg-blue-800 text-white px-8 py-4 rounded-2xl font-semibold flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+          className="group/link w-full bg-blue-900 hover:bg-blue-800 text-white px-6 sm:px-7 lg:px-8 py-3 sm:py-3.5 lg:py-4 rounded-xl lg:rounded-2xl font-semibold flex items-center justify-center gap-2 sm:gap-3 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
         >
-          <ExternalLink size={18} className="group-hover/link:rotate-12 transition-transform duration-200" />
+          <ExternalLink size={16} className="sm:w-4.5 sm:h-4.5 lg:w-4.5 lg:h-4.5 group-hover/link:rotate-12 transition-transform duration-200" />
           <span>Lihat Detail</span>
-          <ArrowRight size={16} className="group-hover/link:translate-x-1 transition-transform duration-200" />
+          <ArrowRight size={14} className="sm:w-4 sm:h-4 group-hover/link:translate-x-1 transition-transform duration-200" />
         </Link>
       </div>
 
@@ -241,32 +241,32 @@ interface BookmarkListProps {
 export const BookmarkList: React.FC<BookmarkListProps> = ({ bookmarks, isLoading, error, onRemoveBookmark }) => {
   if (isLoading) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-4 sm:space-y-6 lg:space-y-8">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 animate-pulse">
-            <div className="flex items-start gap-6">
-              <div className="w-20 h-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded-2xl"></div>
-              <div className="flex-grow space-y-4">
-                <div className="h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl w-3/4"></div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl"></div>
-                    <div className="space-y-1">
-                      <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-24"></div>
-                      <div className="h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-16"></div>
+          <div key={i} className="bg-white rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-lg border border-gray-100 animate-pulse">
+            <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+              <div className="w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl lg:rounded-2xl mx-auto sm:mx-0"></div>
+              <div className="flex-grow space-y-3 sm:space-y-4 w-full">
+                <div className="h-6 sm:h-7 lg:h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl w-full sm:w-3/4"></div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                  <div className="flex items-center space-x-2 sm:space-x-3">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg lg:rounded-xl"></div>
+                    <div className="space-y-1 flex-1">
+                      <div className="h-3 sm:h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-20 sm:w-24"></div>
+                      <div className="h-2 sm:h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-12 sm:w-16"></div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl"></div>
-                    <div className="space-y-1">
-                      <div className="h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-20"></div>
-                      <div className="h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-12"></div>
+                  <div className="flex items-center space-x-2 sm:space-x-3">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg lg:rounded-xl"></div>
+                    <div className="space-y-1 flex-1">
+                      <div className="h-3 sm:h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-16 sm:w-20"></div>
+                      <div className="h-2 sm:h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-10 sm:w-12"></div>
                     </div>
                   </div>
                 </div>
-                <div className="flex space-x-2">
-                  <div className="h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded-2xl w-20"></div>
-                  <div className="h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded-2xl w-24"></div>
+                <div className="flex space-x-1.5 sm:space-x-2">
+                  <div className="h-6 sm:h-7 lg:h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl lg:rounded-2xl w-16 sm:w-20"></div>
+                  <div className="h-6 sm:h-7 lg:h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl lg:rounded-2xl w-20 sm:w-24"></div>
                 </div>
               </div>
             </div>
@@ -278,8 +278,8 @@ export const BookmarkList: React.FC<BookmarkListProps> = ({ bookmarks, isLoading
 
   if (error) {
     return (
-      <div className="text-center py-16 text-red-600 bg-red-50 rounded-2xl border border-red-200 mx-4">
-        <div className="text-lg font-semibold mb-2">Gagal Memuat Data</div>
+      <div className="text-center py-12 sm:py-16 text-red-600 bg-red-50 rounded-xl lg:rounded-2xl border border-red-200 mx-2 sm:mx-4">
+        <div className="text-base sm:text-lg font-semibold mb-2">Gagal Memuat Data</div>
         <p className="text-sm">{error}</p>
       </div>
     );
@@ -287,24 +287,24 @@ export const BookmarkList: React.FC<BookmarkListProps> = ({ bookmarks, isLoading
 
   if (bookmarks.length === 0) {
     return (
-      <div className="text-center py-24 px-8 bg-white rounded-3xl shadow-lg border border-gray-100">
+      <div className="text-center py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white rounded-2xl lg:rounded-3xl shadow-lg border border-gray-100">
         {/* Enhanced empty state with gradient background */}
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-purple-50/30 to-pink-50/20 rounded-3xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-purple-50/30 to-pink-50/20 rounded-2xl lg:rounded-3xl"></div>
           <div className="relative">
-            <div className="w-24 h-24 mx-auto bg-gradient-to-br from-blue-100 to-blue-200 rounded-3xl flex items-center justify-center shadow-xl shadow-blue-900/20 mb-6">
-              <BookmarkIcon size={40} className="text-blue-600" strokeWidth={1.5}/>
+            <div className="w-20 h-20 sm:w-22 sm:h-22 lg:w-24 lg:h-24 mx-auto bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl lg:rounded-3xl flex items-center justify-center shadow-xl shadow-blue-900/20 mb-4 sm:mb-5 lg:mb-6">
+              <BookmarkIcon size={32} className="sm:w-9 sm:h-9 lg:w-10 lg:h-10 text-blue-600" strokeWidth={1.5}/>
             </div>
-            <h3 className="text-2xl font-bold text-gray-800 mb-3">Tidak Ada Lowongan Tersimpan</h3>
-            <p className="text-gray-500 mb-8 max-w-md mx-auto leading-relaxed">
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">Tidak Ada Lowongan Tersimpan</h3>
+            <p className="text-sm sm:text-base text-gray-500 mb-6 sm:mb-7 lg:mb-8 max-w-sm sm:max-w-md mx-auto leading-relaxed">
               Anda belum menyimpan lowongan pekerjaan apapun. Mulai jelajahi dan simpan lowongan yang menarik untuk Anda.
             </p>
             <Link 
               to="/jobsearch" 
-              className="group inline-flex items-center gap-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white font-semibold py-4 px-8 rounded-2xl hover:from-blue-800 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              className="group inline-flex items-center gap-2 sm:gap-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white font-semibold py-3 sm:py-3.5 lg:py-4 px-6 sm:px-7 lg:px-8 rounded-xl lg:rounded-2xl hover:from-blue-800 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
             >
               <span>Cari Lowongan</span>
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-200" />
+              <ArrowRight size={16} className="sm:w-4.5 sm:h-4.5 group-hover:translate-x-1 transition-transform duration-200" />
             </Link>
           </div>
         </div>
@@ -313,7 +313,7 @@ export const BookmarkList: React.FC<BookmarkListProps> = ({ bookmarks, isLoading
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8">
       {bookmarks.map(bookmark => (
         <BookmarkJobCard key={bookmark.id} bookmark={bookmark} onRemoveBookmark={onRemoveBookmark} />
       ))}

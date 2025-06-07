@@ -102,22 +102,22 @@ const LowonganTerbaru: React.FC<Props> = ({ showHeader = true, showButton = true
 
     return (
         <>
-        <section className="bg-gradient-to-br from-blue-50 via-blue-50 to-purple-50 py-20 px-4">
+        <section className="bg-gradient-to-br from-blue-50 via-blue-50 to-purple-50 py-12 lg:py-20 px-2 lg:px-4">
             {showHeader && (
-                <div className="max-w-5xl mx-auto text-center mb-12">
-                    <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-blue-900 to-purple-700 bg-clip-text text-transparent">
+                <div className="max-w-5xl mx-auto text-center mb-8 lg:mb-12">
+                    <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-gray-900 mb-3 lg:mb-4 bg-gradient-to-r from-blue-900 to-purple-700 bg-clip-text text-transparent px-2">
                         {sectionTitle}
                     </h2>
-                    <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                    <p className="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed px-4">
                         Mencari dan menemukan pekerjaan impian kini lebih mudah dari sebelumnya dengan koleksi lowongan terbaik kami
                     </p>
                 </div>
             )}
 
-            <div className="max-w-5xl mx-auto space-y-8">
+            <div className="max-w-5xl mx-auto space-y-4 lg:space-y-8">
                 {validJobs.length === 0 && showHeader && (
-                    <div className="text-center py-16 text-gray-600 bg-white/50 backdrop-blur-sm rounded-3xl border border-gray-200/50 shadow-lg">
-                        <div className="text-xl font-medium">Saat ini belum ada lowongan terbaru.</div>
+                    <div className="text-center py-8 lg:py-16 text-gray-600 bg-white/50 backdrop-blur-sm rounded-xl lg:rounded-3xl border border-gray-200/50 shadow-lg mx-2 lg:mx-0">
+                        <div className="text-base lg:text-xl font-medium px-4">Saat ini belum ada lowongan terbaru.</div>
                     </div>
                 )}
                 
@@ -130,85 +130,85 @@ const LowonganTerbaru: React.FC<Props> = ({ showHeader = true, showButton = true
                     return (
                         <div 
                             key={job.id} 
-                            className={`group relative bg-white/80 backdrop-blur-sm border rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 p-8
-                                ${isApplied ? 'border-green-200/50 bg-gradient-to-br from-green-50/30 via-white/80 to-emerald-50/20 hover:shadow-green-500/10' : 'border-gray-100/50 hover:shadow-blue-500/10 hover:border-blue-200/30'}`}
+                            className={`group relative bg-white backdrop-blur-sm border rounded-2xl lg:rounded-3xl overflow-hidden transition-all duration-300 lg:duration-500 hover:shadow-lg lg:hover:shadow-2xl hover:-translate-y-1 lg:hover:-translate-y-2 p-4 lg:p-8
+                                ${isApplied ? 'border-green-200/50 bg-gradient-to-br from-green-50/30 via-white to-emerald-50/20 hover:shadow-green-500/10' : 'border-gray-100/50 hover:shadow-blue-500/10 hover:border-blue-200/30'}`}
                         >
                             {/* Gradient Background Overlay */}
-                            <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${isApplied ? 'bg-gradient-to-br from-green-50/40 via-transparent to-emerald-50/30' : 'bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/20'}`}></div>
+                            <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 lg:duration-500 ${isApplied ? 'bg-gradient-to-br from-green-50/40 via-transparent to-emerald-50/30' : 'bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/20'}`}></div>
                             
                             {/* Top Right Section - Bookmark Only */}
-                            <div className="absolute top-6 right-6 flex flex-col items-end space-y-3 z-10">
+                            <div className="absolute top-3 right-3 lg:top-6 lg:right-6 flex flex-col items-end space-y-2 lg:space-y-3 z-10">
                                 {/* Enhanced Bookmark Button */}
                                 <button
                                     onClick={() => toggleBookmark(job.id)}
                                     disabled={isToggling || isApplied}
-                                    className={`w-12 h-12 rounded-2xl transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 group-hover:scale-110 shadow-lg ${isBookmarked ? 'bg-blue-100 text-blue-600 hover:bg-blue-200 shadow-blue-500/20' : 'bg-white/80 backdrop-blur-sm text-gray-400 hover:text-blue-500 hover:bg-blue-50 border border-gray-200/50'}`}
+                                    className={`w-10 h-10 lg:w-12 lg:h-12 rounded-xl lg:rounded-2xl transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 group-hover:scale-110 shadow-md lg:shadow-lg ${isBookmarked ? 'bg-blue-100 text-blue-600 hover:bg-blue-200 shadow-blue-500/20' : 'bg-white/80 backdrop-blur-sm text-gray-400 hover:text-blue-500 hover:bg-blue-50 border border-gray-200/50'}`}
                                     aria-label={isBookmarked ? "Hapus dari Bookmark" : "Tambahkan ke Bookmark"}
                                 >
                                     {isToggling ? 
-                                        <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin mx-auto"></div> : 
-                                        <Bookmark size={20} fill={isBookmarked ? "currentColor" : "none"} className="mx-auto" />
+                                        <div className="w-4 h-4 lg:w-5 lg:h-5 border-2 border-current border-t-transparent rounded-full animate-spin mx-auto"></div> : 
+                                        <Bookmark size={16} fill={isBookmarked ? "currentColor" : "none"} className="mx-auto lg:w-5 lg:h-5" />
                                     }
                                 </button>
                             </div>
 
-                            <div className="relative flex items-start gap-6">
+                            <div className="relative flex flex-col lg:flex-row items-start gap-3 lg:gap-6">
                                 {/* Enhanced Company Logo */}
-                                <div className="relative group/logo">
-                                    <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-xl font-bold shadow-lg shadow-blue-900/20 group-hover:shadow-xl group-hover:shadow-blue-900/25 transition-all duration-300 group-hover:scale-105">
+                                <div className="relative group/logo flex-shrink-0 self-center lg:self-start">
+                                    <div className="w-14 h-14 lg:w-20 lg:h-20 rounded-xl lg:rounded-2xl bg-blue-50 flex items-center justify-center text-lg lg:text-2xl font-bold shadow-md lg:shadow-lg shadow-blue-900/20 group-hover:shadow-lg lg:group-hover:shadow-xl group-hover:shadow-blue-900/25 transition-all duration-300 group-hover:scale-105">
                                         {job.companyLogo ? 
-                                            <img src={job.companyLogo} alt={job.companyName} className="w-full h-full object-contain rounded-2xl"/> : 
+                                            <img src={job.companyLogo} alt={job.companyName} className="w-full h-full object-contain rounded-xl lg:rounded-2xl"/> : 
                                             <span className="text-blue-700">{job.companyName.charAt(0).toUpperCase()}</span>
                                         }
                                     </div>
                                     {/* Pulse ring effect */}
-                                    <div className="absolute inset-0 rounded-2xl bg-blue-900/20 scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-700"></div>
+                                    <div className="absolute inset-0 rounded-xl lg:rounded-2xl bg-blue-900/20 scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500 lg:duration-700"></div>
                                 </div>
 
-                                <div className="flex-grow pr-24">
+                                <div className="flex-grow pr-12 lg:pr-16 w-full lg:w-auto min-w-0">
                                     {/* Job Title */}
-                                    <h3 className="text-xl font-bold text-gray-900 leading-tight mb-3 group-hover:text-blue-700 transition-colors duration-300">{job.title}</h3>
+                                    <h3 className="text-lg lg:text-2xl font-bold text-gray-900 leading-tight mb-2 lg:mb-3 group-hover:text-blue-700 transition-colors duration-300 break-words">{job.title}</h3>
                                     
                                     {/* Job Details Grid */}
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                                        <div className="flex items-center space-x-3 text-gray-700">
-                                            <div className="w-8 h-8 bg-gradient-to-r from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
-                                                <Building2 size={14} className="text-blue-600" />
+                                    <div className="grid grid-cols-1 gap-2 lg:gap-3 mb-3 lg:mb-4">
+                                        <div className="flex items-center space-x-2 lg:space-x-3 text-gray-700">
+                                            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-blue-100 to-blue-200 rounded-lg lg:rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <Building2 size={14} className="text-blue-600 lg:w-4 lg:h-4" />
                                             </div>
-                                            <div>
-                                                <p className="font-semibold text-sm">{job.companyName}</p>
+                                            <div className="min-w-0 flex-1">
+                                                <p className="font-semibold text-sm lg:text-sm truncate">{job.companyName}</p>
                                                 <p className="text-xs text-gray-500">Perusahaan</p>
                                             </div>
                                         </div>
                                         
-                                        <div className="flex items-center space-x-3 text-gray-700">
-                                            <div className="w-8 h-8 bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl flex items-center justify-center">
-                                                <MapPin size={14} className="text-gray-600" />
+                                        <div className="flex items-center space-x-2 lg:space-x-3 text-gray-700">
+                                            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg lg:rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <MapPin size={14} className="text-gray-600 lg:w-4 lg:h-4" />
                                             </div>
-                                            <div>
-                                                <p className="font-semibold text-sm">{job.location}</p>
+                                            <div className="min-w-0 flex-1">
+                                                <p className="font-semibold text-sm lg:text-sm truncate">{job.location}</p>
                                                 <p className="text-xs text-gray-500">Lokasi</p>
                                             </div>
                                         </div>
                                         
                                         {formattedSalary && (
-                                            <div className="flex items-center space-x-3 text-gray-700">
-                                                <div className="w-8 h-8 bg-gradient-to-r from-green-100 to-green-200 rounded-xl flex items-center justify-center">
-                                                    <CircleDollarSign size={14} className="text-green-600" />
+                                            <div className="flex items-center space-x-2 lg:space-x-3 text-gray-700">
+                                                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-green-100 to-green-200 rounded-lg lg:rounded-xl flex items-center justify-center flex-shrink-0">
+                                                    <CircleDollarSign size={14} className="text-green-600 lg:w-4 lg:h-4" />
                                                 </div>
-                                                <div>
-                                                    <p className="font-semibold text-sm text-green-600">{formattedSalary}</p>
+                                                <div className="min-w-0 flex-1">
+                                                    <p className="font-semibold text-sm lg:text-sm text-green-600 truncate">{formattedSalary}</p>
                                                     <p className="text-xs text-gray-500">Gaji</p>
                                                 </div>
                                             </div>
                                         )}
                                         
-                                        <div className="flex items-center space-x-3 text-gray-700">
-                                            <div className="w-8 h-8 bg-gradient-to-r from-purple-100 to-purple-200 rounded-xl flex items-center justify-center">
-                                                <Clock size={14} className="text-purple-600" />
+                                        <div className="flex items-center space-x-2 lg:space-x-3 text-gray-700">
+                                            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg lg:rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <Clock size={14} className="text-purple-600 lg:w-4 lg:h-4" />
                                             </div>
-                                            <div>
-                                                <p className="font-semibold text-sm">{job.posted}</p>
+                                            <div className="min-w-0 flex-1">
+                                                <p className="font-semibold text-sm lg:text-sm truncate">{job.posted}</p>
                                                 <p className="text-xs text-gray-500">Dipublikasi</p>
                                             </div>
                                         </div>
@@ -218,16 +218,16 @@ const LowonganTerbaru: React.FC<Props> = ({ showHeader = true, showButton = true
                             
                             {/* Enhanced Job Type Tags */}
                             {job.type && job.type.length > 0 && (
-                                <div className="relative mt-6 mb-4">
-                                    <div className="flex items-center space-x-2 mb-3">
-                                        <div className="w-6 h-6 bg-gradient-to-r from-indigo-100 to-indigo-200 rounded-lg flex items-center justify-center">
-                                            <TrendingUp size={12} className="text-indigo-600" />
+                                <div className="relative mt-4 lg:mt-6 mb-3 lg:mb-4">
+                                    <div className="flex items-center space-x-2 mb-2 lg:mb-3">
+                                        <div className="w-6 h-6 lg:w-8 lg:h-8 bg-gradient-to-r from-indigo-100 to-indigo-200 rounded-md lg:rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <TrendingUp size={12} className="text-indigo-600 lg:w-3.5 lg:h-3.5" />
                                         </div>
-                                        <span className="text-sm font-semibold text-gray-700">Tipe Pekerjaan</span>
+                                        <span className="text-xs lg:text-sm font-semibold text-gray-700">Tipe Pekerjaan</span>
                                     </div>
-                                    <div className="flex flex-wrap gap-2">
+                                    <div className="flex flex-wrap gap-1.5 lg:gap-2">
                                         {job.type.map((typeStr, index) => (
-                                            <span key={index} className={`text-sm px-3 py-1.5 rounded-2xl font-semibold transition-all duration-200 hover:scale-105 ${getJobTypeTagClass(typeStr)}`}>
+                                            <span key={index} className={`text-xs lg:text-sm px-2.5 lg:px-4 py-1.5 lg:py-2 rounded-xl lg:rounded-2xl font-semibold transition-all duration-200 hover:scale-105 ${getJobTypeTagClass(typeStr)}`}>
                                                 {typeStr}
                                             </span>
                                         ))}
@@ -237,22 +237,22 @@ const LowonganTerbaru: React.FC<Props> = ({ showHeader = true, showButton = true
 
                             {/* Enhanced Skills Tags */}
                             {job.skillsRequired && job.skillsRequired.length > 0 && (
-                                <div className="relative mt-6 mb-6">
-                                    <div className="flex items-center space-x-2 mb-3">
-                                        <div className="w-6 h-6 bg-gradient-to-r from-sky-100 to-sky-200 rounded-lg flex items-center justify-center">
-                                            <Star size={12} className="text-sky-600" />
+                                <div className="relative mt-4 lg:mt-6 mb-4 lg:mb-6">
+                                    <div className="flex items-center space-x-2 mb-2 lg:mb-3">
+                                        <div className="w-6 h-6 lg:w-8 lg:h-8 bg-gradient-to-r from-sky-100 to-sky-200 rounded-md lg:rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <Star size={12} className="text-sky-600 lg:w-3.5 lg:h-3.5" />
                                         </div>
-                                        <span className="text-sm font-semibold text-gray-700">Keahlian Dibutuhkan</span>
+                                        <span className="text-xs lg:text-sm font-semibold text-gray-700">Keahlian Dibutuhkan</span>
                                     </div>
-                                    <div className="flex flex-wrap gap-2">
-                                        {job.skillsRequired.slice(0, 5).map((skill, index) => (
-                                            <span key={index} className="bg-gradient-to-r from-sky-100 to-sky-200 text-sky-700 text-sm px-3 py-1.5 rounded-2xl font-semibold border border-sky-200/50 transition-all duration-200 hover:scale-105">
+                                    <div className="flex flex-wrap gap-1.5 lg:gap-2">
+                                        {job.skillsRequired.slice(0, window.innerWidth < 1024 ? 3 : 5).map((skill, index) => (
+                                            <span key={index} className="bg-gradient-to-r from-sky-100 to-sky-200 text-sky-700 text-xs lg:text-sm px-2.5 lg:px-4 py-1.5 lg:py-2 rounded-xl lg:rounded-2xl font-semibold border border-sky-200/50 transition-all duration-200 hover:scale-105">
                                                 {skill}
                                             </span>
                                         ))}
-                                        {job.skillsRequired.length > 5 && (
-                                            <span className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-600 text-sm px-3 py-1.5 rounded-2xl font-semibold border border-gray-200/50">
-                                                +{job.skillsRequired.length - 5} lainnya
+                                        {job.skillsRequired.length > (window.innerWidth < 1024 ? 3 : 5) && (
+                                            <span className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-600 text-xs lg:text-sm px-2.5 lg:px-4 py-1.5 lg:py-2 rounded-xl lg:rounded-2xl font-semibold border border-gray-200/50">
+                                                +{job.skillsRequired.length - (window.innerWidth < 1024 ? 3 : 5)} lainnya
                                             </span>
                                         )}
                                     </div>
@@ -260,49 +260,49 @@ const LowonganTerbaru: React.FC<Props> = ({ showHeader = true, showButton = true
                             )}
 
                             {/* Enhanced Action Buttons */}
-                            <div className="relative mt-8 pt-6 border-t border-gray-100">
-                                <div className="flex flex-col sm:flex-row items-center gap-4">
+                            <div className="relative mt-4 lg:mt-8 pt-4 lg:pt-6 border-t border-gray-100">
+                                <div className="flex flex-col gap-2.5 lg:gap-4 lg:flex-row lg:items-center">
                                     {isApplied ? (
-                                        <div className="w-full flex-grow bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 px-6 py-3 rounded-2xl font-semibold flex items-center justify-center gap-3 border border-green-200/50 shadow-sm">
-                                            <CheckCircle size={18} />
+                                        <div className="w-full flex-grow bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 px-4 lg:px-6 py-3 lg:py-4 rounded-xl lg:rounded-2xl font-semibold flex items-center justify-center gap-2 lg:gap-3 border border-green-200/50 shadow-sm text-sm lg:text-base">
+                                            <CheckCircle size={16} className="lg:w-5 lg:h-5" />
                                             <span>Lamaran Terkirim</span>
                                         </div>
                                     ) : (
                                         <button 
                                             onClick={() => handleQuickApplyClick(job)} 
-                                            className="group/btn w-full sm:w-auto flex-grow bg-blue-900 hover:bg-blue-800 text-white px-6 py-3 rounded-2xl font-semibold flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                                            className="group/btn w-full lg:flex-grow bg-blue-900 hover:bg-blue-800 text-white px-4 lg:px-8 py-3 lg:py-4 rounded-xl lg:rounded-2xl font-semibold flex items-center justify-center gap-2 lg:gap-3 transition-all duration-300 transform hover:scale-105 shadow-md lg:shadow-lg hover:shadow-lg lg:hover:shadow-xl text-sm lg:text-base"
                                         >
-                                            <ExternalLink size={16} className="group-hover/btn:rotate-12 transition-transform duration-200" />
+                                            <ExternalLink size={16} className="group-hover/btn:rotate-12 transition-transform duration-200 lg:w-4.5 lg:h-4.5" />
                                             <span>Lamar Cepat</span>
-                                            <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform duration-200" />
+                                            <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform duration-200 lg:w-4 lg:h-4" />
                                         </button>
                                     )}
                                     
                                     <Link 
                                         to={`/jobdetail/${job.id}`} 
-                                        className={`group/link w-full sm:w-auto flex-grow border-2 border-gray-200 hover:border-blue-300 px-6 py-3 rounded-2xl text-gray-700 hover:text-blue-700 hover:bg-blue-50 transition-all duration-300 font-semibold text-center flex items-center justify-center gap-3 ${isApplied ? 'pointer-events-none opacity-60' : 'hover:scale-105'}`}
+                                        className={`group/link w-full lg:flex-grow border-2 border-gray-200 hover:border-blue-300 px-4 lg:px-8 py-3 lg:py-4 rounded-xl lg:rounded-2xl text-gray-700 hover:text-blue-700 hover:bg-blue-50 transition-all duration-300 font-semibold text-center flex items-center justify-center gap-2 lg:gap-3 text-sm lg:text-base ${isApplied ? 'pointer-events-none opacity-60' : 'hover:scale-105'}`}
                                     >
                                         <span>Lihat Detail</span>
-                                        <ArrowRight size={14} className="group-hover/link:translate-x-1 transition-transform duration-200" />
+                                        <ArrowRight size={14} className="group-hover/link:translate-x-1 transition-transform duration-200 lg:w-4 lg:h-4" />
                                     </Link>
                                 </div>
                             </div>
 
                             {/* Bottom Accent Line */}
-                            <div className={`absolute bottom-0 left-0 right-0 h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left ${isApplied ? 'bg-gradient-to-r from-green-500 via-green-600 to-emerald-600' : 'bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700'}`}></div>
+                            <div className={`absolute bottom-0 left-0 right-0 h-0.5 lg:h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 lg:duration-500 origin-left ${isApplied ? 'bg-gradient-to-r from-green-500 via-green-600 to-emerald-600' : 'bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700'}`}></div>
                         </div>
                     )
                 })}
             </div>
 
             {showButton && validJobs.length > 0 && ( 
-                <div className="mt-16 text-center">
+                <div className="mt-12 lg:mt-16 text-center px-4">
                     <Link 
                         to="/jobsearch" 
-                        className="group inline-flex items-center gap-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white px-8 py-4 rounded-2xl hover:from-blue-800 hover:to-blue-700 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+                        className="group inline-flex items-center gap-2 lg:gap-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white px-6 lg:px-8 py-3 lg:py-4 rounded-xl lg:rounded-2xl hover:from-blue-800 hover:to-blue-700 transition-all duration-300 font-semibold shadow-md lg:shadow-lg hover:shadow-lg lg:hover:shadow-xl transform hover:scale-105 text-sm lg:text-base"
                     >
                         <span>Lihat Semua Lowongan</span>
-                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-200" />
+                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-200 lg:w-4.5 lg:h-4.5" />
                     </Link>
                 </div>
             )}

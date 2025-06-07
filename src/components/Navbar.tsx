@@ -173,6 +173,7 @@ const Navbar: React.FC = () => {
 
       {isMobile ? (
         <>
+          <p className="py-2 font-semibold border-t border-gray-200 mt-2 pt-3">Layanan</p>
           <button
             onClick={() => handleProtectedLink('/services/jobchat')}
             className="py-3 px-6 text-left flex items-center rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-300 text-gray-700 hover:text-blue-700 font-medium w-full"
@@ -272,14 +273,12 @@ const Navbar: React.FC = () => {
 
   return (
     <header className="bg-gradient-to-r from-blue-50 via-indigo-50/30 to-purple-50/50 backdrop-blur-sm py-4 px-6 shadow-lg border-b border-gray-200/50 sticky top-0 z-50">
-      {/* Background Pattern - sama seperti JobSearch */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         <div className="absolute top-0 left-10 w-32 h-32 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
         <div className="absolute top-0 right-10 w-32 h-32 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
       </div>
 
       <div className="max-w-7xl mx-auto flex items-center justify-between relative">
-        {/* Logo */}
         <div className="flex-shrink-0">
           <Link to="/" className="cursor-pointer group">
             <img
@@ -293,12 +292,10 @@ const Navbar: React.FC = () => {
           </Link>
         </div>
 
-        {/* Desktop Navigation */}
         <nav className="absolute left-1/2 -translate-x-1/2 hidden xl:flex items-center space-x-2 text-gray-700 font-medium text-sm">
           <NavLinks />
         </nav>
 
-        {/* Desktop Auth Section */}
         <div className="hidden xl:flex items-center space-x-4">
           {isLoggedIn && currentUser ? (
             <>
@@ -330,7 +327,6 @@ const Navbar: React.FC = () => {
 
                 {isProfileOpen && (
                   <div className="absolute right-0 mt-3 w-72 bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl shadow-blue-900/20 py-4 z-20 border border-gray-200/50 animate-in fade-in slide-in-from-top-2 duration-200">
-                    {/* Profile Header */}
                     <div className="px-6 py-3 border-b border-gray-200/50 bg-gradient-to-r from-blue-50 to-purple-50 mx-4 rounded-xl mb-3">
                       <div className="flex items-center space-x-3">
                         <img
@@ -349,32 +345,22 @@ const Navbar: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Menu Items */}
                     <div className="px-2 space-y-1">
-                      <button
-                        onClick={() => handleProtectedLink('/profile/edit')}
-                        className="w-full text-left flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 rounded-xl transition-all duration-300 group"
-                      >
+                      <button onClick={() => handleProtectedLink('/profile/edit')} className="w-full text-left flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 rounded-xl transition-all duration-300 group">
                         <div className="w-8 h-8 bg-gradient-to-r from-blue-100 to-blue-200 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
                           <User className="h-4 w-4 text-blue-600" />
                         </div>
                         <span className="font-medium">Edit Profile</span>
                       </button>
 
-                      <button
-                        onClick={() => handleProtectedLink('/bookmarks')}
-                        className="w-full text-left flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-green-100 rounded-xl transition-all duration-300 group"
-                      >
+                      <button onClick={() => handleProtectedLink('/bookmarks')} className="w-full text-left flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-green-100 rounded-xl transition-all duration-300 group">
                         <div className="w-8 h-8 bg-gradient-to-r from-green-100 to-green-200 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
                           <Bookmark className="h-4 w-4 text-green-600" />
                         </div>
                         <span className="font-medium">Lowongan Tersimpan</span>
                       </button>
 
-                      <button
-                        onClick={() => handleProtectedLink('/applications')}
-                        className="w-full text-left flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-purple-100 rounded-xl transition-all duration-300 group"
-                      >
+                      <button onClick={() => handleProtectedLink('/applications')} className="w-full text-left flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-purple-100 rounded-xl transition-all duration-300 group">
                         <div className="w-8 h-8 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
                           <FileText className="h-4 w-4 text-purple-600" />
                         </div>
@@ -383,10 +369,7 @@ const Navbar: React.FC = () => {
                     </div>
 
                     <div className="border-t border-gray-200/50 mt-3 pt-2 px-2">
-                      <button
-                        onClick={handleLogout}
-                        className="w-full text-left flex items-center px-4 py-3 text-sm text-red-600 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 rounded-xl transition-all duration-300 group"
-                      >
+                      <button onClick={handleLogout} className="w-full text-left flex items-center px-4 py-3 text-sm text-red-600 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 rounded-xl transition-all duration-300 group">
                         <div className="w-8 h-8 bg-gradient-to-r from-red-100 to-red-200 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
                           <LogOut className="h-4 w-4 text-red-600" />
                         </div>
@@ -415,7 +398,6 @@ const Navbar: React.FC = () => {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
         <div className="xl:hidden">
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -426,16 +408,14 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="xl:hidden bg-white/95 backdrop-blur-lg shadow-2xl shadow-blue-900/20 absolute top-full left-0 w-full z-40 border-t border-gray-200/50">
-          <div className="flex flex-col px-6 py-6 space-y-2 text-gray-700 font-medium max-h-screen overflow-y-auto">
+          <div className="flex flex-col px-6 py-6 space-y-2 text-gray-700 font-medium max-h-[calc(100vh-85px)] overflow-y-auto">
             <NavLinks isMobile={true} />
 
             <div className="border-t border-gray-200/50 pt-4 mt-4 space-y-2">
               {isLoggedIn && currentUser ? (
                 <>
-                  {/* Mobile Profile Header */}
                   <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-2xl mb-4">
                     <div className="flex items-center space-x-3">
                       <img
@@ -477,8 +457,7 @@ const Navbar: React.FC = () => {
                     <FileText className="mr-3 h-5 w-5 text-purple-500" />
                     Lowongan Dilamar
                   </button>
-
-
+                    {/* PERBAIKAN: Menambahkan Log Out ke menu mobile */}
                   <div className="border-t border-gray-200/50 pt-3 mt-3">
                     <button
                       onClick={handleLogout}
