@@ -1,7 +1,9 @@
 import React from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom'; // PERUBAHAN: Impor Link
 
 const WhyJobmateSection: React.FC = () => {
+    // PERUBAHAN: Tambahkan properti 'path' untuk setiap item
   const items = [
     {
       color: 'bg-gradient-to-br from-pink-200 to-pink-300',
@@ -9,7 +11,8 @@ const WhyJobmateSection: React.FC = () => {
       desc: 'Unggah CV lalu pilih bidang pekerjaan dan dapatkan penilaian serta rekomendasi CV profesional yang siap digunakan.',
       icon: '/icons/review.svg',
       borderColor: 'border-pink-200/50',
-      iconBg: 'bg-pink-100'
+      iconBg: 'bg-pink-100',
+      path: '/cvreview' // Path untuk Review CV
     },
     {
       color: 'bg-gradient-to-br from-yellow-200 to-yellow-300',
@@ -17,7 +20,8 @@ const WhyJobmateSection: React.FC = () => {
       desc: 'Tentukan preferensimu (detail shift, gaji, lokasi, dll.) dan temukan loker inklusif yang paling sesuai untukmu.',
       icon: '/icons/search.svg',
       borderColor: 'border-yellow-200/50',
-      iconBg: 'bg-yellow-100'
+      iconBg: 'bg-yellow-100',
+      path: '/jobsearch' // Path untuk Job Search
     },
     {
       color: 'bg-gradient-to-br from-sky-200 to-sky-300',
@@ -25,7 +29,8 @@ const WhyJobmateSection: React.FC = () => {
       desc: 'Akses pelatihan dan AI Interview untuk mengembangkan keterampilanmu, dan tingkatkan peluang sukses dalam karier.',
       icon: '/icons/skills.svg',
       borderColor: 'border-sky-200/50',
-      iconBg: 'bg-sky-100'
+      iconBg: 'bg-sky-100',
+      path: '/services/ai-interview' // Path untuk AI Interview
     },
   ];
 
@@ -81,15 +86,16 @@ const WhyJobmateSection: React.FC = () => {
                 <h3 className="font-bold text-gray-900 mb-3 text-lg leading-tight">{item.title}</h3>
                 <p className="text-gray-700 mb-6 leading-relaxed">{item.desc}</p>
                 
-                <a 
-                  href="#" 
+                {/* PERUBAHAN: Mengganti <a> dengan <Link> dan menggunakan item.path */}
+                <Link 
+                  to={item.path} 
                   className="group/link inline-flex items-center text-gray-800 font-semibold hover:text-blue-700 transition-colors duration-200"
                 >
                   <span className="mr-2">Mulai</span>
                   <div className="w-6 h-6 bg-white/60 group-hover/link:bg-blue-100 rounded-lg flex items-center justify-center transition-all duration-200 group-hover/link:shadow-md">
                     <ArrowRight className="w-3 h-3 group-hover/link:translate-x-0.5 transition-transform duration-200" />
                   </div>
-                </a>
+                </Link>
               </div>
             </div>
           ))}

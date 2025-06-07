@@ -1,5 +1,7 @@
+// src/components/HomePageComp/SectionAbout.tsx
 import React from 'react';
 import { ArrowRight, Search, FileText, MessageCircle, Sparkles } from 'lucide-react';
+import { Link } from 'react-router-dom'; // PERUBAHAN: Impor Link dari react-router-dom
 
 const SectionAbout: React.FC = () => {
   return (
@@ -15,13 +17,13 @@ const SectionAbout: React.FC = () => {
         {/* Gambar kiri */}
         <div className="w-full md:w-1/2">
           <div className="relative rounded-3xl p-4 w-fit mx-auto">
-            {/* Subtle glow effect behind image */}
             <div className="absolute inset-0 bg-gradient-to-r from-blue-200/30 to-purple-200/30 rounded-3xl blur-2xl transform scale-110"></div>
             <div className="relative bg-white/40 backdrop-blur-sm border border-white/50 rounded-3xl p-6 shadow-2xl">
               <img
                 src="/about-illustration.png"
                 alt="JobMate Image"
                 className="w-[280px] md:w-[420px] rounded-2xl shadow-lg"
+                onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/420x420/A0AEC0/FFFFFF?text=Illustrasi' }}
               />
             </div>
           </div>
@@ -29,7 +31,6 @@ const SectionAbout: React.FC = () => {
 
         {/* Konten kanan */}
         <div className="w-full md:w-1/2 text-left">
-          {/* Section Badge */}
           <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-100 to-purple-100 border border-blue-200/50 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold mb-6 shadow-sm">
             <Sparkles size={14} className="text-blue-600" />
             <span>Tentang JobMate</span>
@@ -52,8 +53,9 @@ const SectionAbout: React.FC = () => {
           </div>
 
           <div className="space-y-4">
-            <a
-              href="/jobsearch"
+            {/* PERUBAHAN: Ganti <a> dengan <Link> */}
+            <Link
+              to="/jobsearch"
               className="group flex items-center justify-between bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-800 hover:to-blue-700 text-white font-semibold px-6 py-4 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
             >
               <div className="flex items-center gap-3">
@@ -65,10 +67,11 @@ const SectionAbout: React.FC = () => {
               <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center group-hover:bg-white/30 transition-all duration-200">
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
               </div>
-            </a>
+            </Link>
 
-            <a
-              href="/cvreview"
+            {/* PERUBAHAN: Ganti <a> dengan <Link> */}
+            <Link
+              to="/cvreview"
               className="group flex items-center justify-between bg-white/80 backdrop-blur-sm border border-gray-200/50 hover:bg-white/90 hover:border-blue-200/50 text-gray-800 font-semibold px-6 py-4 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
             >
               <div className="flex items-center gap-3">
@@ -80,10 +83,11 @@ const SectionAbout: React.FC = () => {
               <div className="w-8 h-8 bg-gray-100 group-hover:bg-blue-100 rounded-xl flex items-center justify-center transition-all duration-200">
                 <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-200" />
               </div>
-            </a>
+            </Link>
 
-            <a
-              href="/services/ai-interview"
+            {/* PERUBAHAN: Ganti <a> dengan <Link> */}
+            <Link
+              to="/services/ai-interview"
               className="group flex items-center justify-between bg-white/80 backdrop-blur-sm border border-gray-200/50 hover:bg-white/90 hover:border-blue-200/50 text-gray-800 font-semibold px-6 py-4 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
             >
               <div className="flex items-center gap-3">
@@ -95,7 +99,7 @@ const SectionAbout: React.FC = () => {
               <div className="w-8 h-8 bg-gray-100 group-hover:bg-blue-100 rounded-xl flex items-center justify-center transition-all duration-200">
                 <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-200" />
               </div>
-            </a>
+            </Link>
           </div>
         </div>
       </div>
