@@ -50,26 +50,39 @@ const JobSearch: React.FC = () => {
         const apiFilters: SearchJobFilters = {};
         if (keyword.trim()) apiFilters.companyName = keyword.trim();
         if (location.trim()) apiFilters.city = location.trim();
+        if (mainSearchTerm.trim()) apiFilters.jobTitle = mainSearchTerm.trim();
+        // (tambahkan filter lain jika perlu)
         fetchAndFilterJobs(apiFilters, selectedJobType);
         setShowFilterModal(false);
     };
+
 
     const handleResetModalFilters = () => {
         setKeyword("");
         setLocation("");
         setSelectedJobType("Semua Tipe");
+        setMainSearchTerm("");            // <- Reset input utama juga
         fetchAndFilterJobs({}, "Semua Tipe"); 
         setShowFilterModal(false);
     };
+
 
     const toggleFilterModal = () => setShowFilterModal(!showFilterModal);
 
     const handleMainSearch = () => {
         const apiFilters: SearchJobFilters = {};
-        if (mainSearchTerm.trim()) apiFilters.companyName = mainSearchTerm.trim();
-        if (location.trim() && !apiFilters.companyName) apiFilters.city = location.trim();
+        // Job Title (dari mainSearchTerm)
+        if (mainSearchTerm.trim()) apiFilters.jobTitle = mainSearchTerm.trim();
+        // Company Name (dari keyword modal, jika mau sync juga di main, bisa merge)
+        if (keyword.trim()) apiFilters.companyName = keyword.trim();
+        // City (lokasi)
+        if (location.trim()) apiFilters.city = location.trim();
+        // (filter lain jika ada, misal minSalary, maxSalary, dsb)
+        // Tipe pekerjaan? client side saja (lihat catatan di bawah)
         fetchAndFilterJobs(apiFilters, selectedJobType);
     };
+
+
 
     const indexOfLastJob = currentPage * JOBS_PER_PAGE;
     const indexOfFirstJob = indexOfLastJob - JOBS_PER_PAGE;
@@ -117,7 +130,7 @@ const JobSearch: React.FC = () => {
                                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                     <input 
                                         type="text" 
-                                        placeholder="Posisi, Lokasi, atau Perusahaan" 
+                                        placeholder="Posisi" 
                                         className="w-full pl-12 pr-6 py-4 rounded-2xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300 text-gray-700 placeholder-gray-400 bg-white/70" 
                                         value={mainSearchTerm} 
                                         onChange={(e) => setMainSearchTerm(e.target.value)} 

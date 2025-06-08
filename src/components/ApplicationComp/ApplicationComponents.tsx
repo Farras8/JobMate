@@ -13,7 +13,6 @@ import {
   AlertCircle,
   XCircle,
   User,
-  ExternalLink,
   ArrowRight,
   TrendingUp
 } from 'lucide-react';
@@ -161,10 +160,8 @@ const ApplicationJobCard: React.FC<ApplicationJobCardProps> = ({ appliedJob, onW
 
   return (
     <div className="group relative bg-white backdrop-blur-sm border border-gray-100/50 rounded-2xl lg:rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 lg:hover:-translate-y-2 p-4 lg:p-8 hover:shadow-purple-500/10 hover:border-purple-200/30">
-      {/* Gradient Background Overlay */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-purple-50/30 via-transparent to-indigo-50/20"></div>
       
-      {/* Withdraw Button */}
       <button
         onClick={handleWithdrawClick}
         disabled={isWithdrawing}
@@ -179,80 +176,37 @@ const ApplicationJobCard: React.FC<ApplicationJobCardProps> = ({ appliedJob, onW
         {!isWithdrawing && <Trash2 size={20} className="hidden lg:block mx-auto" />}
       </button>
 
-      {/* Company Logo and Job Details */}
       <div className="relative flex flex-col lg:flex-row items-start gap-4 lg:gap-6">
-        {/* Enhanced Company Logo */}
         <div className="relative group/logo flex-shrink-0 w-full lg:w-auto flex justify-center lg:justify-start">
           <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-xl lg:rounded-2xl bg-purple-50 flex items-center justify-center text-lg lg:text-2xl font-bold shadow-lg shadow-purple-900/20 group-hover:shadow-xl group-hover:shadow-purple-900/25 transition-all duration-300 group-hover:scale-105">
-            {jobDetails.companyLogo ? 
-              <img src={jobDetails.companyLogo} alt={jobDetails.companyName} className="w-full h-full object-contain rounded-xl lg:rounded-2xl"/> : 
-              <span className="text-purple-700">{jobDetails.companyName.charAt(0).toUpperCase()}</span>
-            }
+            {jobDetails.companyLogo ? <img src={jobDetails.companyLogo} alt={jobDetails.companyName} className="w-full h-full object-contain rounded-xl lg:rounded-2xl"/> : <span className="text-purple-700">{jobDetails.companyName.charAt(0).toUpperCase()}</span>}
           </div>
-          {/* Pulse ring effect */}
           <div className="absolute inset-0 rounded-xl lg:rounded-2xl bg-purple-900/20 scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-700"></div>
         </div>
 
         <div className="flex-grow w-full lg:pr-20">
-          {/* Job Title */}
           <h3 className="text-lg lg:text-2xl font-bold text-gray-900 leading-tight mb-3 group-hover:text-purple-700 transition-colors duration-300 text-center lg:text-left pr-12 lg:pr-0">{jobDetails.title}</h3>
           
-          {/* Job Details Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-4 lg:mb-6">
-            <div className="flex items-center space-x-3 text-gray-700">
-              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg lg:rounded-xl flex items-center justify-center flex-shrink-0">
-                <Building2 size={14} className="lg:hidden text-purple-600" />
-                <Building2 size={16} className="hidden lg:block text-purple-600" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="font-semibold text-sm truncate">{jobDetails.companyName}</p>
-                <p className="text-xs text-gray-500">Perusahaan</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-3 text-gray-700">
-              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-indigo-100 to-indigo-200 rounded-lg lg:rounded-xl flex items-center justify-center flex-shrink-0">
-                <Calendar size={14} className="lg:hidden text-indigo-600" />
-                <Calendar size={16} className="hidden lg:block text-indigo-600" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="font-semibold text-sm">{formatDate(appliedJob.appliedAt)}</p>
-                <p className="text-xs text-gray-500">Dilamar pada</p>
-              </div>
-            </div>
+            <div className="flex items-center space-x-3 text-gray-700"><div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg lg:rounded-xl flex items-center justify-center flex-shrink-0"><Building2 size={14} className="lg:hidden text-purple-600" /><Building2 size={16} className="hidden lg:block text-purple-600" /></div><div className="min-w-0 flex-1"><p className="font-semibold text-sm truncate">{jobDetails.companyName}</p><p className="text-xs text-gray-500">Perusahaan</p></div></div>
+            <div className="flex items-center space-x-3 text-gray-700"><div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-indigo-100 to-indigo-200 rounded-lg lg:rounded-xl flex items-center justify-center flex-shrink-0"><Calendar size={14} className="lg:hidden text-indigo-600" /><Calendar size={16} className="hidden lg:block text-indigo-600" /></div><div className="min-w-0 flex-1"><p className="font-semibold text-sm">{formatDate(appliedJob.appliedAt)}</p><p className="text-xs text-gray-500">Dilamar pada</p></div></div>
           </div>
         </div>
       </div>
 
-      {/* Enhanced Status Section */}
       <div className="relative mt-4 lg:mt-6 mb-4 lg:mb-6">
-        <div className="flex items-center space-x-2 mb-2 lg:mb-3">
-          <div className="w-6 h-6 lg:w-8 lg:h-8 bg-gradient-to-r from-green-100 to-green-200 rounded-md lg:rounded-lg flex items-center justify-center">
-            <TrendingUp size={12} className="lg:hidden text-green-600" />
-            <TrendingUp size={14} className="hidden lg:block text-green-600" />
-          </div>
-          <span className="text-xs lg:text-sm font-semibold text-gray-700">Status Lamaran</span>
-        </div>
+        <div className="flex items-center space-x-2 mb-2 lg:mb-3"><div className="w-6 h-6 lg:w-8 lg:h-8 bg-gradient-to-r from-green-100 to-green-200 rounded-md lg:rounded-lg flex items-center justify-center"><TrendingUp size={12} className="lg:hidden text-green-600" /><TrendingUp size={14} className="hidden lg:block text-green-600" /></div><span className="text-xs lg:text-sm font-semibold text-gray-700">Status Lamaran</span></div>
         <StatusBadge status={appliedJob.status} />
       </div>
 
-      {/* Enhanced Action Buttons */}
       <div className="relative mt-6 lg:mt-8 pt-4 lg:pt-6 border-t border-gray-100">
         <div className="flex gap-3">
-          <Link 
-            to={`/jobdetail/${jobDetails.id}`} 
-            className="group/link flex-1 bg-purple-900 hover:bg-purple-800 text-white px-4 py-3 lg:px-6 lg:py-4 rounded-xl lg:rounded-2xl font-semibold flex items-center justify-center gap-2 lg:gap-3 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm lg:text-base"
-          >
-            <ExternalLink size={16} className="lg:hidden group-hover/link:rotate-12 transition-transform duration-200" />
-            <ExternalLink size={18} className="hidden lg:block group-hover/link:rotate-12 transition-transform duration-200" />
-            <span className="truncate">Lihat Detail</span>
-            <ArrowRight size={14} className="lg:hidden group-hover/link:translate-x-1 transition-transform duration-200 flex-shrink-0" />
-            <ArrowRight size={16} className="hidden lg:block group-hover/link:translate-x-1 transition-transform duration-200 flex-shrink-0" />
+          <Link to={`/applications/${appliedJob.id}`} className="group/link flex-1 bg-purple-900 hover:bg-purple-800 text-white px-4 py-3 lg:px-6 lg:py-4 rounded-xl lg:rounded-2xl font-semibold flex items-center justify-center gap-2 lg:gap-3 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm lg:text-base">
+            <Eye size={16} className="lg:hidden" /><Eye size={18} className="hidden lg:block" />
+            <span className="truncate">Lihat Detail Lamaran</span>
           </Link>
         </div>
       </div>
-
-      {/* Bottom Accent Line */}
       <div className="absolute bottom-0 left-0 right-0 h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left bg-gradient-to-r from-purple-900 via-purple-800 to-indigo-700"></div>
     </div>
   );
@@ -277,24 +231,10 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ appliedJobs, i
               <div className="flex-grow space-y-3 lg:space-y-4 w-full">
                 <div className="h-6 lg:h-8 bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl w-3/4 mx-auto lg:mx-0"></div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg lg:rounded-xl"></div>
-                    <div className="space-y-1 flex-1">
-                      <div className="h-3 lg:h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-20 lg:w-24"></div>
-                      <div className="h-2 lg:h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-12 lg:w-16"></div>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg lg:rounded-xl"></div>
-                    <div className="space-y-1 flex-1">
-                      <div className="h-3 lg:h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-16 lg:w-20"></div>
-                      <div className="h-2 lg:h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-10 lg:w-12"></div>
-                    </div>
-                  </div>
+                  <div className="flex items-center space-x-3"><div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg lg:rounded-xl"></div><div className="space-y-1 flex-1"><div className="h-3 lg:h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-20 lg:w-24"></div><div className="h-2 lg:h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-12 lg:w-16"></div></div></div>
+                  <div className="flex items-center space-x-3"><div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg lg:rounded-xl"></div><div className="space-y-1 flex-1"><div className="h-3 lg:h-4 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-16 lg:w-20"></div><div className="h-2 lg:h-3 bg-gradient-to-r from-gray-200 to-gray-300 rounded w-10 lg:w-12"></div></div></div>
                 </div>
-                <div className="flex space-x-2">
-                  <div className="h-8 lg:h-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl lg:rounded-2xl w-24 lg:w-32"></div>
-                </div>
+                <div className="flex space-x-2"><div className="h-8 lg:h-10 bg-gradient-to-r from-gray-200 to-gray-300 rounded-xl lg:rounded-2xl w-24 lg:w-32"></div></div>
               </div>
             </div>
           </div>
@@ -306,10 +246,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ appliedJobs, i
   if (error) {
     return (
       <div className="text-center py-12 lg:py-16 text-red-600 bg-red-50 rounded-2xl lg:rounded-3xl border border-red-200 shadow-lg">
-        <div className="w-12 h-12 lg:w-16 lg:h-16 mx-auto bg-gradient-to-br from-red-100 to-red-200 rounded-xl lg:rounded-2xl flex items-center justify-center shadow-lg shadow-red-900/20 mb-4 lg:mb-6">
-          <AlertCircle size={20} className="lg:hidden text-red-600" />
-          <AlertCircle size={24} className="hidden lg:block text-red-600" />
-        </div>
+        <div className="w-12 h-12 lg:w-16 lg:h-16 mx-auto bg-gradient-to-br from-red-100 to-red-200 rounded-xl lg:rounded-2xl flex items-center justify-center shadow-lg shadow-red-900/20 mb-4 lg:mb-6"><AlertCircle size={20} className="lg:hidden text-red-600" /><AlertCircle size={24} className="hidden lg:block text-red-600" /></div>
         <div className="text-base lg:text-lg font-semibold mb-2">Gagal Memuat Data</div>
         <p className="text-sm px-4">{error}</p>
       </div>
@@ -319,28 +256,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ appliedJobs, i
   if (appliedJobs.length === 0) {
     return (
       <div className="text-center py-16 lg:py-24 px-4 lg:px-8 bg-white rounded-2xl lg:rounded-3xl shadow-lg border border-gray-100">
-        {/* Enhanced empty state with gradient background */}
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 via-indigo-50/30 to-pink-50/20 rounded-2xl lg:rounded-3xl"></div>
-          <div className="relative">
-            <div className="w-20 h-20 lg:w-24 lg:h-24 mx-auto bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl lg:rounded-3xl flex items-center justify-center shadow-xl shadow-purple-900/20 mb-4 lg:mb-6">
-              <Briefcase size={32} className="lg:hidden text-purple-600" strokeWidth={1.5}/>
-              <Briefcase size={40} className="hidden lg:block text-purple-600" strokeWidth={1.5}/>
-            </div>
-            <h3 className="text-xl lg:text-2xl font-bold text-gray-800 mb-2 lg:mb-3">Belum Ada Lamaran</h3>
-            <p className="text-gray-500 mb-6 lg:mb-8 max-w-md mx-auto leading-relaxed text-sm lg:text-base px-4 lg:px-0">
-              Anda belum melamar pekerjaan apapun. Mulai jelajahi lowongan dan lamar pekerjaan impian Anda sekarang.
-            </p>
-            <Link 
-              to="/jobsearch" 
-              className="group inline-flex items-center gap-2 lg:gap-3 bg-gradient-to-r from-purple-900 to-purple-800 text-white font-semibold py-3 px-6 lg:py-4 lg:px-8 rounded-xl lg:rounded-2xl hover:from-purple-800 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm lg:text-base"
-            >
-              <span>Cari Lowongan</span>
-              <ArrowRight size={16} className="lg:hidden group-hover:translate-x-1 transition-transform duration-200" />
-              <ArrowRight size={18} className="hidden lg:block group-hover:translate-x-1 transition-transform duration-200" />
-            </Link>
-          </div>
-        </div>
+        <div className="relative"><div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 via-indigo-50/30 to-pink-50/20 rounded-2xl lg:rounded-3xl"></div><div className="relative"><div className="w-20 h-20 lg:w-24 lg:h-24 mx-auto bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl lg:rounded-3xl flex items-center justify-center shadow-xl shadow-purple-900/20 mb-4 lg:mb-6"><Briefcase size={32} className="lg:hidden text-purple-600" strokeWidth={1.5}/><Briefcase size={40} className="hidden lg:block text-purple-600" strokeWidth={1.5}/></div><h3 className="text-xl lg:text-2xl font-bold text-gray-800 mb-2 lg:mb-3">Belum Ada Lamaran</h3><p className="text-gray-500 mb-6 lg:mb-8 max-w-md mx-auto leading-relaxed text-sm lg:text-base px-4 lg:px-0">Anda belum melamar pekerjaan apapun. Mulai jelajahi lowongan dan lamar pekerjaan impian Anda sekarang.</p><Link to="/jobsearch" className="group inline-flex items-center gap-2 lg:gap-3 bg-gradient-to-r from-purple-900 to-purple-800 text-white font-semibold py-3 px-6 lg:py-4 lg:px-8 rounded-xl lg:rounded-2xl hover:from-purple-800 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm lg:text-base"><span>Cari Lowongan</span><ArrowRight size={16} className="lg:hidden group-hover:translate-x-1 transition-transform duration-200" /><ArrowRight size={18} className="hidden lg:block group-hover:translate-x-1 transition-transform duration-200" /></Link></div></div>
       </div>
     );
   }

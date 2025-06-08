@@ -53,12 +53,12 @@ export interface DisplayJob {
 // Interface untuk parameter filter pada fungsi searchJobs
 export interface SearchJobFilters { 
   category?: string;
-  location?: string; // Filter 'location' umum dari API (jika berbeda dari city)
+  location?: string;
   minSalary?: number;
   maxSalary?: number;
-  companyName?: string; // Untuk filter berdasarkan nama perusahaan
-  city?: string;        // Untuk filter berdasarkan kota
-  // lastDocId?: string; // Untuk pagination server-side (jika diimplementasikan)
+  companyName?: string;
+  city?: string;
+  jobTitle?: string; // <--- Tambahkan ini!
 }
 
 const API_BASE_URL = 'https://jobseeker-capstone-705829099986.asia-southeast2.run.app';
@@ -149,6 +149,7 @@ export const searchJobs = async (filters: SearchJobFilters): Promise<DisplayJob[
   if (filters.maxSalary) queryParams.append('maxSalary', String(filters.maxSalary));
   if (filters.companyName) queryParams.append('companyName', filters.companyName);
   if (filters.city) queryParams.append('city', filters.city);
+  if (filters.jobTitle) queryParams.append('jobTitle', filters.jobTitle); // <--- Tambahkan ini!
 
   const url = `${API_BASE_URL}/jobs?${queryParams.toString()}`;
   try {
@@ -173,6 +174,7 @@ export const searchJobs = async (filters: SearchJobFilters): Promise<DisplayJob[
     return [];
   }
 };
+
 
 // Fungsi untuk mengambil detail pekerjaan berdasarkan ID (untuk halaman detail)
 export const fetchJobById = async (jobId: string): Promise<ApiJob | null> => {

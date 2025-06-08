@@ -16,6 +16,7 @@ import JobSearchStatusPage from './pages/JobSearchStatusPage';
 import EditProfilePage from './pages/EditProfilePage';
 import BookmarkPage from './pages/BookmarkPage';
 import ApplicationPage from './pages/ApplicationsPage';
+import ApplicationDetailPage from './pages/ApplicationsDetailPage'; // <-- Impor halaman baru
 import RecommendPage from './pages/RecommendPage';
 import CompaniesPage from './pages/CompanyPage';
 import CompanyDetailPage from './pages/CompanyDetailPages';
@@ -39,7 +40,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ isLoggedIn, children })
   return children;
 };
 
-// Komponen baru untuk halaman "Coming Soon"
+// Komponen untuk halaman "Coming Soon"
 const ComingSoon: React.FC = () => {
     const navigate = useNavigate();
     useEffect(() => {
@@ -54,7 +55,6 @@ const ComingSoon: React.FC = () => {
         });
     }, [navigate]);
 
-    // Render placeholder sementara alert ditampilkan
     return (
         <div className="flex h-screen w-full items-center justify-center bg-gray-100 dark:bg-gray-900">
             <div className="text-center text-gray-600 dark:text-gray-400">
@@ -111,8 +111,9 @@ function App() {
       <Route path="/companies/:id" element={<CompanyDetailPage />} />
       
       {/* Rute yang Dilindungi */}
-      <Route path="/rekomendasi" element={<ProtectedRoute isLoggedIn={isLoggedIn}><RecommendPage /></ProtectedRoute>} />
+      <Route path="/applications/:id" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ApplicationDetailPage /></ProtectedRoute>} />
       <Route path="/applications" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ApplicationPage /></ProtectedRoute>} />
+      <Route path="/rekomendasi" element={<ProtectedRoute isLoggedIn={isLoggedIn}><RecommendPage /></ProtectedRoute>} />
       <Route path="/bookmarks" element={<ProtectedRoute isLoggedIn={isLoggedIn}><BookmarkPage /></ProtectedRoute>} />
       <Route path="/profile/edit" element={<ProtectedRoute isLoggedIn={isLoggedIn}><EditProfilePage /></ProtectedRoute>} />
       <Route path="/cvreview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><CvReviewPage /></ProtectedRoute>} />
@@ -125,7 +126,6 @@ function App() {
       <Route path="/profile/saved-jobs" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Navigate to="/bookmarks" replace /></ProtectedRoute>} />
       <Route path="/profile/applied-jobs" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Navigate to="/applications" replace /></ProtectedRoute>} />
 
-      {/* PERUBAHAN: Rute ini sekarang menampilkan alert "Coming Soon" */}
       <Route path="/services/jobchat" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
       <Route path="/services/ai-interview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
       <Route path="/services/jobmodul" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />

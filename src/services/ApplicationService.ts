@@ -151,6 +151,39 @@ export const getAppliedJobs = async (): Promise<AppliedJob[]> => {
 };
 
 /**
+ * [FUNGSI BARU] Fetches the details for a single application by its ID and enriches it with job data.
+ * @param applicationId The ID of the application to fetch.
+ */
+export const getApplicationDetail = async (applicationId: string): Promise<AppliedJob | null> => {
+  const token = await getIdToken();
+  if (!token) throw new Error('User not authenticated');
+  if (!applicationId) throw new Error('Application ID is required');
+
+  const response = await fetch(`${API_BASE_URL}/applications/${applicationId}`, {
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+
+  if (response.status === 404) {
+    return null;
+  }
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Failed to fetch application detail');
+  }
+  
+  const result = await response.json();
+  const applicationData = result.application as Application;
+  
+  // Enrich with job details
+  const jobDetails = await fetchJobById(applicationData.jobId);
+  
+  return {
+    ...applicationData,
+    jobDetails,
+  };
+};
+
+/**
  * Withdraws (deletes) a job application based on the API endpoint DELETE /applications/:applicationId.
  * @param applicationId The ID of the application document to delete.
  */
