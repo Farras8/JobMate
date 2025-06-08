@@ -23,7 +23,7 @@ const CompaniesPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-    
+
     // Fungsi untuk memuat atau memfilter perusahaan
     const loadCompanies = useCallback(async (filters = {}) => {
         setIsLoading(true);
@@ -45,24 +45,33 @@ const CompaniesPage: React.FC = () => {
     }, [loadCompanies]);
 
     const handleSearch = (filters: { searchTerm: string, city: string, minJobs: number }) => {
-        // Gabungkan filter dari UI dengan API call
-        const apiFilters: { city?: string, minActiveJobCount?: number } = {};
-        if (filters.city) apiFilters.city = filters.city;
-        // API tidak mendukung minActiveJobCount = 0, jadi hanya kirim jika > 0
+        // API hanya mendukung minActiveJobCount, jadi filter city (LIKE) dilakukan di frontend
+        const apiFilters: { minActiveJobCount?: number } = {};
         if (filters.minJobs > 0) apiFilters.minActiveJobCount = filters.minJobs;
 
-        // Lakukan pencarian nama perusahaan di sisi klien setelah API filter diterapkan
         loadCompanies(apiFilters).then(() => {
-            // Setelah data dari API kembali, lakukan filter nama di client side
-            // Ini karena API Anda tidak mendukung filter berdasarkan nama.
-            // Jika API mendukung, idealnya semua filter dilakukan di backend.
-            if (filters.searchTerm) {
-                setCompanies(prev => prev.filter(company => 
-                    company.companyName.toLowerCase().includes(filters.searchTerm.toLowerCase())
-                ));
-            }
+            setCompanies(prev => {
+                let filtered = prev;
+
+                // Filter city LIKE/contains
+                if (filters.city) {
+                    filtered = filtered.filter(company =>
+                        company.city?.toLowerCase().includes(filters.city.toLowerCase())
+                    );
+                }
+
+                // Filter nama perusahaan LIKE/contains
+                if (filters.searchTerm) {
+                    filtered = filtered.filter(company =>
+                        company.companyName.toLowerCase().includes(filters.searchTerm.toLowerCase())
+                    );
+                }
+
+                return filtered;
+            });
         });
     };
+
 
     const currentTableData = useMemo(() => {
         const firstPageIndex = (currentPage - 1) * COMPANIES_PER_PAGE;
@@ -90,7 +99,7 @@ const CompaniesPage: React.FC = () => {
                 ) : currentTableData.length > 0 ? (
                     <>
                         <CompanyList companies={currentTableData} />
-                        <PaginationCompany 
+                        <PaginationCompany
                             currentPage={currentPage}
                             totalPages={totalPages}
                             onPageChange={setCurrentPage}
