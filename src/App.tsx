@@ -49,7 +49,9 @@ const ComingSoon: React.FC = () => {
             text: 'Fitur ini sedang dalam tahap pengembangan dan akan segera tersedia untuk Anda. Terima kasih atas kesabaran Anda.',
             icon: 'info',
             confirmButtonText: 'Mengerti',
-            customClass: { popup: 'rounded-xl' }
+            customClass: { popup: 'rounded-xl' },
+            backdrop: 'rgba(0,0,0,0.3)', // Background buram dengan transparansi
+            allowOutsideClick: false
         }).then(() => {
             navigate(-1); // Kembali ke halaman sebelumnya
         });
