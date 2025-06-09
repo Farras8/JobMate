@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'; // Import sendPasswordResetEmail
 import { auth } from '../../services/firebase';
 import Swal from 'sweetalert2'; // Import SweetAlert2
+import { Link } from 'react-router-dom';
+
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -19,9 +21,9 @@ const LoginForm: React.FC = () => {
     setError(null);
 
     if (!email || !password) {
-        setError("Email dan password tidak boleh kosong.");
-        setIsLoading(false);
-        return;
+      setError("Email dan password tidak boleh kosong.");
+      setIsLoading(false);
+      return;
     }
 
     try {
@@ -111,19 +113,19 @@ const LoginForm: React.FC = () => {
         </div>
 
         <div>
-           <div className="flex justify-between items-center mb-1">
-             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-             </label>
-             {/* --- LINK LUPA SANDI --- */}
-             <button
-                type="button"
-                onClick={handleForgotPassword}
-                className="text-xs text-blue-600 hover:text-blue-500 hover:underline font-medium"
-              >
-                Lupa Sandi?
-              </button>
-           </div>
+          <div className="flex justify-between items-center mb-1">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            {/* --- LINK LUPA SANDI --- */}
+            <button
+              type="button"
+              onClick={handleForgotPassword}
+              className="text-xs text-blue-600 hover:text-blue-500 hover:underline font-medium"
+            >
+              Lupa Sandi?
+            </button>
+          </div>
           <div className="relative">
             <input
               type={showPassword ? 'text' : 'password'}
@@ -142,7 +144,7 @@ const LoginForm: React.FC = () => {
               className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 hover:text-gray-700 p-1"
               aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
             >
-              <img src={showPassword ? '/pass-hide.png' : '/pass-reveal.png'} alt="Toggle Password Visibility" className="w-5 h-5"/>
+              <img src={showPassword ? '/pass-hide.png' : '/pass-reveal.png'} alt="Toggle Password Visibility" className="w-5 h-5" />
             </button>
           </div>
         </div>
@@ -163,9 +165,9 @@ const LoginForm: React.FC = () => {
 
       <p className="text-sm text-center text-gray-600 mt-8">
         Baru di JobMate?{' '}
-        <a href="/signup" className="font-medium text-blue-600 hover:text-blue-500 hover:underline">
+        <Link to="/signup" className="font-medium text-blue-600 hover:text-blue-500 hover:underline">
           Daftar
-        </a>
+        </Link>
       </p>
     </div>
   );
