@@ -7,6 +7,7 @@ import { auth, db } from '../../services/firebase'; // Pastikan path ini benar
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import { User, Mail, Lock, Phone, MapPin, AtSign, AlertCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const SignUpForm: React.FC = () => {
     const [email, setEmail] = useState("");
@@ -159,9 +160,9 @@ const SignUpForm: React.FC = () => {
 
       <p className="text-sm text-center text-gray-600 mt-6">
         Sudah Punya Akun?{' '}
-        <a href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+        <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500 hover:underline">
           Masuk
-        </a>
+        </Link>
       </p>
     </div>
     </>
