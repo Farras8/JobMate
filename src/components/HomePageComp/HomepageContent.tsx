@@ -1,7 +1,14 @@
 import React from 'react';
-import { Search, Sparkles, TrendingUp } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Sparkles, TrendingUp } from 'lucide-react';
 
 const HomepageContent: React.FC = () => {
+    const navigate = useNavigate();
+
+    const handleExploreClick = () => {
+      navigate('/jobsearch');
+    };
+
     return (
       <>
         <section
@@ -37,28 +44,23 @@ const HomepageContent: React.FC = () => {
               Segera wujudkan mimpimu bekerja di perusahaan inklusif Indonesia sekarang!
             </p>
 
-            {/* Enhanced Search Section */}
-            <div className="mt-12 max-w-3xl mx-auto">
-              <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl shadow-xl shadow-blue-900/10 p-6">
-                <div className="flex flex-col md:flex-row items-center gap-4">
-                  <div className="relative flex-grow w-full">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Cari Lowongan Pekerjaan, Pelatihan, atau Bootcamp"
-                      className="w-full pl-12 pr-6 py-4 rounded-2xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300 text-gray-700 placeholder-gray-400 bg-white/70"
-                    />
-                  </div>
-                  <button className="group w-full md:w-60 bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-800 hover:to-blue-700 text-white font-semibold px-8 py-4 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
-                    <TrendingUp className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-                    Eksplor Sekarang!
-                  </button>
-                </div>
-              </div>
+            {/* Call to Action Section */}
+            <div className="mt-12 max-w-2xl mx-auto">
+              <p className="text-xl text-gray-700 mb-8 leading-relaxed">
+                Temukan ribuan lowongan pekerjaan, pelatihan profesional, dan bootcamp berkualitas yang sesuai dengan passion dan skillmu.
+              </p>
+              
+              <button 
+                onClick={handleExploreClick}
+                className="group bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-800 hover:to-blue-700 text-white font-semibold px-12 py-5 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl flex items-center justify-center gap-3 mx-auto text-lg"
+              >
+                <TrendingUp className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
+                Eksplor Sekarang!
+              </button>
             </div>
 
             {/* Hero Image */}
-            <div className="relative mt-12">
+            <div className="relative mt-16">
               <div className="relative">
                 <img 
                   src="/hero-image.png" 

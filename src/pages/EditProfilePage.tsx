@@ -1,5 +1,6 @@
 // src/pages/EditProfilePage.tsx
 import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom'; // Add this import
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ProfileList from '../components/List/ProfileList';
@@ -53,6 +54,8 @@ interface ProfileData {
 type ActiveTab = 'profile' | 'education' | 'experience' | 'skills' | 'portfolio' | 'documents' | 'preferences';
 
 const EditProfilePage: React.FC = () => {
+  const location = useLocation(); // Add this line
+  
   // All state declarations
   const [currentProfile, setCurrentProfile] = useState<ProfileData | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
@@ -102,7 +105,21 @@ const EditProfilePage: React.FC = () => {
   const [isAddPreferenceModalOpen, setIsAddPreferenceModalOpen] = useState(false);
   const [isEditPreferenceModalOpen, setIsEditPreferenceModalOpen] = useState(false);
 
-  const [activeTab, setActiveTab] = useState<ActiveTab>('profile');
+  // Modified activeTab initialization to check location state
+  const [activeTab, setActiveTab] = useState<ActiveTab>(() => {
+    // Check if there's a state passed from navigation
+    if (location.state && location.state.initialTab) {
+      return location.state.initialTab as ActiveTab;
+    }
+    return 'profile';
+  });
+
+  // Add useEffect to handle location state changes
+  useEffect(() => {
+    if (location.state && location.state.initialTab) {
+      setActiveTab(location.state.initialTab as ActiveTab);
+    }
+  }, [location.state]);
 
   // Data Fetching Callbacks
   const loadProfileData = useCallback(async () => { setIsLoadingProfile(true); setProfileError(null); try { setCurrentProfile(await fetchProfile()); } catch (e:any) { setProfileError(e.message); } finally { setIsLoadingProfile(false); }}, []);
