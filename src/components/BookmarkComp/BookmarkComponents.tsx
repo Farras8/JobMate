@@ -1,8 +1,10 @@
 // src/components/BookmarkComp/BookmarkComponents.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { type EnrichedBookmark } from '../../services/bookmarkService';
 import { type DisplayJob } from '../../services/jobService';
+import { getApplications } from '../../services/ApplicationService'; // Import untuk get lamaran
+import { auth } from '../../services/firebase';
 import Swal from 'sweetalert2';
 import { 
     MapPin, 
@@ -14,16 +16,18 @@ import {
     ExternalLink,
     ArrowRight,
     Star,
-    TrendingUp
+    TrendingUp,
+    CheckCircle
 } from 'lucide-react';
 
 // --- Job Card Component ---
 interface BookmarkJobCardProps {
   bookmark: EnrichedBookmark;
   onRemoveBookmark: (bookmarkId: string, jobTitle: string) => void;
+  isApplied?: boolean; // New prop to indicate if job is applied
 }
 
-const BookmarkJobCard: React.FC<BookmarkJobCardProps> = ({ bookmark, onRemoveBookmark }) => {
+const BookmarkJobCard: React.FC<BookmarkJobCardProps> = ({ bookmark, onRemoveBookmark, isApplied = false }) => {
   const [isRemoving, setIsRemoving] = useState(false);
   const { jobDetails } = bookmark;
 
@@ -86,9 +90,12 @@ const BookmarkJobCard: React.FC<BookmarkJobCardProps> = ({ bookmark, onRemoveBoo
   const formattedSalary = formatSalaryForCard(jobDetails.salary);
 
   return (
-    <div className="group relative bg-white backdrop-blur-sm border border-gray-100/50 rounded-3xl lg:rounded-3xl rounded-2xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 p-4 sm:p-6 lg:p-8 hover:shadow-blue-500/10 hover:border-blue-200/30">
+    <div className={`group relative bg-white backdrop-blur-sm border rounded-3xl lg:rounded-3xl rounded-2xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 p-4 sm:p-6 lg:p-8
+      ${isApplied ? 'border-green-200/50 bg-gradient-to-br from-green-50/30 via-white to-emerald-50/20 hover:shadow-green-500/10' : 'border-gray-100/50 hover:shadow-blue-500/10 hover:border-blue-200/30'}`}>
       {/* Gradient Background Overlay */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/20"></div>
+      <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${isApplied ? 'bg-gradient-to-br from-green-50/40 via-transparent to-emerald-50/30' : 'bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/20'}`}></div>
+      
+
       
       {/* Remove Bookmark Button */}
       <button
@@ -105,7 +112,7 @@ const BookmarkJobCard: React.FC<BookmarkJobCardProps> = ({ bookmark, onRemoveBoo
       </button>
 
       {/* Company Logo and Job Details */}
-      <div className="relative flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+      <div className={`relative flex flex-col sm:flex-row items-start gap-4 sm:gap-6 ${isApplied ? 'mt-10 sm:mt-0' : ''}`}>
         {/* Enhanced Company Logo */}
         <div className="relative group/logo w-full sm:w-auto flex justify-center sm:justify-start">
           <div className="w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 rounded-xl lg:rounded-2xl bg-blue-50 flex items-center justify-center text-lg sm:text-xl lg:text-2xl font-bold shadow-lg shadow-blue-900/20 group-hover:shadow-xl group-hover:shadow-blue-900/25 transition-all duration-300 group-hover:scale-105">
@@ -120,7 +127,7 @@ const BookmarkJobCard: React.FC<BookmarkJobCardProps> = ({ bookmark, onRemoveBoo
 
         <div className="flex-grow w-full sm:pr-16 lg:pr-20">
           {/* Job Title */}
-          <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 leading-tight mb-2 sm:mb-3 group-hover:text-blue-700 transition-colors duration-300 text-center sm:text-left">{jobDetails.title}</h3>
+          <h3 className={`text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 leading-tight mb-2 sm:mb-3 transition-colors duration-300 text-center sm:text-left ${isApplied ? 'group-hover:text-green-700' : 'group-hover:text-blue-700'}`}>{jobDetails.title}</h3>
           
           {/* Job Details Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4">
@@ -214,18 +221,25 @@ const BookmarkJobCard: React.FC<BookmarkJobCardProps> = ({ bookmark, onRemoveBoo
 
       {/* Enhanced Action Button */}
       <div className="relative mt-6 sm:mt-7 lg:mt-8 pt-4 sm:pt-5 lg:pt-6 border-t border-gray-100">
-        <Link 
-          to={`/jobdetail/${jobDetails.id}`} 
-          className="group/link w-full bg-blue-900 hover:bg-blue-800 text-white px-6 sm:px-7 lg:px-8 py-3 sm:py-3.5 lg:py-4 rounded-xl lg:rounded-2xl font-semibold flex items-center justify-center gap-2 sm:gap-3 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
-        >
-          <ExternalLink size={16} className="sm:w-4.5 sm:h-4.5 lg:w-4.5 lg:h-4.5 group-hover/link:rotate-12 transition-transform duration-200" />
-          <span>Lihat Detail</span>
-          <ArrowRight size={14} className="sm:w-4 sm:h-4 group-hover/link:translate-x-1 transition-transform duration-200" />
-        </Link>
+        {isApplied ? (
+          <div className="w-full bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 px-6 sm:px-7 lg:px-8 py-3 sm:py-3.5 lg:py-4 rounded-xl lg:rounded-2xl font-semibold flex items-center justify-center gap-2 sm:gap-3 border border-green-200/50 shadow-sm text-sm sm:text-base">
+            <CheckCircle size={16} className="sm:w-4.5 sm:h-4.5 lg:w-4.5 lg:h-4.5" />
+            <span>Lamaran Terkirim</span>
+          </div>
+        ) : (
+          <Link 
+            to={`/jobdetail/${jobDetails.id}`} 
+            className="group/link w-full bg-blue-900 hover:bg-blue-800 text-white px-6 sm:px-7 lg:px-8 py-3 sm:py-3.5 lg:py-4 rounded-xl lg:rounded-2xl font-semibold flex items-center justify-center gap-2 sm:gap-3 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
+          >
+            <ExternalLink size={16} className="sm:w-4.5 sm:h-4.5 lg:w-4.5 lg:h-4.5 group-hover/link:rotate-12 transition-transform duration-200" />
+            <span>Lihat Detail</span>
+            <ArrowRight size={14} className="sm:w-4 sm:h-4 group-hover/link:translate-x-1 transition-transform duration-200" />
+          </Link>
+        )}
       </div>
 
       {/* Bottom Accent Line */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700"></div>
+      <div className={`absolute bottom-0 left-0 right-0 h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left ${isApplied ? 'bg-gradient-to-r from-green-500 via-green-600 to-emerald-600' : 'bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700'}`}></div>
     </div>
   );
 };
@@ -239,6 +253,19 @@ interface BookmarkListProps {
 }
 
 export const BookmarkList: React.FC<BookmarkListProps> = ({ bookmarks, isLoading, error, onRemoveBookmark }) => {
+  const [appliedJobIds, setAppliedJobIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    // Fetch applied jobs when component mounts
+    if (auth.currentUser && bookmarks.length > 0) {
+      getApplications()
+        .then(applications => {
+          setAppliedJobIds(new Set(applications.map(app => app.jobId)));
+        })
+        .catch(err => console.error("Failed to fetch applications:", err));
+    }
+  }, [bookmarks]);
+
   if (isLoading) {
     return (
       <div className="space-y-4 sm:space-y-6 lg:space-y-8">
@@ -315,7 +342,12 @@ export const BookmarkList: React.FC<BookmarkListProps> = ({ bookmarks, isLoading
   return (
     <div className="space-y-4 sm:space-y-6 lg:space-y-8">
       {bookmarks.map(bookmark => (
-        <BookmarkJobCard key={bookmark.id} bookmark={bookmark} onRemoveBookmark={onRemoveBookmark} />
+        <BookmarkJobCard 
+          key={bookmark.id} 
+          bookmark={bookmark} 
+          onRemoveBookmark={onRemoveBookmark} 
+          isApplied={appliedJobIds.has(bookmark.jobId)}
+        />
       ))}
     </div>
   );

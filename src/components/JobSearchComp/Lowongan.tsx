@@ -156,7 +156,7 @@ const Lowongan: React.FC<LowonganProps> = ({ jobs, isLoading, error }) => {
 
                 <div className="flex-grow pr-12 lg:pr-16 w-full lg:w-auto min-w-0">
                   {/* Job Title */}
-                  <h3 className="text-lg lg:text-2xl font-bold text-gray-900 leading-tight mb-2 lg:mb-3 group-hover:text-blue-700 transition-colors duration-300 break-words">{job.title}</h3>
+                  <h3 className={`text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 leading-tight mb-2 sm:mb-3 transition-colors duration-300 text-center sm:text-left ${isApplied ? 'group-hover:text-green-700' : 'group-hover:text-blue-700'}`}>{job.title}</h3>
                   
                   {/* Job Details Grid */}
                   <div className="grid grid-cols-1 gap-2 lg:gap-3 mb-3 lg:mb-4">

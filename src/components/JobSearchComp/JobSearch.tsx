@@ -1,7 +1,8 @@
 // src/components/JobSearchComp/JobSearch.tsx
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom'; // Import untuk membaca URL params
 import Lowongan from './Lowongan'; 
-import PaginationJobs from './PaginationJobs'; // Impor komponen pagination
+import PaginationJobs from './PaginationJobs';
 import { searchJobs } from '../../services/jobService'; 
 import type { DisplayJob, SearchJobFilters } from '../../services/jobService'; 
 import { Search, Filter, MapPin, Briefcase, X, Sparkles, TrendingUp } from 'lucide-react';
@@ -9,6 +10,7 @@ import { Search, Filter, MapPin, Briefcase, X, Sparkles, TrendingUp } from 'luci
 const JOBS_PER_PAGE = 6;
 
 const JobSearch: React.FC = () => {
+    const [searchParams, setSearchParams] = useSearchParams(); // Hook untuk URL params
     const [showFilterModal, setShowFilterModal] = useState(false);
     const [keyword, setKeyword] = useState(""); 
     const [location, setLocation] = useState(""); 
@@ -41,48 +43,105 @@ const JobSearch: React.FC = () => {
             setIsLoading(false);
         }
     };
+
+    // Fungsi untuk menerapkan filter dari URL parameters
+    const applyUrlFilters = () => {
+        const companyParam = searchParams.get('company');
+        const jobTitleParam = searchParams.get('jobTitle');
+        const cityParam = searchParams.get('city');
+        const jobTypeParam = searchParams.get('jobType');
+
+        // Set state berdasarkan URL parameters
+        if (companyParam) {
+            setKeyword(companyParam);
+        }
+        if (jobTitleParam) {
+            setMainSearchTerm(jobTitleParam);
+        }
+        if (cityParam) {
+            setLocation(cityParam);
+        }
+        if (jobTypeParam && jobTypeParam !== "Semua Tipe") {
+            setSelectedJobType(jobTypeParam);
+        }
+
+        // Buat filter untuk API
+        const apiFilters: SearchJobFilters = {};
+        if (companyParam) apiFilters.companyName = companyParam;
+        if (jobTitleParam) apiFilters.jobTitle = jobTitleParam;
+        if (cityParam) apiFilters.city = cityParam;
+
+        // Jalankan pencarian dengan filter
+        fetchAndFilterJobs(apiFilters, jobTypeParam || "Semua Tipe");
+    };
     
     useEffect(() => {
-        fetchAndFilterJobs({}, "Semua Tipe"); 
-    }, []);
+        // Cek apakah ada parameter di URL
+        const hasUrlParams = searchParams.get('company') || 
+                           searchParams.get('jobTitle') || 
+                           searchParams.get('city') || 
+                           searchParams.get('jobType');
+
+        if (hasUrlParams) {
+            // Jika ada parameter, gunakan filter dari URL
+            applyUrlFilters();
+        } else {
+            // Jika tidak ada parameter, load semua lowongan
+            fetchAndFilterJobs({}, "Semua Tipe");
+        }
+    }, [searchParams]); // Dependency pada searchParams agar re-run saat URL berubah
 
     const handleApplyModalFilters = () => {
         const apiFilters: SearchJobFilters = {};
         if (keyword.trim()) apiFilters.companyName = keyword.trim();
         if (location.trim()) apiFilters.city = location.trim();
         if (mainSearchTerm.trim()) apiFilters.jobTitle = mainSearchTerm.trim();
-        // (tambahkan filter lain jika perlu)
+        
+        // Update URL parameters saat filter diterapkan
+        const newSearchParams = new URLSearchParams();
+        if (keyword.trim()) newSearchParams.set('company', keyword.trim());
+        if (location.trim()) newSearchParams.set('city', location.trim());
+        if (mainSearchTerm.trim()) newSearchParams.set('jobTitle', mainSearchTerm.trim());
+        if (selectedJobType !== "Semua Tipe") newSearchParams.set('jobType', selectedJobType);
+        
+        setSearchParams(newSearchParams);
+        
         fetchAndFilterJobs(apiFilters, selectedJobType);
         setShowFilterModal(false);
     };
-
 
     const handleResetModalFilters = () => {
         setKeyword("");
         setLocation("");
         setSelectedJobType("Semua Tipe");
-        setMainSearchTerm("");            // <- Reset input utama juga
+        setMainSearchTerm("");
+        
+        // Clear URL parameters
+        setSearchParams(new URLSearchParams());
+        
         fetchAndFilterJobs({}, "Semua Tipe"); 
         setShowFilterModal(false);
     };
-
 
     const toggleFilterModal = () => setShowFilterModal(!showFilterModal);
 
     const handleMainSearch = () => {
         const apiFilters: SearchJobFilters = {};
-        // Job Title (dari mainSearchTerm)
         if (mainSearchTerm.trim()) apiFilters.jobTitle = mainSearchTerm.trim();
-        // Company Name (dari keyword modal, jika mau sync juga di main, bisa merge)
         if (keyword.trim()) apiFilters.companyName = keyword.trim();
-        // City (lokasi)
         if (location.trim()) apiFilters.city = location.trim();
-        // (filter lain jika ada, misal minSalary, maxSalary, dsb)
-        // Tipe pekerjaan? client side saja (lihat catatan di bawah)
+        
+        // Update URL parameters saat pencarian utama
+        const newSearchParams = new URLSearchParams();
+        if (mainSearchTerm.trim()) newSearchParams.set('jobTitle', mainSearchTerm.trim());
+        if (keyword.trim()) newSearchParams.set('company', keyword.trim());
+        if (location.trim()) newSearchParams.set('city', location.trim());
+        if (selectedJobType !== "Semua Tipe") newSearchParams.set('jobType', selectedJobType);
+        
+        setSearchParams(newSearchParams);
+        
         fetchAndFilterJobs(apiFilters, selectedJobType);
     };
-
-
 
     const indexOfLastJob = currentPage * JOBS_PER_PAGE;
     const indexOfFirstJob = indexOfLastJob - JOBS_PER_PAGE;
@@ -120,6 +179,32 @@ const JobSearch: React.FC = () => {
                         <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
                             Platform terbaik untuk menemukan dan melamar pekerjaan di startup dan perusahaan inovatif pilihan Anda.
                         </p>
+
+                        {/* Show active filter info */}
+                        {(keyword || location || mainSearchTerm || selectedJobType !== "Semua Tipe") && (
+                            <div className="mt-6 flex flex-wrap justify-center gap-2">
+                                {keyword && (
+                                    <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                                        Perusahaan: {keyword}
+                                    </span>
+                                )}
+                                {mainSearchTerm && (
+                                    <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                                        Posisi: {mainSearchTerm}
+                                    </span>
+                                )}
+                                {location && (
+                                    <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
+                                        Lokasi: {location}
+                                    </span>
+                                )}
+                                {selectedJobType !== "Semua Tipe" && (
+                                    <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
+                                        Tipe: {selectedJobType}
+                                    </span>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {/* Enhanced Search Bar */}
