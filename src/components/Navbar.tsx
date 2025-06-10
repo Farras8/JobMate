@@ -2,31 +2,34 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
-  User,
-  Bookmark,
-  FileText,
-  LogOut,
-  ChevronDown,
-  Briefcase,
-  FileSearch,
-  Bot,
-  Mic2,
-  BookOpen,
-  Users,
-  Sparkles,
-  Menu,
-  X,
-  Building,
+  User, Bookmark, FileText, LogOut, ChevronDown, Briefcase,
+  FileSearch, Bot, Mic2, BookOpen, Users, Sparkles, Menu, X, Building,
 } from 'lucide-react';
 import { signOut, onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
 import { auth } from '../services/firebase';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+// --- PERUBAHAN 1: Import fetchProfile dan tipe data ProfileData ---
+import { fetchProfile } from '../services/ProfileService'; 
+
+// Definisikan tipe data untuk profil, bisa juga diimpor dari profileService.ts
+interface ProfileData {
+  uid?: string;
+  fullName?: string;
+  username?: string;
+  photoUrl?: string | null;
+  // Tambahkan properti lain yang mungkin ada
+  [key: string]: unknown;
+}
+
 
 const Navbar: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+
+  // --- PERUBAHAN 2: Tambahkan state untuk menyimpan data profil dari API ---
+  const [userProfile, setUserProfile] = useState<ProfileData | null>(null);
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLayananOpen, setIsLayananOpen] = useState(false);
@@ -40,10 +43,35 @@ const Navbar: React.FC = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsLoggedIn(!!user);
       setCurrentUser(user);
-      setIsLoadingAuth(false);
+      // Jika user logout, bersihkan data profil
+      if (!user) {
+        setUserProfile(null);
+        setIsLoadingAuth(false);
+      }
     });
     return () => unsubscribe();
   }, []);
+
+  // --- PERUBAHAN 3: useEffect untuk mengambil data profil setelah user login ---
+  useEffect(() => {
+    if (isLoggedIn && currentUser) {
+      const loadProfile = async () => {
+        try {
+          const profileData = await fetchProfile();
+          setUserProfile(profileData);
+        } catch (error) {
+          console.error("Failed to fetch user profile:", error);
+          // Opsional: Tampilkan notifikasi jika gagal mengambil profil
+          // Swal.fire('Error', 'Gagal memuat data profil.', 'error');
+        } finally {
+            // Selesaikan loading setelah data firebase dan profil custom selesai dimuat
+            setIsLoadingAuth(false);
+        }
+      };
+      loadProfile();
+    }
+  }, [isLoggedIn, currentUser]);
+
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -299,15 +327,14 @@ const Navbar: React.FC = () => {
         <div className="hidden xl:flex items-center space-x-4">
           {isLoggedIn && currentUser ? (
             <>
-
-
               <div className="relative" ref={profileDropdownRef}>
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className="flex items-center space-x-3 cursor-pointer p-2 rounded-2xl hover:bg-white/60 backdrop-blur-sm transition-all duration-300 border border-gray-200/50 hover:border-blue-300/50 hover:shadow-lg group"
                 >
+                  {/* --- PERUBAHAN 4: Ganti src gambar dengan photoUrl dari userProfile --- */}
                   <img
-                    src={currentUser.photoURL || `https://i.pravatar.cc/32?u=${currentUser.uid}`}
+                    src={userProfile?.photoUrl || `https://i.pravatar.cc/32?u=${currentUser.uid}`}
                     alt="User Avatar"
                     className="h-10 w-10 rounded-xl object-cover border-2 border-blue-500 group-hover:border-blue-600 transition-colors duration-200"
                     onError={(e) => {
@@ -315,8 +342,9 @@ const Navbar: React.FC = () => {
                     }}
                   />
                   <div className="hidden sm:block text-left">
+                    {/* --- PERUBAHAN 5: Ganti nama dengan username dari userProfile --- */}
                     <p className="text-sm font-semibold text-gray-800 truncate max-w-32">
-                      {currentUser.displayName || "Pengguna"}
+                      {userProfile?.username || currentUser.displayName || "Pengguna"}
                     </p>
                     <p className="text-xs text-gray-500">
                       Profile
@@ -329,14 +357,15 @@ const Navbar: React.FC = () => {
                   <div className="absolute right-0 mt-3 w-72 bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl shadow-blue-900/20 py-4 z-20 border border-gray-200/50 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="px-6 py-3 border-b border-gray-200/50 bg-gradient-to-r from-blue-50 to-purple-50 mx-4 rounded-xl mb-3">
                       <div className="flex items-center space-x-3">
+                        {/* --- PERUBAHAN 6: Ganti juga di dropdown --- */}
                         <img
-                          src={currentUser.photoURL || `https://i.pravatar.cc/40?u=${currentUser.uid}`}
+                          src={userProfile?.photoUrl || `https://i.pravatar.cc/40?u=${currentUser.uid}`}
                           alt="User Avatar"
                           className="h-12 w-12 rounded-xl object-cover border-2 border-blue-500"
                         />
                         <div>
                           <p className="text-sm font-bold text-gray-800 truncate">
-                            {currentUser.displayName || "Pengguna"}
+                            {userProfile?.username || currentUser.displayName || "Pengguna"}
                           </p>
                           <p className="text-xs text-gray-500 truncate">
                             {currentUser.email}
@@ -416,16 +445,17 @@ const Navbar: React.FC = () => {
             <div className="border-t border-gray-200/50 pt-4 mt-4 space-y-2">
               {isLoggedIn && currentUser ? (
                 <>
+                  {/* --- PERUBAHAN 7: Terapkan juga di menu mobile --- */}
                   <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-2xl mb-4">
                     <div className="flex items-center space-x-3">
                       <img
-                        src={currentUser.photoURL || `https://i.pravatar.cc/40?u=${currentUser.uid}`}
+                        src={userProfile?.photoUrl || `https://i.pravatar.cc/40?u=${currentUser.uid}`}
                         alt="User Avatar"
                         className="h-12 w-12 rounded-xl object-cover border-2 border-blue-500"
                       />
                       <div>
                         <p className="text-sm font-bold text-gray-800 truncate">
-                          {currentUser.displayName || "Pengguna"}
+                          {userProfile?.username || currentUser.displayName || "Pengguna"}
                         </p>
                         <p className="text-xs text-gray-500 truncate">
                           {currentUser.email}
@@ -457,7 +487,6 @@ const Navbar: React.FC = () => {
                     <FileText className="mr-3 h-5 w-5 text-purple-500" />
                     Lowongan Dilamar
                   </button>
-                    {/* PERBAIKAN: Menambahkan Log Out ke menu mobile */}
                   <div className="border-t border-gray-200/50 pt-3 mt-3">
                     <button
                       onClick={handleLogout}

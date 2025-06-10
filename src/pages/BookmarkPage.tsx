@@ -6,6 +6,7 @@ import { BookmarkList } from '../components/BookmarkComp/BookmarkComponents';
 import { getEnrichedBookmarks, removeBookmark, type EnrichedBookmark } from '../services/bookmarkService';
 import { Bookmark, Heart, Star, Sparkles } from 'lucide-react';
 import Swal from 'sweetalert2';
+import FloatingChatbot from '../components/FloatingChatbot';
 
 const BookmarkPage: React.FC = () => {
   const [bookmarks, setBookmarks] = useState<EnrichedBookmark[]>([]);
@@ -149,7 +150,7 @@ const BookmarkPage: React.FC = () => {
           </div>
         )}
       </main>
-      
+      <FloatingChatbot/>
       <Footer />
     </div>
   );

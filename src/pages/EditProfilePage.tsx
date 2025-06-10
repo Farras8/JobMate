@@ -35,6 +35,7 @@ import { getPreferences, type PreferenceData } from '../services/PreferenceServi
 import { ChevronLeft, User, BookText, Briefcase as BriefcaseIcon, Star, Layers as LayersIcon, FileText as FileTextIcon, Target as TargetIcon, Settings, Sparkles, TrendingUp, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import FloatingChatbot from '../components/FloatingChatbot';
 
 interface ProfileData {
   uid?: string;
@@ -332,6 +333,7 @@ const EditProfilePage: React.FC = () => {
         {isAddPreferenceModalOpen && <AddPreferenceForm onClose={handleCloseAddPreferenceModal} onSaveSuccess={handleAddPreferenceSuccess} />}
         {isEditPreferenceModalOpen && preferences && <EditPreferenceForm initialData={preferences} onClose={handleCloseEditPreferenceModal} onUpdateSuccess={handleUpdatePreferenceSuccess} />}
       </main>
+      <FloatingChatbot/>
       <Footer />
     </div>
   );

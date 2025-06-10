@@ -3,6 +3,7 @@ import React from 'react';
 import Navbar from '../components/Navbar'; // Sesuaikan path jika Navbar ada di ../components/
 import Footer from '../components/Footer'; // Sesuaikan path jika Footer ada di ../components/
 import JobDetail from "../components/JobDetailComp/JobDetail"; // Mengimpor komponen JobDetail
+import FloatingChatbot from '../components/FloatingChatbot';
 
 const JobDetailPage: React.FC = () => {
     return (
@@ -11,6 +12,7 @@ const JobDetailPage: React.FC = () => {
             <main className="flex-grow">
                 <JobDetail />
             </main>
+            <FloatingChatbot/>
             <Footer />
         </div>
     );

@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import ApplicationDetail from '../components/ApplicationComp/ApplicationDetail';
 import { getApplicationDetail, type AppliedJob } from '../services/ApplicationService';
 import { Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
+import FloatingChatbot from '../components/FloatingChatbot';
 
 const ApplicationDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -98,6 +99,7 @@ const ApplicationDetailPage: React.FC = () => {
                     )}
                 </div>
             </main>
+            <FloatingChatbot/>
             <Footer />
         </div>
     );

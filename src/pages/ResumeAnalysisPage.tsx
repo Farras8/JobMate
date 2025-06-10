@@ -9,6 +9,7 @@ import KeywordAnalysis from "../components/analysis/KeywordAnalysis.tsx";
 import LineAnalysis from '../components/analysis/LineAnalysis';
 import BenchmarkSection from '../components/analysis/BenchmarkSection';
 import { BarChart3, Target, Sparkles, CheckCircle, AlertTriangle } from 'lucide-react';
+import FloatingChatbot from '../components/FloatingChatbot.tsx';
 
 const ResumeAnalysisPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState('Critical Issues');
@@ -177,10 +178,10 @@ const ResumeAnalysisPage: React.FC = () => {
                     </div>
                 </section>
             </main>
-
+            <FloatingChatbot/>
             <Footer />
 
-            <style jsx>{`
+            <style>{`
                 @keyframes fade-in-up {
                     from {
                         opacity: 0;

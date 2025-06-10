@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Upload, FileText, Sparkles, Zap, Target, CheckCircle, ArrowRight } from 'lucide-react';
+import FloatingChatbot from '../components/FloatingChatbot';
 
 const CvReviewPage: React.FC = () => {
     return (
@@ -161,7 +162,7 @@ const CvReviewPage: React.FC = () => {
                     </div>
                 </div>
             </main>
-
+            <FloatingChatbot/>
             <Footer />
         </div>
     );

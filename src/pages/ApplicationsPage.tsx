@@ -6,6 +6,7 @@ import { ApplicationList } from '../components/ApplicationComp/ApplicationCompon
 import { getAppliedJobs, withdrawApplication, type AppliedJob } from '../services/ApplicationService';
 import { Briefcase, Heart, Star, Sparkles, TrendingUp } from 'lucide-react';
 import Swal from 'sweetalert2';
+import FloatingChatbot from '../components/FloatingChatbot';
 
 const ApplicationPage: React.FC = () => {
   const [appliedJobs, setAppliedJobs] = useState<AppliedJob[]>([]);
@@ -149,7 +150,7 @@ const ApplicationPage: React.FC = () => {
           </div>
         )}
       </main>
-      
+      <FloatingChatbot/>
       <Footer />
     </div>
   );

@@ -7,6 +7,7 @@ import CompanySearch from '../components/CompaniesComp/CompanySearch';
 import PaginationCompany from '../components/CompaniesComp/PaginationCompany';
 import { fetchCompanies, type Company } from '../services/CompanyService';
 import { Building, AlertCircle, Loader2 } from 'lucide-react';
+import FloatingChatbot from '../components/FloatingChatbot';
 
 const COMPANIES_PER_PAGE = 9;
 
@@ -111,6 +112,7 @@ const CompaniesPage: React.FC = () => {
                     </div>
                 )}
             </main>
+            <FloatingChatbot/>
             <Footer />
         </div>
     );

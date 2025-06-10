@@ -10,6 +10,7 @@ import LowonganTerbaru from "../components/HomePageComp/LowonganTerbaru";
 
 import { fetchRecentJobs } from '../services/jobService';
 import type { DisplayJob } from '../services/jobService';
+import FloatingChatbot from '../components/FloatingChatbot';
 
 // isLoggedIn prop tidak lagi dibutuhkan karena Navbar akan mengecek sendiri
 // interface HomePageProps {
@@ -74,6 +75,7 @@ const HomePage: React.FC = () => { // Hapus isLoggedIn dari props
         {/* atau menggunakan React Context untuk berbagi status otentikasi. */}
         {/* Untuk saat ini, asumsikan konten HomePage adalah generik atau Navbar menangani semua UI terkait auth. */}
       </main>
+      <FloatingChatbot/>
       <Footer />
     </div>
   );

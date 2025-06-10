@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import JobSearch from '../components/JobSearchComp/JobSearch';
+import FloatingChatbot from '../components/FloatingChatbot';
 
 const JobSearchPage: React.FC = () => {
     return (
@@ -12,6 +13,7 @@ const JobSearchPage: React.FC = () => {
 
                 {/* Nanti tambahin section lainnya di bawah sini */}
             </main>
+            <FloatingChatbot/>
             <Footer />
         </div>
     );

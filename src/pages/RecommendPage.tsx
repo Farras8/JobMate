@@ -10,6 +10,7 @@ import { type JobData, type RecommendedJob, type UserSkill } from '../types';
 import Swal from 'sweetalert2';
 import { Loader2 } from 'lucide-react';
 import { auth } from '../services/firebase';
+import FloatingChatbot from '../components/FloatingChatbot';
 
 const RecommendPage: React.FC = () => {
   const [userSkills, setUserSkills] = useState<{ hardSkills: UserSkill[], softSkills: UserSkill[] }>({ hardSkills: [], softSkills: [] });
@@ -175,6 +176,7 @@ const RecommendPage: React.FC = () => {
           ) : null}
         </div>
       </main>
+      <FloatingChatbot/>
       <Footer />
     </div>
   );
