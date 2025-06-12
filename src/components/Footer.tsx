@@ -24,10 +24,10 @@ const Footer: React.FC = () => {
             </ul>
             </div>
             <div>
-            <h3 className="font-semibold mb-3">DisaBisa</h3>
+            <h3 className="font-semibold mb-3">JobMate</h3>
             <ul className="space-y-1">
                 <li><a href="#" className="hover:underline">About us</a></li>
-                <li><a href="#" className="hover:underline">Why DisaBisa</a></li>
+                <li><a href="#" className="hover:underline">Why JobMate</a></li>
                 <li><a href="#" className="hover:underline">Testimonials</a></li>
                 <li><a href="#" className="hover:underline">Promotions</a></li>
                 <li><a href="#" className="hover:underline">Blog</a></li>
@@ -54,7 +54,7 @@ const Footer: React.FC = () => {
           <a href="#"><img src="/instagram.png" alt="Instagram" className="h-6 w-6" /></a>
         </div>
         <p className="text-xs text-gray-500">
-          Copyright © 2024 all rights reserved DisaBisa
+          Copyright © 2024 all rights reserved JobMate
         </p>
       </div>
     </footer>
