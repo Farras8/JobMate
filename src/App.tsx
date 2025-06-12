@@ -118,8 +118,6 @@ function App() {
       <Route path="/rekomendasi" element={<ProtectedRoute isLoggedIn={isLoggedIn}><RecommendPage /></ProtectedRoute>} />
       <Route path="/bookmarks" element={<ProtectedRoute isLoggedIn={isLoggedIn}><BookmarkPage /></ProtectedRoute>} />
       <Route path="/profile/edit" element={<ProtectedRoute isLoggedIn={isLoggedIn}><EditProfilePage /></ProtectedRoute>} />
-      <Route path="/cvreview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><CvReviewPage /></ProtectedRoute>} />
-      <Route path="/resumeanalysis" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ResumeAnalysisPage /></ProtectedRoute>} />
       <Route path="/pendidikanfill" element={<ProtectedRoute isLoggedIn={isLoggedIn}><FillPendidikanPage /></ProtectedRoute>} />
       <Route path="/pengalamanfill" element={<ProtectedRoute isLoggedIn={isLoggedIn}><PengalamanFillPage /></ProtectedRoute>} />
       <Route path="/skillfill" element={<ProtectedRoute isLoggedIn={isLoggedIn}><SkillFillPage /></ProtectedRoute>} />
@@ -128,6 +126,8 @@ function App() {
       <Route path="/profile/saved-jobs" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Navigate to="/bookmarks" replace /></ProtectedRoute>} />
       <Route path="/profile/applied-jobs" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Navigate to="/applications" replace /></ProtectedRoute>} />
 
+      <Route path="/cvreview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon/></ProtectedRoute>} />
+      <Route path="/resumeanalysis" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
       <Route path="/services/jobchat" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
       <Route path="/services/ai-interview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
       <Route path="/services/jobmodul" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />

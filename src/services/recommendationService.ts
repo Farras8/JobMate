@@ -1,9 +1,9 @@
 // src/services/recommendationService.ts
 import { auth, db } from './firebase';
 import { collection, getDocs, query, where, orderBy, Timestamp, type DocumentData } from 'firebase/firestore';
-import { type JobData, type UserSkill } from '../types'; // Asumsi tipe ini akan dibuat di file terpusat
+import { type JobData, type UserSkill } from '../types';
 
-// --- Helper Functions for Cosine Similarity ---
+// --- Helper Functions for Cosine Similarity (Dibiarkan jika masih dipakai di bagian lain) ---
 
 function dotProduct(vecA: number[], vecB: number[]): number {
     return vecA.reduce((sum, val, i) => sum + val * (vecB[i] || 0), 0);
@@ -22,7 +22,15 @@ export function cosineSimilarity(vecA: number[], vecB: number[]): number {
 
 // --- Data Fetching Functions ---
 
-const API_BASE_URL = "https://jobseeker-capstone-705829099986.asia-southeast2.run.app";
+// URL untuk API yang berhubungan dengan data user (misal: skill, profil)
+const USER_API_BASE_URL = "https://jobseeker-capstone-705829099986.asia-southeast2.run.app";
+// URL untuk API Model Machine Learning
+const ML_API_BASE_URL = "https://jobmate-api-705829099986.asia-southeast2.run.app"; 
+
+// !! PENTING: Untuk keamanan, token ini seharusnya disimpan di file .env.local
+// Saya hardcode di sini sesuai permintaan Anda untuk contoh ini.
+// Di file .env.local Anda, isinya: VITE_ML_API_TOKEN=mysecretbearer123
+const ML_API_TOKEN = import.meta.env.VITE_ML_API_TOKEN || "mysecretbearer123";
 
 const getIdToken = async (): Promise<string> => {
     const user = auth.currentUser;
@@ -35,8 +43,8 @@ export const fetchUserSkills = async (): Promise<{ hardSkills: UserSkill[], soft
     const headers = { Authorization: `Bearer ${token}` };
 
     const [resHard, resSoft] = await Promise.all([
-        fetch(`${API_BASE_URL}/hard-skills`, { headers }),
-        fetch(`${API_BASE_URL}/soft-skills`, { headers }),
+        fetch(`${USER_API_BASE_URL}/hard-skills`, { headers }),
+        fetch(`${USER_API_BASE_URL}/soft-skills`, { headers }),
     ]);
 
     if (!resHard.ok) throw new Error(`Gagal mengambil hard skills: ${resHard.statusText}`);
@@ -45,7 +53,6 @@ export const fetchUserSkills = async (): Promise<{ hardSkills: UserSkill[], soft
     const hardData = await resHard.json();
     const softData = await resSoft.json();
 
-    // API mungkin mengembalikan data dalam format { skills: [...] } atau langsung array
     const hardSkills = Array.isArray(hardData.skills) ? hardData.skills : (Array.isArray(hardData) ? hardData : []);
     const softSkills = Array.isArray(softData.skills) ? softData.skills : (Array.isArray(softData) ? softData : []);
 
@@ -53,8 +60,6 @@ export const fetchUserSkills = async (): Promise<{ hardSkills: UserSkill[], soft
 };
 
 export const fetchAllJobsForMatching = async (): Promise<JobData[]> => {
-    // Pengambilan data pekerjaan dilakukan langsung dari Firestore sesuai contoh
-    // Ini membutuhkan aturan keamanan Firestore yang sesuai
     if (!auth.currentUser) {
         console.warn("Attempted to fetch all jobs without an authenticated user.");
         return [];
@@ -79,4 +84,32 @@ export const fetchAllJobsForMatching = async (): Promise<JobData[]> => {
             salary: data.salary
         } as JobData;
     });
+};
+
+/**
+ * FUNGSI BARU: Mengirim teks skill ke API ML dan mendapatkan rekomendasi.
+ */
+export const fetchRecommendationsFromAPI = async (skillsAsText: string): Promise<any[]> => {
+    console.log("Mengirim teks ke API ML:", skillsAsText);
+    
+    const response = await fetch(`${ML_API_BASE_URL}/recommend`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            // API Python Anda menggunakan token statis, bukan token Firebase
+            'Authorization': `Bearer ${ML_API_TOKEN}` 
+        },
+        body: JSON.stringify({
+            text: skillsAsText
+        })
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error("API Error Response:", errorData);
+        throw new Error(`Gagal mendapatkan rekomendasi dari API: ${errorData.detail || response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.recommendations || []; 
 };
