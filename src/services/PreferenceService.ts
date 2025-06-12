@@ -4,7 +4,7 @@ import { FieldValue } from "firebase/firestore";
 
 const API_BASE_URL = 'https://jobseeker-capstone-705829099986.asia-southeast2.run.app';
 
-export const validJobTypes = ["Remote", "On-site", "Hybrid"] as const;
+export const validJobTypes = ["Full-Time","Part-Time","Contract","Internship","Remote"] as const;
 export type JobType = typeof validJobTypes[number];
 
 export interface PreferenceData {
