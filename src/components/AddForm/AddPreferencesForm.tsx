@@ -23,7 +23,7 @@ const AddPreferenceForm: React.FC<AddPreferenceFormProps> = ({ onClose, onSaveSu
   
   const [isSaving, setIsSaving] = useState(false);
 
-  // Custom styles for react-select to match the modern design
+  // Custom styles for react-select to match the modern design with fixed z-index
   const customSelectStyles = {
     control: (provided: any, state: any) => ({
       ...provided,
@@ -90,6 +90,11 @@ const AddPreferenceForm: React.FC<AddPreferenceFormProps> = ({ onClose, onSaveSu
       border: '1px solid rgba(255, 255, 255, 0.3)',
       boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
       fontSize: '0.875rem',
+      zIndex: 9999, // Perbaikan utama: z-index tinggi untuk menu dropdown
+    }),
+    menuPortal: (provided: any) => ({
+      ...provided,
+      zIndex: 9999, // Memastikan portal juga memiliki z-index tinggi
     }),
     placeholder: (provided: any) => ({
       ...provided,
@@ -196,6 +201,8 @@ const AddPreferenceForm: React.FC<AddPreferenceFormProps> = ({ onClose, onSaveSu
                   formatCreateLabel={(inputValue) => `Tambah "${inputValue}"`}
                   isDisabled={isSaving}
                   styles={customSelectStyles}
+                  menuPortalTarget={document.body} // Render dropdown di body
+                  menuShouldBlockScroll={false}
                 />
               </div>
             </div>
@@ -220,6 +227,8 @@ const AddPreferenceForm: React.FC<AddPreferenceFormProps> = ({ onClose, onSaveSu
                   formatCreateLabel={(inputValue) => `Tambah "${inputValue}"`}
                   isDisabled={isSaving}
                   styles={customSelectStyles}
+                  menuPortalTarget={document.body} // Render dropdown di body
+                  menuShouldBlockScroll={false}
                 />
               </div>
             </div>
@@ -244,6 +253,8 @@ const AddPreferenceForm: React.FC<AddPreferenceFormProps> = ({ onClose, onSaveSu
                   closeMenuOnSelect={false}
                   isDisabled={isSaving}
                   styles={customSelectStyles}
+                  menuPortalTarget={document.body} // Render dropdown di body
+                  menuShouldBlockScroll={false}
                 />
               </div>
             </div>

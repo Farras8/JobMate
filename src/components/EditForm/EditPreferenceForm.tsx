@@ -91,6 +91,11 @@ const EditPreferenceForm: React.FC<EditPreferenceFormProps> = ({ initialData, on
       border: '1px solid rgba(255, 255, 255, 0.3)',
       boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
       fontSize: '0.875rem',
+      zIndex: 9999, // FIXED: Added high z-index untuk dropdown menu
+    }),
+    menuPortal: (provided: any) => ({
+      ...provided,
+      zIndex: 9999, // FIXED: Added z-index untuk portal
     }),
     placeholder: (provided: any) => ({
       ...provided,
@@ -198,6 +203,8 @@ const EditPreferenceForm: React.FC<EditPreferenceFormProps> = ({ initialData, on
                   formatCreateLabel={(inputValue) => `Tambah "${inputValue}"`}
                   isDisabled={isSaving}
                   styles={customSelectStyles}
+                  menuPortalTarget={document.body} // FIXED: Render dropdown di body
+                  menuPosition="fixed" // FIXED: Fixed positioning
                 />
               </div>
             </div>
@@ -223,6 +230,8 @@ const EditPreferenceForm: React.FC<EditPreferenceFormProps> = ({ initialData, on
                   formatCreateLabel={(inputValue) => `Tambah "${inputValue}"`}
                   isDisabled={isSaving}
                   styles={customSelectStyles}
+                  menuPortalTarget={document.body} // FIXED: Render dropdown di body
+                  menuPosition="fixed" // FIXED: Fixed positioning
                 />
               </div>
             </div>
@@ -248,6 +257,8 @@ const EditPreferenceForm: React.FC<EditPreferenceFormProps> = ({ initialData, on
                   closeMenuOnSelect={false}
                   isDisabled={isSaving}
                   styles={customSelectStyles}
+                  menuPortalTarget={document.body} // FIXED: Render dropdown di body
+                  menuPosition="fixed" // FIXED: Fixed positioning
                 />
               </div>
             </div>
