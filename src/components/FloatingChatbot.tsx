@@ -8,14 +8,18 @@ import {
   Bot,
   User,
   Loader2,
-  ChevronUp
+  ChevronUp,
+  AlertCircle
 } from 'lucide-react';
+import { chatbotService } from '../services/ChatbotService';
 
 interface Message {
   id: string;
   text: string;
   sender: 'user' | 'bot';
   timestamp: Date;
+  confidence?: number;
+  source?: 'api' | 'fallback';
 }
 
 const FloatingChatbot: React.FC = () => {
@@ -26,11 +30,14 @@ const FloatingChatbot: React.FC = () => {
       id: '1',
       text: 'Halo! Saya JobMate AI Assistant. Ada yang bisa saya bantu terkait karir dan lowongan kerja?',
       sender: 'bot',
-      timestamp: new Date()
+      timestamp: new Date(),
+      confidence: 1.0,
+      source: 'api'
     }
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isApiHealthy, setIsApiHealthy] = useState(true);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -49,6 +56,16 @@ const FloatingChatbot: React.FC = () => {
     }
   }, [isOpen, isMinimized]);
 
+  // Check API health on component mount
+  useEffect(() => {
+    const checkApiHealth = async () => {
+      const healthy = await chatbotService.healthCheck();
+      setIsApiHealthy(healthy);
+    };
+    
+    checkApiHealth();
+  }, []);
+
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
 
@@ -60,40 +77,62 @@ const FloatingChatbot: React.FC = () => {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const currentInput = inputMessage;
     setInputMessage('');
     setIsTyping(true);
 
-    // Simulasi respons bot
-    setTimeout(() => {
-      const botResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: getBotResponse(inputMessage),
-        sender: 'bot',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, botResponse]);
-      setIsTyping(false);
-    }, 1000 + Math.random() * 2000);
+    try {
+      // Use ChatbotService instead of static responses
+      const result = await chatbotService.processQuestion(currentInput);
+      
+      // Add realistic delay for better UX
+      const delay = Math.min(1000 + (result.response.length * 20), 3000);
+      
+      setTimeout(() => {
+        const botResponse: Message = {
+          id: (Date.now() + 1).toString(),
+          text: result.response,
+          sender: 'bot',
+          timestamp: new Date(),
+          confidence: result.confidence,
+          source: result.source
+        };
+        
+        setMessages(prev => [...prev, botResponse]);
+        setIsTyping(false);
+        
+        // Update API health status
+        setIsApiHealthy(result.source === 'api');
+      }, delay);
+      
+    } catch (error) {
+      console.error('Error getting bot response:', error);
+      
+      setTimeout(() => {
+        const errorResponse: Message = {
+          id: (Date.now() + 1).toString(),
+          text: 'Maaf, saya sedang mengalami gangguan teknis. Silakan coba lagi dalam beberapa saat.',
+          sender: 'bot',
+          timestamp: new Date(),
+          confidence: 0,
+          source: 'fallback'
+        };
+        
+        setMessages(prev => [...prev, errorResponse]);
+        setIsTyping(false);
+        setIsApiHealthy(false);
+      }, 1000);
+    }
   };
 
-  const getBotResponse = (userInput: string): string => {
-    const input = userInput.toLowerCase();
-    
-    if (input.includes('lowongan') || input.includes('kerja') || input.includes('job')) {
-      return 'Untuk mencari lowongan kerja, Anda bisa menggunakan fitur JobSearch di menu utama. Saya juga bisa membantu memberikan tips untuk melamar pekerjaan. Ada posisi tertentu yang Anda cari?';
-    } else if (input.includes('cv') || input.includes('resume')) {
-      return 'Untuk review CV, kami memiliki fitur CV Review yang bisa menganalisis dan memberikan saran perbaikan CV Anda. Apakah Anda ingin tips untuk membuat CV yang menarik?';
-    } else if (input.includes('interview') || input.includes('wawancara')) {
-      return 'Kami memiliki fitur AI Interview untuk simulasi wawancara kerja! Ini akan membantu Anda berlatih sebelum wawancara yang sesungguhnya. Mau saya berikan tips wawancara kerja?';
-    } else if (input.includes('gaji') || input.includes('salary')) {
-      return 'Untuk informasi gaji, biasanya tergantung pada posisi, pengalaman, dan lokasi kerja. Saya bisa membantu memberikan tips negosiasi gaji. Posisi apa yang Anda minati?';
-    } else if (input.includes('terima kasih') || input.includes('thanks')) {
-      return 'Sama-sama! Senang bisa membantu. Jangan ragu untuk bertanya lagi jika ada yang ingin Anda tanyakan tentang karir atau lowongan kerja. 😊';
-    } else if (input.includes('halo') || input.includes('hai') || input.includes('hello')) {
-      return 'Halo! Selamat datang di JobMate. Saya siap membantu Anda dengan berbagai pertanyaan seputar karir, pencarian kerja, tips interview, dan banyak lagi. Ada yang bisa saya bantu?';
-    } else {
-      return 'Terima kasih atas pertanyaannya! Saya di sini untuk membantu Anda dengan berbagai hal terkait karir, pencarian kerja, CV, dan persiapan interview. Ada yang spesifik ingin Anda tanyakan?';
-    }
+  const handleQuickAction = (action: string) => {
+    setInputMessage(action);
+    // Auto-send quick action
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 100);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -118,6 +157,9 @@ const FloatingChatbot: React.FC = () => {
     setIsMinimized(false);
   };
 
+  // Get dynamic quick actions from service
+  const quickActions = chatbotService.getQuickActions().slice(0, 3);
+
   return (
     <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
       {/* Chat Window */}
@@ -139,14 +181,21 @@ const FloatingChatbot: React.FC = () => {
                 <div>
                   <h3 className="text-white font-semibold text-sm">JobMate Assistant</h3>
                   <div className="flex items-center space-x-1">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <div className={`w-2 h-2 rounded-full ${
+                      isApiHealthy ? 'bg-green-400 animate-pulse' : 'bg-yellow-400'
+                    }`}></div>
                     <p className="text-blue-100 text-xs">
-                      {isTyping ? 'Sedang mengetik...' : 'Online'}
+                      {isTyping ? 'Sedang mengetik...' : isApiHealthy ? 'Online' : 'Offline Mode'}
                     </p>
                   </div>
                 </div>
               </div>
               <div className="flex items-center space-x-1">
+                {!isApiHealthy && (
+                  <div className="p-1" title="API sedang bermasalah, menggunakan mode fallback">
+                    <AlertCircle size={14} className="text-yellow-300" />
+                  </div>
+                )}
                 {!isMinimized && (
                   <button
                     onClick={minimizeChat}
@@ -193,7 +242,9 @@ const FloatingChatbot: React.FC = () => {
                         <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm ${
                           message.sender === 'user' 
                             ? 'bg-gradient-to-r from-blue-600 to-blue-700' 
-                            : 'bg-gradient-to-r from-purple-500 to-blue-500'
+                            : message.source === 'fallback' 
+                              ? 'bg-gradient-to-r from-yellow-500 to-orange-500'
+                              : 'bg-gradient-to-r from-purple-500 to-blue-500'
                         }`}>
                           {message.sender === 'user' ? (
                             <User size={12} className="text-white" />
@@ -209,14 +260,16 @@ const FloatingChatbot: React.FC = () => {
                             : 'bg-white/80 backdrop-blur-sm text-gray-800 border border-gray-200/50 rounded-bl-md shadow-lg shadow-gray-200/30'
                         }`}>
                           <p className="text-sm leading-relaxed">{message.text}</p>
-                          <p className={`text-xs mt-1 ${
-                            message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
-                          }`}>
-                            {message.timestamp.toLocaleTimeString('id-ID', { 
-                              hour: '2-digit', 
-                              minute: '2-digit' 
-                            })}
-                          </p>
+                          <div className="flex items-center justify-between mt-1">
+                            <p className={`text-xs ${
+                              message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
+                            }`}>
+                              {message.timestamp.toLocaleTimeString('id-ID', { 
+                                hour: '2-digit', 
+                                minute: '2-digit' 
+                              })}
+                            </p>
+                          </div>
                           
                           {/* Message tail */}
                           <div className={`absolute bottom-0 ${
@@ -283,13 +336,13 @@ const FloatingChatbot: React.FC = () => {
                   
                   {/* Quick Actions */}
                   <div className="flex flex-wrap gap-1 mt-2">
-                    {['Cari Lowongan', 'Tips CV', 'Simulasi Interview'].map((action) => (
+                    {quickActions.map((action) => (
                       <button
                         key={action}
-                        onClick={() => setInputMessage(action)}
+                        onClick={() => handleQuickAction(action)}
                         className="px-2 py-1 text-xs bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 rounded-lg hover:from-blue-200 hover:to-purple-200 transition-all duration-200 border border-blue-200/50"
                       >
-                        {action}
+                        {action.length > 15 ? action.substring(0, 15) + '...' : action}
                       </button>
                     ))}
                   </div>

@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   User, Bookmark, FileText, LogOut, ChevronDown, Briefcase,
-  FileSearch, Bot, Mic2, BookOpen, Users, Sparkles, Menu, X, Building,
+  FileSearch, Mic2, BookOpen, Users, Sparkles, Menu, X, Building,
 } from 'lucide-react';
 import { signOut, onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
 import { auth } from '../services/firebase';
@@ -203,13 +203,6 @@ const Navbar: React.FC = () => {
         <>
           <p className="py-2 font-semibold border-t border-gray-200 mt-2 pt-3">Layanan</p>
           <button
-            onClick={() => handleProtectedLink('/services/jobchat')}
-            className="py-3 px-6 text-left flex items-center rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-300 text-gray-700 hover:text-blue-700 font-medium w-full"
-          >
-            <Bot size={16} className="mr-3 text-blue-500" />
-            JobChat Mate Bot
-          </button>
-          <button
             onClick={() => handleProtectedLink('/services/ai-interview')}
             className="py-3 px-6 text-left flex items-center rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-300 text-gray-700 hover:text-blue-700 font-medium w-full"
           >
@@ -235,18 +228,7 @@ const Navbar: React.FC = () => {
           </button>
           {isLayananOpen && (
             <div className="absolute left-0 mt-3 w-64 bg-white/95 backdrop-blur-lg shadow-2xl shadow-blue-900/20 rounded-2xl border border-gray-200/50 p-3 z-20 animate-in fade-in slide-in-from-top-2 duration-200">
-              <button
-                onClick={() => handleProtectedLink('/services/jobchat')}
-                className="w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 rounded-xl transition-all duration-300 flex items-center group"
-              >
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-100 to-blue-200 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
-                  <Bot size={16} className="text-blue-600" />
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-800">JobChat Mate Bot</p>
-                  <p className="text-xs text-gray-500">AI Assistant untuk Karir</p>
-                </div>
-              </button>
+
               <button
                 onClick={() => handleProtectedLink('/services/ai-interview')}
                 className="w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-purple-50 hover:to-purple-100 rounded-xl transition-all duration-300 flex items-center group"
