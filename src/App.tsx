@@ -66,6 +66,23 @@ const ComingSoon: React.FC = () => {
     );
 };
 
+// Komponen wrapper untuk CvReviewPage dengan alert
+const CvReviewPageWithAlert: React.FC = () => {
+    useEffect(() => {
+        Swal.fire({
+            title: 'Fitur Dalam Pengembangan',
+            text: 'Fitur CV Review ini masih dalam tahap pengembangan. Yang ditampilkan saat ini hanya template saja dan belum sepenuhnya fungsional.',
+            icon: 'warning',
+            confirmButtonText: 'Mengerti',
+            customClass: { popup: 'rounded-xl' },
+            backdrop: 'rgba(0,0,0,0.3)', // Background buram dengan transparansi
+            allowOutsideClick: true
+        });
+    }, []);
+
+    return <CvReviewPage />;
+};
+
 
 function App() {
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
@@ -126,8 +143,11 @@ function App() {
       <Route path="/profile/saved-jobs" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Navigate to="/bookmarks" replace /></ProtectedRoute>} />
       <Route path="/profile/applied-jobs" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Navigate to="/applications" replace /></ProtectedRoute>} />
 
-      <Route path="/cvreview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon/></ProtectedRoute>} />
-      <Route path="/resumeanalysis" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
+      {/* CV Review dengan alert pengembangan */}
+      <Route path="/cvreview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><CvReviewPageWithAlert /></ProtectedRoute>} />
+      <Route path="/resumeanalysis" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ResumeAnalysisPage/></ProtectedRoute>} />
+      {/* Fitur lain yang masih coming soon */}
+      
       <Route path="/services/jobchat" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
       <Route path="/services/ai-interview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
       <Route path="/services/jobmodul" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
