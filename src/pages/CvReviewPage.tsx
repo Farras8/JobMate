@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Upload, FileText, Sparkles, Zap, Target, CheckCircle, ArrowRight } from 'lucide-react';
 import FloatingChatbot from '../components/FloatingChatbot';
+import { Link } from 'react-router-dom'; // Pastikan sudah import Link
 
 const CvReviewPage: React.FC = () => {
     return (
@@ -24,7 +25,7 @@ const CvReviewPage: React.FC = () => {
                         <Target size={14} className="text-blue-600" />
                         <span>Analisis CV Berbasis ATS</span>
                     </div>
-                    
+
                     <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent leading-tight mb-6">
                         Analisis CV dengan Teknologi ATS
                     </h1>
@@ -32,7 +33,7 @@ const CvReviewPage: React.FC = () => {
                         <Sparkles size={14} className="text-green-600" />
                         <span>Gratis & Instan!</span>
                     </div>
-                    
+
                     <p className="text-gray-600 max-w-3xl mx-auto text-sm md:text-base leading-relaxed">
                         Optimalkan CV-mu agar terbaca oleh Applicant Tracking System (ATS) dan tingkatkan peluang suksesmu dalam melamar kerja dengan analisis mendalam dan saran perbaikan.
                     </p>
@@ -87,13 +88,13 @@ const CvReviewPage: React.FC = () => {
                             <button className="flex-1 bg-white hover:bg-gray-50 border border-gray-300 hover:border-gray-400 text-gray-700 font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-sm">
                                 Batal
                             </button>
-                            <a 
-                                href="/resumeanalysis" 
+                            <Link
+                                to="/resumeanalysis"
                                 className="flex-1 bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-800 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-center flex items-center justify-center gap-2"
                             >
                                 <Zap size={18} />
                                 <span>Analisis Sekarang!</span>
-                            </a>
+                            </Link>
                         </div>
                     </div>
 
@@ -136,9 +137,9 @@ const CvReviewPage: React.FC = () => {
 
                         {/* Illustration */}
                         <div className="hidden lg:block bg-white/60 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-gray-200/50">
-                            <img 
-                                src="/cv-illustration.png" 
-                                alt="CV Review Illustration" 
+                            <img
+                                src="/cv-illustration.png"
+                                alt="CV Review Illustration"
                                 className="w-full rounded-2xl shadow-lg"
                             />
                         </div>
@@ -155,14 +156,14 @@ const CvReviewPage: React.FC = () => {
                             Mengapa Memilih Analisis CV Kami?
                         </h3>
                         <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-                            Dengan teknologi AI terdepan, kami menganalisis CV Anda seperti yang dilakukan oleh sistem ATS perusahaan. 
-                            Dapatkan insight mendalam tentang kekuatan dan area yang perlu diperbaiki, lengkap dengan panduan 
+                            Dengan teknologi AI terdepan, kami menganalisis CV Anda seperti yang dilakukan oleh sistem ATS perusahaan.
+                            Dapatkan insight mendalam tentang kekuatan dan area yang perlu diperbaiki, lengkap dengan panduan
                             step-by-step untuk optimasi maksimal.
                         </p>
                     </div>
                 </div>
             </main>
-            <FloatingChatbot/>
+            <FloatingChatbot />
             <Footer />
         </div>
     );
