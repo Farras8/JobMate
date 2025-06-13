@@ -36,8 +36,8 @@ const AddEducationForm: React.FC<AddEducationFormProps> = ({ onClose, onAddSucce
         }
         return '';
       case 'gpa':
-        if (value && (isNaN(parseFloat(value)) || parseFloat(value) < 0 || parseFloat(value) > 4)) {
-          return 'IPK harus antara 0 dan 4.';
+        if (value && (isNaN(parseFloat(value)) || parseFloat(value) < 0 || parseFloat(value) > 100)) {
+          return 'IPK/Nilai harus antara 0 dan 100.';
         }
         return '';
       default:
@@ -133,7 +133,7 @@ const AddEducationForm: React.FC<AddEducationFormProps> = ({ onClose, onAddSucce
     { name: 'major', label: 'Jurusan/Program Studi', type: 'text', placeholder: 'Contoh: Teknik Informatika', icon: TrendingUp },
     { name: 'startDate', label: 'Tanggal Mulai', type: 'date', icon: Calendar },
     { name: 'endDate', label: 'Tanggal Selesai (Kosongkan jika masih berlangsung)', type: 'date', icon: Calendar },
-    { name: 'gpa', label: 'IPK (Opsional)', type: 'number', placeholder: 'Contoh: 3.75', icon: TrendingUp },
+    { name: 'gpa', label: 'IPK/Nilai akhir ', type: 'number', placeholder: 'Contoh: 3.75', icon: TrendingUp },
   ];
 
   return (

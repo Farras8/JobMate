@@ -1,7 +1,7 @@
 // src/components/Lowongan.tsx
 import React, { useState, useEffect } from 'react';
 import type { DisplayJob } from '../../services/jobService'; 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Bookmark, ExternalLink, MapPin, Clock, Building2, CircleDollarSign, CheckCircle, TrendingUp, ArrowRight, Star } from 'lucide-react'; 
 import { auth } from '../../services/firebase';
 import { addBookmark, removeBookmarkByJobId, getBookmarks } from '../../services/bookmarkService';
@@ -36,6 +36,7 @@ const getJobTypeTagClass = (type: string): string => {
 };
 
 const Lowongan: React.FC<LowonganProps> = ({ jobs, isLoading, error }) => {
+  const navigate = useNavigate();
   const [bookmarkedJobIds, setBookmarkedJobIds] = useState<Set<string>>(new Set());
   const [appliedJobIds, setAppliedJobIds] = useState<Set<string>>(new Set());
   const [togglingBookmarkId, setTogglingBookmarkId] = useState<string | null>(null);
@@ -97,7 +98,14 @@ const Lowongan: React.FC<LowonganProps> = ({ jobs, isLoading, error }) => {
             title: 'Lamaran Terkirim!',
             text: `Lamaran Anda untuk posisi ${applyingJob.title} telah berhasil dikirim.`,
             icon: 'success',
-            confirmButtonText: 'Luar Biasa!',
+            confirmButtonText: 'Lihat Lamaran Saya',
+            showCancelButton: true,
+            cancelButtonText: 'Tutup',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                navigate('/applications');
+            }
         });
         setApplyingJob(null);
     }

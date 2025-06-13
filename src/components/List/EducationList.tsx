@@ -78,7 +78,7 @@ const EducationListItem: React.FC<{ education: EducationData; onEdit: () => void
               {education.gpa && (
                 <div className="flex items-center bg-gradient-to-r from-green-50 to-teal-50 px-4 py-2 rounded-xl border border-green-200/50">
                   <TrendingUp size={16} className="mr-2 text-green-600"/> 
-                  <span className="text-sm text-green-800 font-medium">IPK: {education.gpa}</span>
+                  <span className="text-sm text-green-800 font-medium">IPK / Nilai: {education.gpa}</span>
                 </div>
               )}
             </div>

@@ -118,10 +118,18 @@ const JobDetail: React.FC = () => {
             title: 'Lamaran Terkirim!',
             text: 'Lamaran Anda telah berhasil dikirim. Semoga berhasil!',
             icon: 'success',
-            confirmButtonText: 'Luar Biasa!',
+            confirmButtonText: 'Lihat Lamaran Saya',
+            showCancelButton: true,
+            cancelButtonText: 'Kembali ke Pencarian',
             customClass: { popup: 'rounded-xl' }
-        }).then(() => {
-            navigate('/jobsearch');
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirect to applied jobs page
+                navigate('/profile/applied-jobs');
+            } else {
+                // Redirect to job search page
+                navigate('/jobsearch');
+            }
         });
     };
 
