@@ -24,6 +24,7 @@ import RecommendPage from './pages/RecommendPage';
 import CompaniesPage from './pages/CompanyPage';
 import CompanyDetailPage from './pages/CompanyDetailPages';
 import InterviewSessionPage from './pages/InterviewSessionPage';
+import CreateCVPage from './pages/CreateCVPage';
 
 import { auth } from './services/firebase'; 
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
@@ -199,6 +200,7 @@ function App() {
       <Route path="/profile/applied-jobs" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Navigate to="/applications" replace /></ProtectedRoute>} />
 
       {/* CV Review dengan alert pengembangan */}
+      <Route path="/create-cv" element={<ProtectedRoute isLoggedIn={isLoggedIn}><CreateCVPage /></ProtectedRoute>} />
       <Route path="/cvreview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><CvReviewPageWithAlert /></ProtectedRoute>} />
       <Route path="/resumeanalysis" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ResumeAnalysisPage/></ProtectedRoute>} />
       {/* Fitur lain yang masih coming soon */}

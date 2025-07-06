@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Video, VideoOff, Mic, MicOff, Phone, MessageSquare, Clock, User, ArrowLeft, Volume2, Settings } from 'lucide-react';
 import Swal from 'sweetalert2';
@@ -26,6 +26,10 @@ const InterviewSessionPage: React.FC = () => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [timeElapsed, setTimeElapsed] = useState(0);
     const [isRecording, setIsRecording] = useState(false);
+    const [stream, setStream] = useState<MediaStream | null>(null);
+    const [videoRef, setVideoRef] = useState<HTMLVideoElement | null>(null);
+    const [cameraLoading, setCameraLoading] = useState(true);
+    const [cameraError, setCameraError] = useState(false);
 
     const sampleQuestions = [
         "Tell me about yourself and why you're interested in this position.",
@@ -35,13 +39,143 @@ const InterviewSessionPage: React.FC = () => {
         "Why do you want to work at our company?"
     ];
 
+    const initializeCamera = useCallback(async () => {
+        try {
+            setCameraLoading(true);
+            setCameraError(false);
+            
+            const mediaStream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true
+            });
+            setStream(mediaStream);
+            
+            // Camera stream acquired successfully, loading will be set to false when video loads
+            console.log('Camera stream acquired');
+            
+        } catch (error) {
+            console.error('Error accessing camera:', error);
+            setCameraLoading(false);
+            setCameraError(true);
+            Swal.fire({
+                title: 'Camera Access',
+                text: 'Tidak dapat mengakses camera. Pastikan browser memiliki permission untuk menggunakan camera.',
+                icon: 'warning',
+                confirmButtonText: 'Mengerti',
+                customClass: { popup: 'rounded-xl' },
+                backdrop: 'rgba(0,0,0,0.3)',
+                allowOutsideClick: true
+            });
+        }
+    }, []);
+
     useEffect(() => {
         const timer = setInterval(() => {
             setTimeElapsed(prev => prev + 1);
         }, 1000);
 
-        return () => clearInterval(timer);
-    }, []);
+        // Initialize camera
+        initializeCamera();
+
+        // Fallback timeout to prevent infinite loading
+        const loadingTimeout = setTimeout(() => {
+            if (cameraLoading) {
+                console.log('Camera loading timeout, setting loading to false');
+                setCameraLoading(false);
+            }
+        }, 5000);
+
+        return () => {
+            clearInterval(timer);
+            clearTimeout(loadingTimeout);
+        };
+    }, [initializeCamera, cameraLoading]);
+
+    // Separate effect for cleanup
+    useEffect(() => {
+        return () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        };
+    }, [stream]);
+
+    // Effect to handle stream assignment to video element
+    useEffect(() => {
+        if (stream && videoRef) {
+            videoRef.srcObject = stream;
+            setCameraLoading(false);
+        }
+    }, [stream, videoRef]);
+
+    const toggleVideo = useCallback(() => {
+        if (stream) {
+            const videoTrack = stream.getVideoTracks()[0];
+            if (videoTrack) {
+                videoTrack.enabled = !isVideoOn;
+                setIsVideoOn(!isVideoOn);
+                console.log(`Video ${!isVideoOn ? 'enabled' : 'disabled'}`);
+            }
+        } else {
+            console.log('No stream available for video toggle');
+        }
+    }, [stream, isVideoOn]);
+
+    const toggleAudio = useCallback(() => {
+        if (stream) {
+            const audioTrack = stream.getAudioTracks()[0];
+            if (audioTrack) {
+                audioTrack.enabled = !isMicOn;
+                setIsMicOn(!isMicOn);
+                console.log(`Audio ${!isMicOn ? 'enabled' : 'disabled'}`);
+            } else {
+                console.log('No audio track available');
+                // Show alert if no audio track
+                Swal.fire({
+                    title: 'Audio Not Available',
+                    text: 'Microphone track tidak tersedia. Pastikan browser memiliki permission untuk menggunakan microphone.',
+                    icon: 'warning',
+                    confirmButtonText: 'Mengerti',
+                    customClass: { popup: 'rounded-xl' },
+                    backdrop: 'rgba(0,0,0,0.3)',
+                    allowOutsideClick: true
+                });
+            }
+        } else {
+            console.log('No stream available for audio toggle');
+            // Show alert if no stream
+            Swal.fire({
+                title: 'Camera Not Initialized',
+                text: 'Camera belum diinisialisasi. Silakan tunggu atau refresh halaman.',
+                icon: 'warning',
+                confirmButtonText: 'Mengerti',
+                customClass: { popup: 'rounded-xl' },
+                backdrop: 'rgba(0,0,0,0.3)',
+                allowOutsideClick: true
+            });
+        }
+    }, [stream, isMicOn]);
+
+    // Keyboard shortcuts
+    useEffect(() => {
+        const handleKeyPress = (event: KeyboardEvent) => {
+            // Spacebar to toggle microphone (when not typing in input)
+            if (event.code === 'Space' && event.target === document.body) {
+                event.preventDefault();
+                toggleAudio();
+            }
+            // 'V' key to toggle video
+            if (event.code === 'KeyV' && event.target === document.body) {
+                event.preventDefault();
+                toggleVideo();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyPress);
+        return () => {
+            document.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [toggleAudio, toggleVideo]);
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -117,6 +251,21 @@ const InterviewSessionPage: React.FC = () => {
                             <Clock size={16} />
                             <span className="font-mono">{formatTime(timeElapsed)}</span>
                         </div>
+                        
+                        {/* Microphone Status */}
+                        <div className="flex items-center gap-2">
+                            <div className={`p-1 rounded-full ${isMicOn ? 'bg-green-500/20' : 'bg-red-500/20'}`}>
+                                {isMicOn ? (
+                                    <Mic size={14} className="text-green-400" />
+                                ) : (
+                                    <MicOff size={14} className="text-red-400" />
+                                )}
+                            </div>
+                            <span className={`text-xs font-medium ${isMicOn ? 'text-green-400' : 'text-red-400'}`}>
+                                {isMicOn ? 'Mic On' : 'Mic Off'}
+                            </span>
+                        </div>
+                        
                         <div className="text-white text-sm">
                             Question {currentQuestion + 1} of {sampleQuestions.length}
                         </div>
@@ -164,17 +313,19 @@ const InterviewSessionPage: React.FC = () => {
                                 <h3 className="text-white font-semibold">Your Video</h3>
                                 <div className="flex items-center gap-2">
                                     <button
-                                        onClick={() => setIsVideoOn(!isVideoOn)}
+                                        onClick={toggleVideo}
+                                        title={isVideoOn ? 'Turn off camera (V)' : 'Turn on camera (V)'}
                                         className={`p-2 rounded-lg transition-colors duration-200 ${
-                                            isVideoOn ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                                            isVideoOn ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30' : 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
                                         }`}
                                     >
                                         {isVideoOn ? <Video size={16} /> : <VideoOff size={16} />}
                                     </button>
                                     <button
-                                        onClick={() => setIsMicOn(!isMicOn)}
+                                        onClick={toggleAudio}
+                                        title={isMicOn ? 'Mute microphone (Space)' : 'Unmute microphone (Space)'}
                                         className={`p-2 rounded-lg transition-colors duration-200 ${
-                                            isMicOn ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                                            isMicOn ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30' : 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
                                         }`}
                                     >
                                         {isMicOn ? <Mic size={16} /> : <MicOff size={16} />}
@@ -182,20 +333,102 @@ const InterviewSessionPage: React.FC = () => {
                                 </div>
                             </div>
                             
-                            <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl h-48 flex items-center justify-center border border-white/10">
-                                {isVideoOn ? (
+                            {/* Keyboard shortcuts info */}
+                            <div className="mb-2 text-center">
+                                <p className="text-xs text-blue-200/70">
+                                    Press <kbd className="px-1 py-0.5 bg-white/10 rounded text-xs">Space</kbd> to toggle mic, {' '}
+                                    <kbd className="px-1 py-0.5 bg-white/10 rounded text-xs">V</kbd> to toggle camera
+                                </p>
+                            </div>
+                            
+                            <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl h-48 flex items-center justify-center border border-white/10 relative overflow-hidden">
+                                {(cameraLoading || (!stream && !cameraError)) && (
                                     <div className="text-center">
-                                        <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                                            <User size={24} className="text-white" />
-                                        </div>
-                                        <p className="text-white/80">Your Camera View</p>
-                                        <p className="text-green-200 text-sm mt-1">Camera Active</p>
+                                        <div className="w-8 h-8 border-2 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                                        <p className="text-white/80">Loading Camera...</p>
+                                        <p className="text-blue-200 text-sm mt-1">Please allow camera access</p>
                                     </div>
-                                ) : (
+                                )}
+                                
+                                {cameraError && !cameraLoading && (
+                                    <div className="text-center">
+                                        <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                                            <VideoOff size={24} className="text-red-400" />
+                                        </div>
+                                        <p className="text-red-400 mb-2">Camera Error</p>
+                                        <button
+                                            onClick={initializeCamera}
+                                            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm transition-colors duration-200"
+                                        >
+                                            Retry Camera
+                                        </button>
+                                    </div>
+                                )}
+                                
+                                {!cameraError && isVideoOn && stream && (
+                                    <video
+                                        ref={(ref) => {
+                                            if (ref && ref !== videoRef) {
+                                                setVideoRef(ref);
+                                            }
+                                        }}
+                                        autoPlay
+                                        playsInline
+                                        muted
+                                        className="w-full h-full object-cover rounded-xl"
+                                        onLoadedMetadata={(e) => {
+                                            const video = e.target as HTMLVideoElement;
+                                            video.play().then(() => {
+                                                setCameraLoading(false);
+                                                console.log('Video playing successfully');
+                                            }).catch((error) => {
+                                                console.error('Error playing video:', error);
+                                                setCameraLoading(false);
+                                            });
+                                        }}
+                                        onCanPlay={() => {
+                                            setCameraLoading(false);
+                                        }}
+                                        onError={(e) => {
+                                            console.error('Video error:', e);
+                                            setCameraLoading(false);
+                                            setCameraError(true);
+                                        }}
+                                    />
+                                )}
+                                
+                                {!cameraError && !isVideoOn && (
                                     <div className="text-center">
                                         <VideoOff size={32} className="text-gray-400 mx-auto mb-3" />
                                         <p className="text-gray-400">Camera Off</p>
                                     </div>
+                                )}
+                                
+                                {/* Video overlay indicators */}
+                                {!cameraLoading && !cameraError && (
+                                    <>
+                                        <div className="absolute bottom-3 left-3 flex items-center gap-2">
+                                            <div className={`w-2 h-2 rounded-full ${isVideoOn ? 'bg-green-400' : 'bg-red-400'} animate-pulse`}></div>
+                                            <span className={`text-xs font-medium ${isVideoOn ? 'text-green-200' : 'text-red-200'}`}>
+                                                {isVideoOn ? 'Live' : 'Off'}
+                                            </span>
+                                        </div>
+                                        
+                                        <div className="absolute bottom-3 right-3 flex items-center gap-2">
+                                            {!isMicOn && (
+                                                <div className="flex items-center gap-1 bg-red-500/80 rounded-full px-2 py-1">
+                                                    <MicOff size={12} className="text-white" />
+                                                    <span className="text-xs font-medium text-white">Muted</span>
+                                                </div>
+                                            )}
+                                            {isMicOn && (
+                                                <div className="flex items-center gap-1 bg-green-500/80 rounded-full px-2 py-1">
+                                                    <Mic size={12} className="text-white" />
+                                                    <span className="text-xs font-medium text-white">Live</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </>
                                 )}
                             </div>
                         </div>

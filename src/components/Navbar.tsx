@@ -377,6 +377,13 @@ const Navbar: React.FC = () => {
                         </div>
                         <span className="font-medium">Lowongan Dilamar</span>
                       </button>
+
+                      <button onClick={() => handleProtectedLink('/create-cv')} className="w-full text-left flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-indigo-100 rounded-xl transition-all duration-300 group">
+                        <div className="w-8 h-8 bg-gradient-to-r from-indigo-100 to-indigo-200 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
+                          <FileText className="h-4 w-4 text-indigo-600" />
+                        </div>
+                        <span className="font-medium">Create CV</span>
+                      </button>
                     </div>
 
                     <div className="border-t border-gray-200/50 mt-3 pt-2 px-2">
@@ -468,6 +475,14 @@ const Navbar: React.FC = () => {
                   >
                     <FileText className="mr-3 h-5 w-5 text-purple-500" />
                     Lowongan Dilamar
+                  </button>
+
+                  <button
+                    onClick={() => handleProtectedLink('/create-cv')}
+                    className="w-full text-left flex items-center py-3 px-4 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-300 font-medium"
+                  >
+                    <FileText className="mr-3 h-5 w-5 text-indigo-500" />
+                    Create CV
                   </button>
                   <div className="border-t border-gray-200/50 pt-3 mt-3">
                     <button
