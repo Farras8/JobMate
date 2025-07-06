@@ -8,6 +8,9 @@ import JobSearchPage from './pages/JobSearchPage';
 import JobDetailPage from './pages/JobDetailPage';
 import CvReviewPage from "./pages/CvReviewPage";
 import ResumeAnalysisPage from "./pages/ResumeAnalysisPage";
+import AIInterviewPage from "./pages/AIInterviewPage";
+import JobModulPage from "./pages/JobModulPage";
+import KerjasamaPage from "./pages/KerjasamaPage";
 import FillPendidikanPage from './pages/FillPendidikanPage';
 import PengalamanFillPage from './pages/PengalamanFillPage';
 import SkillFillPage from './pages/SkillFillPage';
@@ -20,6 +23,7 @@ import ApplicationDetailPage from './pages/ApplicationsDetailPage'; // <-- Impor
 import RecommendPage from './pages/RecommendPage';
 import CompaniesPage from './pages/CompanyPage';
 import CompanyDetailPage from './pages/CompanyDetailPages';
+import InterviewSessionPage from './pages/InterviewSessionPage';
 
 import { auth } from './services/firebase'; 
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
@@ -83,6 +87,57 @@ const CvReviewPageWithAlert: React.FC = () => {
     return <CvReviewPage />;
 };
 
+// Komponen wrapper untuk AIInterviewPage dengan alert
+const AIInterviewPageWithAlert: React.FC = () => {
+    useEffect(() => {
+        Swal.fire({
+            title: 'Fitur Dalam Pengembangan',
+            text: 'Fitur AI Interview ini masih dalam tahap pengembangan. Yang ditampilkan saat ini hanya template saja dan belum sepenuhnya fungsional.',
+            icon: 'warning',
+            confirmButtonText: 'Mengerti',
+            customClass: { popup: 'rounded-xl' },
+            backdrop: 'rgba(0,0,0,0.3)', // Background buram dengan transparansi
+            allowOutsideClick: true
+        });
+    }, []);
+
+    return <AIInterviewPage />;
+};
+
+// Komponen wrapper untuk JobModulPage dengan alert
+const JobModulPageWithAlert: React.FC = () => {
+    useEffect(() => {
+        Swal.fire({
+            title: 'Fitur Dalam Pengembangan',
+            text: 'Fitur Job Modul ini masih dalam tahap pengembangan. Yang ditampilkan saat ini hanya template saja dan belum sepenuhnya fungsional.',
+            icon: 'warning',
+            confirmButtonText: 'Mengerti',
+            customClass: { popup: 'rounded-xl' },
+            backdrop: 'rgba(0,0,0,0.3)', // Background buram dengan transparansi
+            allowOutsideClick: true
+        });
+    }, []);
+
+    return <JobModulPage />;
+};
+
+// Komponen wrapper untuk KerjasamaPage dengan alert
+const KerjasamaPageWithAlert: React.FC = () => {
+    useEffect(() => {
+        Swal.fire({
+            title: 'Fitur Dalam Pengembangan',
+            text: 'Fitur Kerjasama ini masih dalam tahap pengembangan. Yang ditampilkan saat ini hanya template saja dan belum sepenuhnya fungsional.',
+            icon: 'warning',
+            confirmButtonText: 'Mengerti',
+            customClass: { popup: 'rounded-xl' },
+            backdrop: 'rgba(0,0,0,0.3)', // Background buram dengan transparansi
+            allowOutsideClick: true
+        });
+    }, []);
+
+    return <KerjasamaPage />;
+};
+
 
 function App() {
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
@@ -95,7 +150,7 @@ function App() {
       setCurrentUser(user);
       setIsLoadingAuth(false); 
       if (user) {
-        const from = location.state?.from?.pathname || '/';
+        const from = location.state?.from?.pathname ?? '/';
         if (window.location.pathname === '/login') {
           navigate(from, { replace: true });
         }
@@ -149,9 +204,11 @@ function App() {
       {/* Fitur lain yang masih coming soon */}
       
       <Route path="/services/jobchat" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
-      <Route path="/services/ai-interview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
-      <Route path="/services/jobmodul" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
-      <Route path="/kerjasama" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
+      <Route path="/services/ai-interview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><AIInterviewPageWithAlert /></ProtectedRoute>} />
+      <Route path="/ai-interview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><AIInterviewPageWithAlert /></ProtectedRoute>} />
+      <Route path="/interview-session" element={<ProtectedRoute isLoggedIn={isLoggedIn}><InterviewSessionPage /></ProtectedRoute>} />
+      <Route path="/services/jobmodul" element={<ProtectedRoute isLoggedIn={isLoggedIn}><JobModulPageWithAlert /></ProtectedRoute>} />
+      <Route path="/kerjasama" element={<ProtectedRoute isLoggedIn={isLoggedIn}><KerjasamaPageWithAlert /></ProtectedRoute>} />
       <Route path="/premium" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
 
       <Route path="*" element={
