@@ -1,7 +1,7 @@
 // src/services/CVService.ts
 import { auth } from '../services/firebase';
 
-const API_BASE_URL = 'https://jobseeker-capstone-705829099986.asia-southeast2.run.app';
+const API_BASE_URL = 'https://jobseeker-capstone-347777124386.asia-southeast2.run.app';
 
 export interface CVData {
   fullName?: string;

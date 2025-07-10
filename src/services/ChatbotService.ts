@@ -11,7 +11,7 @@ export interface ChatbotError {
 }
 
 class ChatbotService {
-  private readonly API_BASE_URL = 'https://faq-jobmate-api-705829099986.asia-southeast2.run.app';
+  private readonly API_BASE_URL = 'https://faq-jobmate-api-819767094904.asia-southeast2.run.app';
   private readonly FAQ_ENDPOINT = '/faq';
 
   /**

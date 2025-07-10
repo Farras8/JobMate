@@ -3,7 +3,7 @@ import { auth, db } from '../services/firebase';
 import { doc, getDoc, type DocumentData, FieldValue } from "firebase/firestore";
 import { type DisplayJob } from './jobService'; // Assuming this type is available and comprehensive
 
-const API_BASE_URL = 'https://jobseeker-capstone-705829099986.asia-southeast2.run.app';
+const API_BASE_URL = 'https://jobseeker-capstone-347777124386.asia-southeast2.run.app';
 
 export const applicationStatuses = ['pending', 'reviewed', 'interview', 'offered', 'rejected'] as const;
 export type ApplicationStatus = typeof applicationStatuses[number];

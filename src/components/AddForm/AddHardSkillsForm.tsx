@@ -1,8 +1,9 @@
 // src/components/AddForm/AddHardSkillsForm.tsx
-import React, { useState, useEffect, type ChangeEvent, type FormEvent, useRef } from 'react';
-import { type Skill, addHardSkills, fetchMasterHardSkills, skillLevels } from '../../services/SkillsService';
+import React, { useState, useEffect, type FormEvent, useRef } from 'react';
+import { type Skill, addHardSkills, skillLevels } from '../../services/SkillsService';
+import { hardSkillsData } from '../../data/hardskills';
 import Swal from 'sweetalert2';
-import { Save, X, PlusCircle, Zap, Sparkles, Star, ChevronDown } from 'lucide-react';
+import { Save, X, PlusCircle, Zap, Sparkles, Star } from 'lucide-react';
 
 interface AddHardSkillsFormProps {
   onClose: () => void;
@@ -26,18 +27,19 @@ const AddHardSkillsForm: React.FC<AddHardSkillsFormProps> = ({ onClose, onAddSuc
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const loadMasterSkills = async () => {
-      setIsLoadingMasterSkills(true);
-      try {
-        const fetchedMasterSkills = await fetchMasterHardSkills();
-        setMasterSkills(fetchedMasterSkills);
-      } catch (error) {
-        console.error("Failed to load master hard skills:", error);
-      } finally {
-        setIsLoadingMasterSkills(false);
-      }
-    };
-    loadMasterSkills();
+    // Load master skills from local data instead of Firebase
+    setIsLoadingMasterSkills(true);
+    try {
+      const localMasterSkills = hardSkillsData.map(skill => ({
+        id: skill.id,
+        name: skill.name
+      }));
+      setMasterSkills(localMasterSkills);
+    } catch (error) {
+      console.error("Failed to load master hard skills:", error);
+    } finally {
+      setIsLoadingMasterSkills(false);
+    }
   }, []);
 
   useEffect(() => {

@@ -295,7 +295,7 @@ const CreateCVPage: React.FC = () => {
                     <GraduationCap size={32} className="mx-auto mb-2 opacity-50" />
                     <p>Belum ada data pendidikan</p>
                     <button
-                      onClick={() => navigate('/profile/edit')}
+                      onClick={() => navigate('/profile/edit?section=education')}
                       className="mt-2 text-blue-500 hover:text-blue-600 text-sm underline"
                     >
                       Tambah data pendidikan
@@ -350,7 +350,7 @@ const CreateCVPage: React.FC = () => {
                     <Briefcase size={32} className="mx-auto mb-2 opacity-50" />
                     <p>Belum ada data pengalaman kerja</p>
                     <button
-                      onClick={() => navigate('/profile/edit')}
+                      onClick={() => navigate('/profile/edit?section=experience')}
                       className="mt-2 text-blue-500 hover:text-blue-600 text-sm underline"
                     >
                       Tambah data pengalaman
@@ -406,7 +406,7 @@ const CreateCVPage: React.FC = () => {
                     <FolderOpen size={32} className="mx-auto mb-2 opacity-50" />
                     <p>Belum ada data portfolio</p>
                     <button
-                      onClick={() => navigate('/profile/edit')}
+                      onClick={() => navigate('/profile/edit?section=portfolio')}
                       className="mt-2 text-blue-500 hover:text-blue-600 text-sm underline"
                     >
                       Tambah data portfolio

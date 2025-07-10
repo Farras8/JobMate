@@ -61,7 +61,7 @@ export interface SearchJobFilters {
   jobTitle?: string; // <--- Tambahkan ini!
 }
 
-const API_BASE_URL = 'https://jobseeker-capstone-705829099986.asia-southeast2.run.app';
+const API_BASE_URL = 'https://jobseeker-capstone-347777124386.asia-southeast2.run.app';
 
 // Fungsi helper untuk memformat tanggal posting
 const formatPostedDate = (postedAtSeconds: number): string => {

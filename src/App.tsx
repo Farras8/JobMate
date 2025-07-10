@@ -11,9 +11,6 @@ import ResumeAnalysisPage from "./pages/ResumeAnalysisPage";
 import AIInterviewPage from "./pages/AIInterviewPage";
 import JobModulPage from "./pages/JobModulPage";
 import KerjasamaPage from "./pages/KerjasamaPage";
-import FillPendidikanPage from './pages/FillPendidikanPage';
-import PengalamanFillPage from './pages/PengalamanFillPage';
-import SkillFillPage from './pages/SkillFillPage';
 import JobPreferPage from './pages/JobPreferPage';
 import JobSearchStatusPage from './pages/JobSearchStatusPage';
 import EditProfilePage from './pages/EditProfilePage';
@@ -191,9 +188,6 @@ function App() {
       <Route path="/rekomendasi" element={<ProtectedRoute isLoggedIn={isLoggedIn}><RecommendPage /></ProtectedRoute>} />
       <Route path="/bookmarks" element={<ProtectedRoute isLoggedIn={isLoggedIn}><BookmarkPage /></ProtectedRoute>} />
       <Route path="/profile/edit" element={<ProtectedRoute isLoggedIn={isLoggedIn}><EditProfilePage /></ProtectedRoute>} />
-      <Route path="/pendidikanfill" element={<ProtectedRoute isLoggedIn={isLoggedIn}><FillPendidikanPage /></ProtectedRoute>} />
-      <Route path="/pengalamanfill" element={<ProtectedRoute isLoggedIn={isLoggedIn}><PengalamanFillPage /></ProtectedRoute>} />
-      <Route path="/skillfill" element={<ProtectedRoute isLoggedIn={isLoggedIn}><SkillFillPage /></ProtectedRoute>} />
       <Route path="/jobpreferfill" element={<ProtectedRoute isLoggedIn={isLoggedIn}><JobPreferPage /></ProtectedRoute>} />
       <Route path="/jobstatus" element={<ProtectedRoute isLoggedIn={isLoggedIn}><JobSearchStatusPage /></ProtectedRoute>} />
       <Route path="/profile/saved-jobs" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Navigate to="/bookmarks" replace /></ProtectedRoute>} />

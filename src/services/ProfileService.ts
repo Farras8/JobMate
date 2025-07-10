@@ -1,7 +1,7 @@
 // src/services/profileService.ts
 import { auth } from '../services/firebase'; // Your Firebase auth instance
 
-const API_BASE_URL = 'https://jobseeker-capstone-705829099986.asia-southeast2.run.app';
+const API_BASE_URL = 'https://jobseeker-capstone-347777124386.asia-southeast2.run.app';
 
 interface ProfileData {
   uid?: string;

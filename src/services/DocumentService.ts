@@ -2,7 +2,7 @@
 import { auth } from '../services/firebase'; // Your Firebase auth instance
 import { FieldValue } from "firebase/firestore"; // Firestore type
 
-const API_BASE_URL = 'https://jobseeker-capstone-705829099986.asia-southeast2.run.app';
+const API_BASE_URL = 'https://jobseeker-capstone-347777124386.asia-southeast2.run.app';
 
 export interface DocumentData {
   id?: string; // Optional: for existing records

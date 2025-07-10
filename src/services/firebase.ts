@@ -4,13 +4,13 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, serverTimestamp } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDTXPhPH0c9QZzmzixLjL79qQxr2a80VZk",
-  authDomain: "capstone-jobseeker-dd654.firebaseapp.com",
-  projectId: "capstone-jobseeker-dd654",
-  storageBucket: "capstone-jobseeker-dd654.firebasestorage.app",
-  messagingSenderId: "705829099986",
-  appId: "1:705829099986:web:dbdb316775b17ce6e7d00b",
-  measurementId: "G-RSGXMT6XW5"
+  apiKey: "AIzaSyAAAIl7Ks-MkccYb1TjVs8AlJnLzk9ngIY",
+  authDomain: "capstone-jobseeker-a5358.firebaseapp.com",
+  projectId: "capstone-jobseeker-a5358",
+  storageBucket: "capstone-jobseeker-a5358.firebasestorage.app",
+  messagingSenderId: "347777124386",
+  appId: "1:347777124386:web:7fd27d1a8c5287f6f9a27b",
+  measurementId: "G-YDRPFRR9HF"
 };
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);

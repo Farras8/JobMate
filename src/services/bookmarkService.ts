@@ -4,7 +4,7 @@ import { doc, getDoc, type DocumentData } from "firebase/firestore";
 import { type DisplayJob } from './jobService'; // Pastikan tipe ini tersedia dan sesuai
 import { FieldValue } from "firebase/firestore";
 
-const API_BASE_URL = 'https://jobseeker-capstone-705829099986.asia-southeast2.run.app';
+const API_BASE_URL = 'https://jobseeker-capstone-347777124386.asia-southeast2.run.app';
 
 export interface Bookmark {
   id: string; // Document ID of the bookmark itself
