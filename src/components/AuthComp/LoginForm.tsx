@@ -251,7 +251,16 @@ const LoginForm: React.FC = () => {
             disabled={isLoading}
             className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-2xl py-3 px-6 mt-2 shadow-sm hover:shadow-md transition-all duration-200 text-gray-700 font-semibold hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <img src="/google_drive.png" alt="Google" className="w-5 h-5" />
+            <span className="inline-block w-5 h-5 align-middle" aria-label="Google">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                  <path d="M19.6 10.23c0-.68-.06-1.36-.18-2H10v3.79h5.41c-.23 1.23-.93 2.27-1.98 2.97v2.47h3.2c1.87-1.72 2.97-4.25 2.97-7.23z" fill="#4285F4"/>
+                  <path d="M10 20c2.7 0 4.97-.89 6.63-2.41l-3.2-2.47c-.89.6-2.03.96-3.43.96-2.64 0-4.87-1.78-5.67-4.18H1.03v2.62C2.77 17.98 6.13 20 10 20z" fill="#34A853"/>
+                  <path d="M4.33 12.9c-.21-.6-.33-1.24-.33-1.9s.12-1.3.33-1.9V6.48H1.03C.37 7.78 0 9.34 0 11c0 1.66.37 3.22 1.03 4.52l3.3-2.62z" fill="#FBBC05"/>
+                  <path d="M10 3.96c1.47 0 2.79.51 3.83 1.51l2.87-2.87C14.97 1.07 12.7 0 10 0 6.13 0 2.77 2.02 1.03 5.48l3.3 2.62C5.13 5.74 7.36 3.96 10 3.96z" fill="#EA4335"/>
+                </g>
+              </svg>
+            </span>
             <span>Sign In dengan Google</span>
           </button>
         </form>

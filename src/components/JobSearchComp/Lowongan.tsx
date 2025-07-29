@@ -117,7 +117,7 @@ const Lowongan: React.FC<LowonganProps> = ({ jobs, isLoading, error }) => {
 
   return (
     <>
-      <div className="space-y-4 lg:space-y-8 px-2 lg:px-0">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 px-2 lg:px-0">
         {jobs.map((job) => {
           const isBookmarked = bookmarkedJobIds.has(job.id);
           const isApplied = appliedJobIds.has(job.id);

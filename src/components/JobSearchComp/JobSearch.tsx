@@ -17,6 +17,7 @@ const JobSearch: React.FC = () => {
   const [selectedJobType, setSelectedJobType] = useState("Semua Tipe");
   const [mainSearchTerm, setMainSearchTerm] = useState("");
   const [allFetchedJobs, setAllFetchedJobs] = useState<DisplayJob[]>([]);
+  const [displayedJobs, setDisplayedJobs] = useState<DisplayJob[]>([]);
   const [totalJobs, setTotalJobs] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -26,9 +27,17 @@ const JobSearch: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const { jobs, total } = await searchJobs(apiFilters, page, JOBS_PER_PAGE);
+      // Fetch a large batch of jobs (up to 1000) to handle client-side pagination
+      const { jobs, total } = await searchJobs(apiFilters, 1, 1000);
+      console.log(`API Response: ${jobs.length} jobs fetched, Total: ${total}`);
+      // Slice the jobs for the current page
+      const startIndex = (page - 1) * JOBS_PER_PAGE;
+      const endIndex = startIndex + JOBS_PER_PAGE;
+      const paginatedJobs = jobs.slice(startIndex, endIndex);
       setAllFetchedJobs(jobs);
+      setDisplayedJobs(paginatedJobs);
       setTotalJobs(total);
+      console.log(`Page ${page}: Displaying ${paginatedJobs.length} jobs`);
     } catch (err: unknown) {
       setError("Gagal memuat lowongan. Silakan coba lagi nanti.");
       if (err instanceof Error) console.error("JobSearch fetch error:", err.message);
@@ -128,14 +137,18 @@ const JobSearch: React.FC = () => {
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
-    const apiFilters: SearchJobFilters = {};
-    if (mainSearchTerm.trim()) apiFilters.jobTitle = mainSearchTerm.trim();
-    if (keyword.trim()) apiFilters.companyName = keyword.trim();
-    if (location.trim()) apiFilters.city = location.trim();
-    if (selectedJobType !== "Semua Tipe") apiFilters.jobType = selectedJobType;
-    debouncedSearch(apiFilters, pageNumber);
+    // Slice the already fetched jobs for the new page
+    const startIndex = (pageNumber - 1) * JOBS_PER_PAGE;
+    const endIndex = startIndex + JOBS_PER_PAGE;
+    const paginatedJobs = allFetchedJobs.slice(startIndex, endIndex);
+    setDisplayedJobs(paginatedJobs);
+    console.log(`Page ${pageNumber}: Displaying ${paginatedJobs.length} jobs`);
     window.scrollTo({ top: 300, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    console.log(`Current Page: ${currentPage}, Jobs Displayed: ${displayedJobs.length}, Total Jobs: ${totalJobs}`);
+  }, [displayedJobs, currentPage, totalJobs]);
 
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50/30 to-purple-50/50 overflow-hidden">
@@ -146,7 +159,7 @@ const JobSearch: React.FC = () => {
       </div>
 
       <div className="relative px-4 py-16">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-[1700px] mx-auto">
           <div className="text-center mb-12">
             <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-100 to-purple-100 border border-blue-200/50 text-blue-700 px-6 py-2 rounded-full text-sm font-semibold mb-6 shadow-sm">
               <Sparkles size={16} className="text-blue-600" />
@@ -357,7 +370,7 @@ const JobSearch: React.FC = () => {
             </div>
           </div>
 
-          <Lowongan jobs={allFetchedJobs} isLoading={isLoading} error={error} />
+          <Lowongan jobs={displayedJobs} isLoading={isLoading} error={error} />
           {!isLoading && !error && totalJobs > 0 && (
             <div className="mt-12">
               <PaginationJobs

@@ -85,7 +85,8 @@ const CompaniesPage: React.FC = () => {
     return (
         <div className="min-h-screen bg-blue-50 flex flex-col">
             <Navbar />
-            <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+            <main className="flex-grow px-4 py-8 md:py-12">
+                <div className="max-w-[1700px] mx-auto sm:px-6 lg:px-8">
 
                 <CompanySearch onSearch={handleSearch} isLoading={isLoading} />
 
@@ -111,6 +112,7 @@ const CompaniesPage: React.FC = () => {
                         <p>Tidak ada perusahaan yang ditemukan dengan kriteria tersebut.</p>
                     </div>
                 )}
+                </div>
             </main>
             <FloatingChatbot/>
             <Footer />

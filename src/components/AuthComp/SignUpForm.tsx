@@ -66,9 +66,9 @@ const SignUpForm: React.FC = () => {
                 reverseButtons: true,
                 allowOutsideClick: false,
                 customClass: {
-                  popup: 'rounded-2xl',
-                  confirmButton: 'rounded-xl',
-                  cancelButton: 'rounded-xl'
+                    popup: 'rounded-2xl',
+                    confirmButton: 'rounded-xl',
+                    cancelButton: 'rounded-xl'
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -87,66 +87,66 @@ const SignUpForm: React.FC = () => {
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
-    // Handler for Google Sign Up
-    const handleGoogleSignUp = async () => {
-        setError(null);
-        setLoading(true);
-        const provider = new GoogleAuthProvider();
-        try {
-            const result = await signInWithPopup(auth, provider);
-            const user = result.user;
-            // Write only email, others empty
-            const userDocRef = doc(db, "users", user.uid);
-            const userPersonalInfoRef = doc(userDocRef, "user_personal", "info");
-            await setDoc(userPersonalInfoRef, {
-                username: "",
-                fullName: "",
-                email: user.email || "",
-                phoneNumber: "",
-                city: "",
-                address: "",
-                photoUrl: "",
-                github: "",
-                instagram: "",
-                linkedin: "",
-                portfolioSite: "",
-                status: "",
-                createdAt: serverTimestamp(),
-                updatedAt: serverTimestamp(),
-            });
-            setLoading(false);
-            Swal.fire({
-                title: 'Pendaftaran Berhasil!',
-                text: 'Akun Google Anda berhasil didaftarkan. Apa yang ingin Anda lakukan selanjutnya?',
-                icon: 'success',
-                showCancelButton: true,
-                confirmButtonText: 'Lengkapi Profil Sekarang',
-                cancelButtonText: 'Nanti Saja, ke Dashboard',
-                confirmButtonColor: '#1e3a8a',
-                cancelButtonColor: '#6B7280',
-                reverseButtons: true,
-                allowOutsideClick: false,
-                customClass: {
-                  popup: 'rounded-2xl',
-                  confirmButton: 'rounded-xl',
-                  cancelButton: 'rounded-xl'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    navigate('/profile/edit');
-                } else {
-                    navigate('/');
-                }
-            });
-        } catch (err: unknown) {
-            let message = "Gagal mendaftar dengan Google. Silakan coba lagi.";
-            if (err instanceof Error) message = err.message;
-            // @ts-ignore
-            if (typeof err === 'object' && err && 'message' in err) message = (err as any).message;
-            setError(message);
-            setLoading(false);
-        }
-    };
+        // Handler for Google Sign Up
+        const handleGoogleSignUp = async () => {
+            setError(null);
+            setLoading(true);
+            const provider = new GoogleAuthProvider();
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                // Write only email, others empty
+                const userDocRef = doc(db, "users", user.uid);
+                const userPersonalInfoRef = doc(userDocRef, "user_personal", "info");
+                await setDoc(userPersonalInfoRef, {
+                    username: "",
+                    fullName: "",
+                    email: user.email || "",
+                    phoneNumber: "",
+                    city: "",
+                    address: "",
+                    photoUrl: "",
+                    github: "",
+                    instagram: "",
+                    linkedin: "",
+                    portfolioSite: "",
+                    status: "",
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp(),
+                });
+                setLoading(false);
+                Swal.fire({
+                    title: 'Pendaftaran Berhasil!',
+                    text: 'Akun Google Anda berhasil didaftarkan. Apa yang ingin Anda lakukan selanjutnya?',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonText: 'Lengkapi Profil Sekarang',
+                    cancelButtonText: 'Nanti Saja, ke Dashboard',
+                    confirmButtonColor: '#1e3a8a',
+                    cancelButtonColor: '#6B7280',
+                    reverseButtons: true,
+                    allowOutsideClick: false,
+                    customClass: {
+                        popup: 'rounded-2xl',
+                        confirmButton: 'rounded-xl',
+                        cancelButton: 'rounded-xl'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/profile/edit');
+                    } else {
+                        navigate('/');
+                    }
+                });
+            } catch (err: unknown) {
+                let message = "Gagal mendaftar dengan Google. Silakan coba lagi.";
+                if (err instanceof Error) message = err.message;
+                // @ts-ignore
+                if (typeof err === 'object' && err && 'message' in err) message = (err as any).message;
+                setError(message);
+                setLoading(false);
+            }
+        };
         e.preventDefault();
         setError(null);
 
@@ -185,7 +185,7 @@ const SignUpForm: React.FC = () => {
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp(),
             });
-            
+
             setLoading(false);
 
             Swal.fire({
@@ -199,10 +199,10 @@ const SignUpForm: React.FC = () => {
                 cancelButtonColor: '#6B7280',
                 reverseButtons: true,
                 allowOutsideClick: false,
-                customClass: { 
-                  popup: 'rounded-2xl',
-                  confirmButton: 'rounded-xl',
-                  cancelButton: 'rounded-xl'
+                customClass: {
+                    popup: 'rounded-2xl',
+                    confirmButton: 'rounded-xl',
+                    cancelButton: 'rounded-xl'
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -211,7 +211,7 @@ const SignUpForm: React.FC = () => {
                     navigate('/');
                 }
             });
-            
+
         } catch (err: unknown) {
             let code = '';
             let message = "Gagal mendaftar. Silakan coba lagi.";
@@ -235,12 +235,12 @@ const SignUpForm: React.FC = () => {
         <div className="group relative bg-white backdrop-blur-sm border border-gray-100/50 rounded-3xl overflow-hidden p-6 md:p-8 lg:p-10 w-full max-w-lg mx-auto shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 my-4 md:my-8">
             {/* Gradient Background Overlay */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/20"></div>
-            
+
             {/* Decorative Elements */}
             <div className="absolute top-4 right-4 w-12 h-12 bg-gradient-to-r from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity duration-300">
                 <UserPlus size={20} className="text-blue-600" />
             </div>
-            
+
             <div className="absolute top-8 left-4 w-8 h-8 bg-gradient-to-r from-purple-100 to-purple-200 rounded-xl flex items-center justify-center opacity-60 group-hover:opacity-90 transition-opacity duration-300">
                 <Sparkles size={14} className="text-purple-600" />
             </div>
@@ -504,7 +504,16 @@ const SignUpForm: React.FC = () => {
                         disabled={loading}
                         className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-2xl py-3 px-6 mt-2 shadow-sm hover:shadow-md transition-all duration-200 text-gray-700 font-semibold hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                        <img src="/google_drive.png" alt="Google" className="w-5 h-5" />
+                        <span className="inline-block w-5 h-5 align-middle" aria-label="Google">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g>
+                                    <path d="M19.6 10.23c0-.68-.06-1.36-.18-2H10v3.79h5.41c-.23 1.23-.93 2.27-1.98 2.97v2.47h3.2c1.87-1.72 2.97-4.25 2.97-7.23z" fill="#4285F4" />
+                                    <path d="M10 20c2.7 0 4.97-.89 6.63-2.41l-3.2-2.47c-.89.6-2.03.96-3.43.96-2.64 0-4.87-1.78-5.67-4.18H1.03v2.62C2.77 17.98 6.13 20 10 20z" fill="#34A853" />
+                                    <path d="M4.33 12.9c-.21-.6-.33-1.24-.33-1.9s.12-1.3.33-1.9V6.48H1.03C.37 7.78 0 9.34 0 11c0 1.66.37 3.22 1.03 4.52l3.3-2.62z" fill="#FBBC05" />
+                                    <path d="M10 3.96c1.47 0 2.79.51 3.83 1.51l2.87-2.87C14.97 1.07 12.7 0 10 0 6.13 0 2.77 2.02 1.03 5.48l3.3 2.62C5.13 5.74 7.36 3.96 10 3.96z" fill="#EA4335" />
+                                </g>
+                            </svg>
+                        </span>
                         <span>Daftar dengan Google</span>
                     </button>
                 </form>
@@ -519,12 +528,12 @@ const SignUpForm: React.FC = () => {
                             <span className="px-4 bg-white text-gray-500 font-medium">atau</span>
                         </div>
                     </div>
-                    
+
                     <p className="text-sm text-gray-600 mt-4 mb-2">
                         Sudah Punya Akun?
                     </p>
-                    <Link 
-                        to="/login" 
+                    <Link
+                        to="/login"
                         className="inline-flex items-center gap-2 font-semibold text-blue-600 hover:text-blue-500 transition-colors duration-200 px-4 py-2 rounded-xl hover:bg-blue-50 group/link"
                     >
                         <span>Masuk</span>

@@ -104,7 +104,7 @@ const LowonganTerbaru: React.FC<Props> = ({ showHeader = true, showButton = true
         <>
         <section className="bg-gradient-to-br from-blue-50 via-blue-50 to-purple-50 py-12 lg:py-20 px-2 lg:px-4">
             {showHeader && (
-                <div className="max-w-5xl mx-auto text-center mb-8 lg:mb-12">
+                <div className="max-w-7xl mx-auto text-center mb-8 lg:mb-12">
                     <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-gray-900 mb-3 lg:mb-4 bg-gradient-to-r from-blue-900 to-purple-700 bg-clip-text text-transparent px-2">
                         {sectionTitle}
                     </h2>
@@ -114,9 +114,9 @@ const LowonganTerbaru: React.FC<Props> = ({ showHeader = true, showButton = true
                 </div>
             )}
 
-            <div className="max-w-5xl mx-auto space-y-4 lg:space-y-8">
+            <div className="max-w-7xl mx-auto flex flex-col gap-8">
                 {validJobs.length === 0 && showHeader && (
-                    <div className="text-center py-8 lg:py-16 text-gray-600 bg-white/50 backdrop-blur-sm rounded-xl lg:rounded-3xl border border-gray-200/50 shadow-lg mx-2 lg:mx-0">
+                    <div className="col-span-full text-center py-8 lg:py-16 text-gray-600 bg-white/50 backdrop-blur-sm rounded-xl lg:rounded-3xl border border-gray-200/50 shadow-lg mx-2 lg:mx-0">
                         <div className="text-base lg:text-xl font-medium px-4">Saat ini belum ada lowongan terbaru.</div>
                     </div>
                 )}
@@ -296,7 +296,7 @@ const LowonganTerbaru: React.FC<Props> = ({ showHeader = true, showButton = true
             </div>
 
             {showButton && validJobs.length > 0 && ( 
-                <div className="mt-12 lg:mt-16 text-center px-4">
+                <div className="col-span-full mt-12 lg:mt-16 text-center px-4">
                     <Link 
                         to="/jobsearch" 
                         className="group inline-flex items-center gap-2 lg:gap-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white px-6 lg:px-8 py-3 lg:py-4 rounded-xl lg:rounded-2xl hover:from-blue-800 hover:to-blue-700 transition-all duration-300 font-semibold shadow-md lg:shadow-lg hover:shadow-lg lg:hover:shadow-xl transform hover:scale-105 text-sm lg:text-base"
