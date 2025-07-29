@@ -1,4 +1,3 @@
-// src/components/Modal/ApplyJobModal.tsx
 import React, { useState, type ChangeEvent, type FormEvent } from 'react';
 import Swal from 'sweetalert2';
 import { submitApplication } from '../../services/ApplicationService';
@@ -14,7 +13,6 @@ interface ApplyJobModalProps {
 
 const ApplyJobModal: React.FC<ApplyJobModalProps> = ({ jobId, jobTitle, companyName, onClose, onApplySuccess }) => {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
-  const [base64Resume, setBase64Resume] = useState<string>('');
   const [coverLetter, setCoverLetter] = useState('');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,18 +32,12 @@ const ApplyJobModal: React.FC<ApplyJobModalProps> = ({ jobId, jobTitle, companyN
         return;
       }
       setResumeFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        setBase64Resume(result.split(',')[1]); // Ambil hanya bagian base64
-      };
-      reader.readAsDataURL(file);
     }
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!resumeFile || !base64Resume) {
+    if (!resumeFile) {
       Swal.fire('File Dibutuhkan', 'Mohon unggah CV/Resume Anda dalam format PDF.', 'warning');
       return;
     }
@@ -53,14 +45,16 @@ const ApplyJobModal: React.FC<ApplyJobModalProps> = ({ jobId, jobTitle, companyN
     setIsSubmitting(true);
     setError(null);
     try {
-      await submitApplication({
-        jobId,
-        resumeFile: base64Resume,
-        coverLetter,
-        notes,
-      });
-      onApplySuccess(); // Panggil callback sukses
-      onClose(); // Tutup modal
+      // Buat FormData untuk mengirim file dan data lainnya
+      const formData = new FormData();
+      formData.append('jobId', jobId);
+      formData.append('resumeFile', resumeFile);
+      if (coverLetter) formData.append('coverLetter', coverLetter);
+      if (notes) formData.append('notes', notes);
+
+      await submitApplication(formData);
+      onApplySuccess(); // Fixed: Changed from onApplicationSuccess to onApplySuccess
+      onClose();
     } catch (err: any) {
       console.error("Failed to submit application:", err);
       setError(err.message || "Gagal mengirim lamaran. Mungkin Anda sudah pernah melamar untuk posisi ini.");
@@ -155,7 +149,7 @@ const ApplyJobModal: React.FC<ApplyJobModalProps> = ({ jobId, jobTitle, companyN
             
             {resumeFile && (
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 rounded-xl p-4 flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-green-100 to-green-200 rounded-lg flex items-center justify-center">
+                <div className="w ns-center">
                   <FileText size={16} className="text-green-600" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -195,7 +189,7 @@ const ApplyJobModal: React.FC<ApplyJobModalProps> = ({ jobId, jobTitle, companyN
           {/* Notes Section */}
           <div className="space-y-3">
             <div className="flex items-center space-x-2 mb-3">
-              <div className="w-6 h-6 lg:w-8 lg:h-8 bg-gradient-to-r from-amber-100 to-amber-200 rounded-md lg:rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className="w-6 h-6 lg:w-8 lg:h-8 bg-gradient-to-r from-amber-100 to-amber-200 rounded-md lg:rounded-lg flex items-center justify-center flex-shrink Spend-0">
                 <StickyNote size={12} className="text-amber-600 lg:w-3.5 lg:h-3.5" />
               </div>
               <label htmlFor="notes" className="text-sm lg:text-base font-semibold text-gray-700">

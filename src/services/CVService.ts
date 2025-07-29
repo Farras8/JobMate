@@ -1,7 +1,6 @@
-// src/services/CVService.ts
 import { auth } from '../services/firebase';
 
-const API_BASE_URL = 'https://jobseeker-capstone-347777124386.asia-southeast2.run.app';
+const API_BASE_URL = 'https://jobmate-rest-api-819767094904.asia-southeast2.run.app';
 
 export interface CVData {
   fullName?: string;
@@ -47,12 +46,20 @@ export interface CVData {
     projectUrl?: string;
     technologies?: string[];
   }>;
+  certificates: Array<{
+    id: string;
+    documentName: string;
+    credentialId?: string | null;
+    issuedDate: string;
+    expireDate?: string | null;
+  }>;
 }
 
 export interface CVFilters {
   educationIds?: string[];
   experienceIds?: string[];
   portfolioIds?: string[];
+  certificateIds?: string[];
 }
 
 // Helper function to get the ID token
@@ -65,7 +72,7 @@ const getIdToken = async (): Promise<string | null> => {
 };
 
 /**
- * Fetch profile resume data with optional filters for education, experience, and portfolio
+ * Fetch profile resume data with optional filters for education, experience, portfolio, and certificates
  */
 export const fetchProfileResume = async (filters?: CVFilters): Promise<CVData> => {
   const token = await getIdToken();
@@ -83,6 +90,9 @@ export const fetchProfileResume = async (filters?: CVFilters): Promise<CVData> =
   }
   if (filters?.portfolioIds && filters.portfolioIds.length > 0) {
     queryParams.append('portfolioIds', filters.portfolioIds.join(','));
+  }
+  if (filters?.certificateIds && filters.certificateIds.length > 0) {
+    queryParams.append('certificateIds', filters.certificateIds.join(','));
   }
 
   const queryString = queryParams.toString();
@@ -117,7 +127,7 @@ export const generateCVHTML = (cvData: CVData): string => {
 
   // Generate dynamic summary text similar to ResumeTemplate
   const generateSummaryText = () => {
-    const { experience, hardSkills, softSkills, portfolio } = cvData;
+    const { experience, hardSkills, softSkills, portfolio, certificates } = cvData;
     const summarySentences: string[] = [];
 
     // Introduction part from experience
@@ -150,7 +160,7 @@ export const generateCVHTML = (cvData: CVData): string => {
     } else if (mainSoftSkills.length > 0) {
       summarySentences.push(`Unggul dalam kemampuan interpersonal seperti ${mainSoftSkills.join(' dan ')}.`);
     }
-    
+
     // Portfolio/Projects summary
     if (portfolio && portfolio.length > 0) {
       let projectSentence = `Telah terlibat dalam pengembangan ${portfolio.length} proyek`;
@@ -158,21 +168,34 @@ export const generateCVHTML = (cvData: CVData): string => {
       if (notableProject?.title) {
         projectSentence += `, termasuk "${notableProject.title}"`;
         if (notableProject.technologies && notableProject.technologies.length > 0) {
-          projectSentence += ` yang memanfaatkan teknologi ${notableProject.technologies.slice(0,2).join(', ')}.`;
+          projectSentence += ` yang memanfaatkan teknologi ${notableProject.technologies.slice(0, 2).join(', ')}.`;
         } else {
-            projectSentence += ".";
+          projectSentence += ".";
         }
       } else {
-         projectSentence += ".";
+        projectSentence += ".";
       }
       summarySentences.push(projectSentence);
     }
 
+    // Certificates summary
+    if (certificates && certificates.length > 0) {
+      const notableCertificate = certificates[0];
+      let certSentence = `Memiliki ${certificates.length} sertifikat profesional`;
+      if (notableCertificate?.documentName) {
+        certSentence += `, termasuk "${notableCertificate.documentName}"`;
+        certSentence += ` yang diperoleh pada ${formatDate(notableCertificate.issuedDate)}.`;
+      } else {
+        certSentence += ".";
+      }
+      summarySentences.push(certSentence);
+    }
+
     // If only default intro and no other data, don't show summary
     if (summarySentences.length <= 1 && summarySentences[0].includes("berdedikasi dan bermotivasi tinggi")) {
-        return null; 
+      return null;
     }
-    
+
     return summarySentences.join(' ').replace(/\.\.+/g, '.').trim();
   };
 
@@ -361,6 +384,23 @@ export const generateCVHTML = (cvData: CVData): string => {
                 }
             </section>
 
+            <!-- Certificates -->
+            <section class="section">
+                <h2>Certificates</h2>
+                ${cvData.certificates.length > 0 ? 
+                    cvData.certificates.map(cert => `
+                    <div class="item">
+                        <div class="item-title">${cert.documentName}</div>
+                        <div class="item-subtitle">
+                            ${formatDate(cert.issuedDate)}${cert.expireDate ? ` - ${formatDate(cert.expireDate)}` : ""}
+                            ${cert.credentialId ? ` • Credential ID: ${cert.credentialId}` : ""}
+                        </div>
+                    </div>
+                    `).join('') :
+                    '<div class="no-data">No certificates listed.</div>'
+                }
+            </section>
+
             <!-- Skills -->
             <section class="section">
                 <h2>Skills</h2>
@@ -377,6 +417,7 @@ export const generateCVHTML = (cvData: CVData): string => {
 </html>
   `;
 };
+
 /**
  * Generate CV PDF using html2canvas and jsPDF
  */

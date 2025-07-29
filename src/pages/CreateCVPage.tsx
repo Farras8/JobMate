@@ -10,7 +10,8 @@ import {
   Settings,
   Eye,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Award
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -32,11 +33,13 @@ const CreateCVPage: React.FC = () => {
   const [allEducation, setAllEducation] = useState<EducationData[]>([]);
   const [allExperience, setAllExperience] = useState<ExperienceData[]>([]);
   const [allPortfolio, setAllPortfolio] = useState<PortfolioProject[]>([]);
+  const [allCertificates, setAllCertificates] = useState<CVData['certificates']>([]);
   
   // Selected items for CV
   const [selectedEducation, setSelectedEducation] = useState<string[]>([]);
   const [selectedExperience, setSelectedExperience] = useState<string[]>([]);
   const [selectedPortfolio, setSelectedPortfolio] = useState<string[]>([]);
+  const [selectedCertificates, setSelectedCertificates] = useState<string[]>([]);
   
   // UI states
   const [currentStep, setCurrentStep] = useState<'select' | 'preview'>('select');
@@ -50,6 +53,8 @@ const CreateCVPage: React.FC = () => {
       setIsLoading(true);
       setError(null);
       
+      // Fetch all resume data without filters to get all certificates
+      const resumeData = await fetchProfileResume();
       const [education, experience, portfolio] = await Promise.all([
         getEducation(),
         getExperience(),
@@ -59,11 +64,13 @@ const CreateCVPage: React.FC = () => {
       setAllEducation(education);
       setAllExperience(experience);
       setAllPortfolio(portfolio);
+      setAllCertificates(resumeData.certificates || []);
       
       // Auto-select all items initially
       setSelectedEducation(education.map(item => item.id).filter(id => id !== undefined) as string[]);
       setSelectedExperience(experience.map(item => item.id).filter(id => id !== undefined) as string[]);
       setSelectedPortfolio(portfolio.map(item => item.id).filter(id => id !== undefined) as string[]);
+      setSelectedCertificates(resumeData.certificates?.map(item => item.id).filter(id => id !== undefined) as string[]);
       
     } catch (err: unknown) {
       console.error('Error loading data:', err);
@@ -86,7 +93,8 @@ const CreateCVPage: React.FC = () => {
       const filters: CVFilters = {
         educationIds: selectedEducation,
         experienceIds: selectedExperience,
-        portfolioIds: selectedPortfolio
+        portfolioIds: selectedPortfolio,
+        certificateIds: selectedCertificates
       };
       
       const data = await fetchProfileResume(filters);
@@ -165,9 +173,18 @@ const CreateCVPage: React.FC = () => {
     );
   };
 
+  const toggleCertificateSelection = (id: string) => {
+    setSelectedCertificates(prev => 
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
   // Check if enough content is selected
   const hasEnoughContent = () => {
-    return selectedEducation.length > 0 || selectedExperience.length > 0 || selectedPortfolio.length > 0;
+    return selectedEducation.length > 0 || 
+           selectedExperience.length > 0 || 
+           selectedPortfolio.length > 0 || 
+           selectedCertificates.length > 0;
   };
 
   if (isLoading && currentStep === 'select') {
@@ -272,7 +289,7 @@ const CreateCVPage: React.FC = () => {
                     <h3 className="font-semibold text-amber-800 mb-1">Petunjuk Pembuatan CV</h3>
                     <p className="text-amber-700 text-sm">
                       Karena CV hanya dapat muat dalam 1 halaman A4, pilih dengan bijak pengalaman, pendidikan, 
-                      dan proyek yang paling relevan dengan posisi yang Anda lamar. Fokus pada kualitas daripada kuantitas.
+                      proyek, dan sertifikat yang paling relevan dengan posisi yang Anda lamar. Fokus pada kualitas daripada kuantitas.
                     </p>
                   </div>
                 </div>
@@ -451,6 +468,60 @@ const CreateCVPage: React.FC = () => {
                           checked={selectedPortfolio.includes(portfolio.id!)}
                           onChange={() => togglePortfolioSelection(portfolio.id!)}
                           className="w-5 h-5 text-purple-500 rounded focus:ring-purple-500"
+                        />
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Certificate Selection */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center">
+                    <Award size={20} className="text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-800">Sertifikat</h3>
+                    <p className="text-sm text-gray-600">Pilih sertifikat yang akan ditampilkan</p>
+                  </div>
+                </div>
+
+                {allCertificates.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <Award size={32} className="mx-auto mb-2 opacity-50" />
+                    <p>Belum ada data sertifikat</p>
+                    <button
+                      onClick={() => navigate('/profile/edit?section=certificates')}
+                      className="mt-2 text-blue-500 hover:text-blue-600 text-sm underline"
+                    >
+                      Tambah data sertifikat
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {allCertificates.map((cert) => (
+                      <label
+                        key={cert.id}
+                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 flex items-start justify-between ${
+                          selectedCertificates.includes(cert.id!)
+                            ? 'border-yellow-500 bg-yellow-50'
+                            : 'border-gray-200 hover:border-yellow-300 bg-white'
+                        }`}
+                      >
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-gray-800">{cert.documentName}</h4>
+                          <p className="text-sm text-gray-500">
+                            {new Date(cert.issuedDate).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}
+                            {cert.expireDate ? ` - ${new Date(cert.expireDate).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}` : ' - Tidak kedaluwarsa'}
+                            {cert.credentialId && ` • Credential ID: ${cert.credentialId}`}
+                          </p>
+                        </div>
+                        <input
+                          type="checkbox"
+                          checked={selectedCertificates.includes(cert.id!)}
+                          onChange={() => toggleCertificateSelection(cert.id!)}
+                          className="w-5 h-5 text-yellow-500 rounded focus:ring-yellow-500"
                         />
                       </label>
                     ))}

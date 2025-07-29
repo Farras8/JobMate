@@ -23,7 +23,7 @@ export function cosineSimilarity(vecA: number[], vecB: number[]): number {
 // --- Data Fetching Functions ---
 
 // URL untuk API yang berhubungan dengan data user (misal: skill, profil)
-const USER_API_BASE_URL = "https://jobseeker-capstone-347777124386.asia-southeast2.run.app";
+const USER_API_BASE_URL = "https://jobmate-rest-api-819767094904.asia-southeast2.run.app";
 // URL untuk API Model Machine Learning
 const ML_API_BASE_URL = "https://jobmate-api-819767094904.asia-southeast2.run.app"; 
 

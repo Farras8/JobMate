@@ -1,4 +1,3 @@
-// src/components/EditForm/EditProfileForm.tsx
 import React, { useState, useEffect, type ChangeEvent, type FormEvent } from 'react';
 import { updateProfile, deleteProfilePhoto } from '../../services/ProfileService';
 import Swal from 'sweetalert2';
@@ -24,9 +23,9 @@ interface EditProfileFormProps {
 }
 
 const statusOptions = [
-  "Aktif Mencari Pekerjaan",
-  "Selalu Terbuka untuk Oportunitas",
-  "Tidak Terbuka"
+  'Aktif Mencari Pekerjaan',
+  'Selalu Terbuka untuk Oportunitas',
+  'Tidak Terbuka',
 ];
 
 const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose, onSaveSuccess }) => {
@@ -52,14 +51,16 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
       setProfile(prev => ({
         ...prev,
         ...initialData,
-        status: initialData.status || statusOptions[0]
+        status: initialData.status || statusOptions[0],
       }));
-      if (initialData.photoUrl) {
-        setImagePreview(initialData.photoUrl);
-      } else {
-        setImagePreview(null);
-      }
+      setImagePreview(initialData.photoUrl || null);
     }
+    // Cleanup temporary URL on unmount
+    return () => {
+      if (imagePreview && selectedFile) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
   }, [initialData]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -74,12 +75,12 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
         Swal.fire('Error', 'Ukuran gambar maksimal 5MB.', 'error');
         return;
       }
+      // Revoke previous temporary URL to prevent memory leaks
+      if (imagePreview && selectedFile) {
+        URL.revokeObjectURL(imagePreview);
+      }
       setSelectedFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -91,17 +92,18 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
     const dataToUpdate: Partial<ProfileData> = {};
     let hasChanges = false;
 
+    // Compare fields with initial data (excluding photoUrl)
     (Object.keys(profile) as Array<keyof ProfileData>).forEach(key => {
-        const initialValue = initialData ? initialData[key] : undefined;
-        if (profile[key] !== initialValue && key !== 'photoUrl') {
-            dataToUpdate[key] = profile[key];
-            hasChanges = true;
-        }
-    });
-    
-    if (selectedFile && imagePreview) {
-        dataToUpdate.photoUrl = imagePreview; 
+      const initialValue = initialData ? initialData[key] : undefined;
+      if (profile[key] !== initialValue && key !== 'photoUrl') {
+        dataToUpdate[key] = profile[key];
         hasChanges = true;
+      }
+    });
+
+    // Check if a new file is selected
+    if (selectedFile) {
+      hasChanges = true;
     }
 
     if (!hasChanges) {
@@ -112,17 +114,14 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
     }
 
     try {
-      const result = await updateProfile(dataToUpdate);
+      const result = await updateProfile(dataToUpdate, selectedFile);
       Swal.fire('Sukses!', 'Profil berhasil diperbarui.', 'success');
-      
-      const finalUpdatedData = { ...initialData, ...profile, ...dataToUpdate };
-      if (result.photoUrl !== undefined) { 
-        finalUpdatedData.photoUrl = result.photoUrl;
-      }
+
+      const finalUpdatedData = { ...initialData, ...profile, ...result };
       onSaveSuccess(finalUpdatedData);
       onClose();
     } catch (err: any) {
-      console.error("Failed to update profile:", err);
+      console.error('Failed to update profile:', err);
       setError(err.message || 'Gagal memperbarui profil.');
       Swal.fire('Error', err.message || 'Gagal memperbarui profil.', 'error');
     } finally {
@@ -132,20 +131,20 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
 
   const handleDeletePhotoAndSubmit = async () => {
     if (!initialData?.photoUrl && !imagePreview) {
-        Swal.fire('Info', 'Tidak ada foto profil untuk dihapus.', 'info');
-        return;
+      Swal.fire('Info', 'Tidak ada foto profil untuk dihapus.', 'info');
+      return;
     }
 
     Swal.fire({
       title: 'Anda yakin?',
-      text: "Foto profil akan dihapus dari server!",
+      text: 'Foto profil akan dihapus dari server!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
       confirmButtonText: 'Ya, hapus!',
-      cancelButtonText: 'Batal'
-    }).then(async (result) => {
+      cancelButtonText: 'Batal',
+    }).then(async result => {
       if (result.isConfirmed) {
         setIsSaving(true);
         try {
@@ -155,9 +154,9 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
           setImagePreview(null);
           setSelectedFile(null);
           Swal.fire('Dihapus!', 'Foto profil telah dihapus dari server.', 'success');
-          onSaveSuccess(updatedProfileData); 
+          onSaveSuccess(updatedProfileData);
         } catch (err: any) {
-          console.error("Failed to delete photo from server:", err);
+          console.error('Failed to delete photo from server:', err);
           Swal.fire('Error', err.message || 'Gagal menghapus foto profil dari server.', 'error');
         } finally {
           setIsSaving(false);
@@ -165,18 +164,18 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
       }
     });
   };
-  
+
   const inputFields = [
     { name: 'fullName', label: 'Nama Lengkap', placeholder: 'Masukkan nama lengkap Anda', icon: UserCircle },
     { name: 'username', label: 'Username', placeholder: 'Masukkan username Anda', icon: UserCircle },
     { name: 'phoneNumber', label: 'Nomor Telepon', placeholder: 'Contoh: 081234567890', icon: Phone },
     { name: 'city', label: 'Kota', placeholder: 'Contoh: Jakarta', icon: MapPin },
-    { 
-      name: 'status', 
-      label: 'Status Saat Ini', 
-      icon: Info, 
+    {
+      name: 'status',
+      label: 'Status Saat Ini',
+      icon: Info,
       type: 'select',
-      options: statusOptions
+      options: statusOptions,
     },
     { name: 'linkedin', label: 'LinkedIn URL', placeholder: 'https://linkedin.com/in/username', icon: Linkedin },
     { name: 'github', label: 'GitHub URL', placeholder: 'https://github.com/username', icon: Github },
@@ -207,7 +206,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-white to-purple-50/30"></div>
         <div className="absolute top-5 right-5 md:top-10 md:right-10 w-16 h-16 md:w-32 md:h-32 bg-blue-400/5 rounded-full blur-xl md:blur-2xl"></div>
         <div className="absolute bottom-5 left-5 md:bottom-10 md:left-10 w-20 h-20 md:w-40 md:h-40 bg-purple-400/5 rounded-full blur-xl md:blur-2xl"></div>
-        
+
         <div className="relative bg-white/90 backdrop-blur-sm h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-2xl shadow-2xl border-0 sm:border border-white/20 flex flex-col">
           {/* Header */}
           <div className="flex justify-between items-center p-4 sm:p-6 md:p-8 pb-3 sm:pb-4 border-b border-gray-200/50 flex-shrink-0">
@@ -220,8 +219,8 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
                 Edit Profil
               </h2>
             </div>
-            <button 
-              onClick={onClose} 
+            <button
+              onClick={onClose}
               className="group p-1.5 sm:p-2 text-gray-400 hover:text-white bg-white hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-600 rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-red-500/30 shadow-lg hover:shadow-xl hover:scale-110"
             >
               <X size={18} className="sm:hidden group-hover:rotate-90 transition-transform duration-300" />
@@ -247,8 +246,8 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
                       ) : (
                         <UserCircle className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 text-gray-400" />
                       )}
-                      <label 
-                        htmlFor="photoUrlModal" 
+                      <label
+                        htmlFor="photoUrlModal"
                         className="absolute inset-0 bg-black/50 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer rounded-full"
                       >
                         <Camera size={18} className="sm:hidden" />
@@ -348,7 +347,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
                   </div>
                 ))}
               </div>
-            
+
               {error && (
                 <div className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-xl p-3 sm:p-4">
                   <div className="flex items-center">
@@ -362,7 +361,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
               )}
             </form>
           </div>
-          
+
           {/* Footer */}
           <div className="p-4 sm:p-6 md:p-8 pt-4 sm:pt-6 border-t border-gray-200/50 flex-shrink-0 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
             <button
@@ -411,7 +410,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
             </div>
           </div>
         </div>
-        
+
         {/* Custom scrollbar styles */}
         <style>{`
           .custom-scrollbar {

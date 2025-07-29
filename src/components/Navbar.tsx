@@ -257,17 +257,6 @@ const Navbar: React.FC = () => {
           )}
         </div>
       )}
-
-      <button
-        onClick={() => handleProtectedLink('/kerjasama')}
-        className={isMobile
-          ? "py-3 px-4 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-300 text-gray-700 hover:text-blue-700 font-medium text-left flex items-center w-full"
-          : "flex items-center px-4 py-2 rounded-xl hover:bg-white/60 backdrop-blur-sm text-gray-700 hover:text-blue-700 transition-all duration-300 font-medium hover:shadow-sm"
-        }
-      >
-        <Users size={16} className="mr-2 text-orange-600" />
-        Kerjasama
-      </button>
     </>
   );
 

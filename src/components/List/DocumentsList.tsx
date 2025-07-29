@@ -1,7 +1,6 @@
-// src/components/list/DocumentList.tsx
 import React from 'react';
 import { type DocumentData } from '../../services/DocumentService';
-import { FileText as FileIcon, Edit3, Trash2, PlusCircle, Eye, FilePlus, Award, FileCheck, FileX, Sparkles } from 'lucide-react';
+import { FileText as FileIcon, Edit3, Trash2, PlusCircle, Eye, FilePlus, Award, FileCheck, FileX, Sparkles, Calendar } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 interface DocumentListProps {
@@ -20,10 +19,6 @@ const DocumentListItem: React.FC<{ document: DocumentData; onEdit: () => void; o
         return <FileCheck size={20} className="text-blue-500" />;
       case 'sertifikat':
         return <Award size={20} className="text-yellow-500" />;
-      case 'portfolio':
-        return <FileIcon size={20} className="text-purple-500" />;
-      case 'ijazah':
-        return <FileCheck size={20} className="text-green-500" />;
       default:
         return <FileIcon size={20} className="text-gray-500" />;
     }
@@ -35,10 +30,6 @@ const DocumentListItem: React.FC<{ document: DocumentData; onEdit: () => void; o
         return 'from-blue-500 to-blue-600';
       case 'sertifikat':
         return 'from-yellow-500 to-orange-500';
-      case 'portfolio':
-        return 'from-purple-500 to-pink-500';
-      case 'ijazah':
-        return 'from-green-500 to-teal-500';
       default:
         return 'from-gray-500 to-gray-600';
     }
@@ -46,20 +37,17 @@ const DocumentListItem: React.FC<{ document: DocumentData; onEdit: () => void; o
 
   return (
     <div className="group relative bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-all duration-300 rounded-2xl border border-white/50 shadow-lg hover:shadow-xl mb-4 overflow-hidden">
-      {/* Gradient accent line */}
       <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${getTypeColor(document.type)}`}></div>
       
       <div className="p-6">
         <div className="flex justify-between items-start">
           <div className="flex items-start space-x-4 flex-1 min-w-0">
-            {/* Enhanced Icon Container */}
             <div className={`flex-shrink-0 p-3 bg-gradient-to-br ${getTypeColor(document.type)} rounded-xl shadow-lg`}>
               <div className="p-1 bg-white/20 backdrop-blur-sm rounded-lg">
                 {getFileIcon(document.type)}
               </div>
             </div>
             
-            {/* Document Info */}
             <div className="flex-1 min-w-0">
               <h3 className="text-lg font-semibold text-gray-800 truncate mb-2 group-hover:text-gray-900 transition-colors" title={document.documentName}>
                 {document.documentName}
@@ -68,13 +56,18 @@ const DocumentListItem: React.FC<{ document: DocumentData; onEdit: () => void; o
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                 <div className="flex items-center gap-1">
                   <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${getTypeColor(document.type)}`}></div>
-                  <span className="font-medium">{document.type}</span>
+                  <span className="font-medium">{document.type.charAt(0).toUpperCase() + document.type.slice(1)}</span>
                 </div>
+                {document.type === 'sertifikat' && document.issuedDate && (
+                  <div className="flex items-center gap-1">
+                    <Calendar size={14} className="text-gray-500" />
+                    <span>Terbit: {new Date(document.issuedDate).toLocaleDateString('id-ID')}</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
           
-          {/* Action Buttons */}
           <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
             <button
               onClick={() => window.open(document.fileUrl, '_blank')}
@@ -106,7 +99,6 @@ const DocumentListItem: React.FC<{ document: DocumentData; onEdit: () => void; o
         </div>
       </div>
       
-      {/* Subtle hover glow effect */}
       <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
         <div className={`absolute inset-0 bg-gradient-to-r ${getTypeColor(document.type)} opacity-5 rounded-2xl`}></div>
       </div>
@@ -173,15 +165,14 @@ const DocumentList: React.FC<DocumentListProps> = ({ documents, isLoading, error
 
   return (
     <div className="mt-6">
-      {/* Enhanced Header */}
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg">
             <FileIcon size={24} className="text-white" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">Dokumen Saya</h2>
-            <p className="text-gray-600 text-sm">Kelola CV, sertifikat, dan dokumen pendukung</p>
+            <h2 className="text-2xl font-bold text-gray-800">CV / Sertifikat Saya</h2>
+            <p className="text-gray-600 text-sm">Kelola CV dan sertifikat Anda</p>
           </div>
         </div>
         
@@ -192,8 +183,6 @@ const DocumentList: React.FC<DocumentListProps> = ({ documents, isLoading, error
           >
             <PlusCircle size={20} className="group-hover:rotate-90 transition-transform duration-300" />
             <span className="hidden lg:inline">Tambah Dokumen</span>
-            
-            {/* Subtle glow effect */}
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-green-400 to-emerald-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-xl"></div>
           </button>
         )}
@@ -201,7 +190,6 @@ const DocumentList: React.FC<DocumentListProps> = ({ documents, isLoading, error
 
       {documents.length === 0 ? (
         <div className="relative text-center py-16 px-6 bg-gradient-to-br from-blue-50/50 via-white/50 to-purple-50/50 backdrop-blur-sm border-2 border-dashed border-gray-300 rounded-3xl">
-          {/* Background decoration */}
           <div className="absolute top-6 left-6 w-16 h-16 bg-blue-200/30 rounded-full blur-2xl"></div>
           <div className="absolute bottom-6 right-6 w-20 h-20 bg-purple-200/30 rounded-full blur-2xl"></div>
           
@@ -210,7 +198,6 @@ const DocumentList: React.FC<DocumentListProps> = ({ documents, isLoading, error
             className="group relative flex flex-col items-center text-gray-600 hover:text-gray-800 transition-all duration-300"
             aria-label="Tambah Dokumen Baru"
           >
-            {/* Floating icons */}
             <div className="relative mb-6">
               <div className="absolute -top-3 -left-3 w-6 h-6 bg-blue-400/80 rounded-lg flex items-center justify-center animate-bounce delay-100">
                 <Sparkles size={12} className="text-blue-800" />
@@ -228,10 +215,9 @@ const DocumentList: React.FC<DocumentListProps> = ({ documents, isLoading, error
               Tambah Dokumen Pertama
             </h3>
             <p className="text-gray-500 max-w-md leading-relaxed">
-              Unggah CV, sertifikat, ijazah, atau dokumen pendukung lainnya untuk melengkapi profil Anda
+              Unggah CV atau sertifikat untuk melengkapi profil Anda
             </p>
             
-            {/* Call to action indicator */}
             <div className="mt-6 flex items-center gap-2 text-sm text-green-600 font-medium">
               <span>Mulai unggah dokumen</span>
               <div className="w-4 h-px bg-green-400 group-hover:w-8 transition-all duration-300"></div>
@@ -249,14 +235,13 @@ const DocumentList: React.FC<DocumentListProps> = ({ documents, isLoading, error
             />
           ))}
           
-          {/* Add more button at the bottom */}
           <div className="mt-8 text-center">
             <button
               onClick={onAddClick}
-              className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-medium py-3 px-6 rounded-2xl border-2 border-dashed border-green-300 hover:border-green-400 hover:bg-green-50/50 transition-all duration-300 group"
+              className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-medium py-3 px-6 rounded-2xl border-2 border-dashed border-green-300 hover:bg-green-50/50 transition-all duration-300 group"
             >
               <PlusCircle size={18} className="group-hover:rotate-90 transition-transform duration-300" />
-              <span className="hidden lg:inline">Tambah Dokumen Lainnya</span>
+              Tambah Dokumen Lain
             </button>
           </div>
         </div>

@@ -1,66 +1,116 @@
-// src/services/documentService.ts
-import { auth } from '../services/firebase'; // Your Firebase auth instance
+import { auth } from '../services/firebase'; // Firebase auth instance
 import { FieldValue } from "firebase/firestore"; // Firestore type
 
-const API_BASE_URL = 'https://jobseeker-capstone-347777124386.asia-southeast2.run.app';
+const API_BASE_URL = 'https://jobmate-rest-api-819767094904.asia-southeast2.run.app';
 
 export interface DocumentData {
-  id?: string; // Optional: for existing records
+  id?: string;
   documentName: string;
-  type: 'CV' | 'Sertifikat' | 'Lainnya' | string; // Predefined types + string for flexibility
+  type: 'cv' | 'sertifikat';
   fileUrl: string;
-  base64String?: string; // Only for upload/update, not typically stored long-term in this interface
   uploadedAt?: Date | FieldValue | string;
   updatedAt?: Date | FieldValue | string;
+  credentialId?: string; // Optional for sertifikat
+  issuedDate?: string;   // Required for sertifikat
+  expireDate?: string;   // Optional for sertifikat
 }
 
-export const documentTypes: ReadonlyArray<DocumentData['type']> = ['CV', 'Sertifikat', 'Lainnya'];
+export const documentTypes: ReadonlyArray<DocumentData['type']> = ['cv', 'sertifikat'];
 
-// Helper function to get the ID token
+// Token cache
+let cachedToken: string | null = null;
+let tokenExpiry: number | null = null;
+
 const getIdToken = async (): Promise<string | null> => {
+  const now = Date.now();
+  if (cachedToken && tokenExpiry && now < tokenExpiry) {
+    return cachedToken;
+  }
   const user = auth.currentUser;
   if (user) {
-    return await user.getIdToken();
+    const token = await user.getIdToken();
+    cachedToken = token;
+    tokenExpiry = now + 5 * 60 * 1000; // cache 5 menit
+    return token;
   }
   return null;
 };
 
+// Fetch with timeout
+const fetchWithTimeout = async (
+  url: string,
+  options: RequestInit = {},
+  timeoutMs = 15000
+) => {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    clearTimeout(timer);
+    return response;
+  } catch (error) {
+    clearTimeout(timer);
+    throw error;
+  }
+};
+
+// Universal error handler
+const parseErrorResponse = async (response: Response) => {
+  const text = await response.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { error: text || 'Unknown error' };
+  }
+};
+
 // Add new document
 export const addDocument = async (
-  documentName: string, 
-  type: DocumentData['type'], 
-  base64String: string
-): Promise<{ documentId: string, fileUrl: string, documentName: string }> => {
+  documentName: string,
+  type: DocumentData['type'],
+  file: File,
+  issuedDate?: string,
+  credentialId?: string,
+  expireDate?: string
+): Promise<{ documentId: string; fileUrl: string; documentName: string; type: string; issuedDate?: string; credentialId?: string; expireDate?: string }> => {
   const token = await getIdToken();
-  if (!token) {
-    throw new Error('User not authenticated');
+  if (!token) throw new Error('User not authenticated');
+
+  const formData = new FormData();
+  formData.append('documentName', documentName);
+  formData.append('type', type);
+  formData.append('document', file);
+  if (type === 'sertifikat') {
+    if (!issuedDate) throw new Error('issuedDate is required for sertifikat');
+    formData.append('issuedDate', issuedDate);
+    if (credentialId) formData.append('credentialId', credentialId);
+    if (expireDate) formData.append('expireDate', expireDate);
   }
 
-  const response = await fetch(`${API_BASE_URL}/upload-document`, {
+  const response = await fetchWithTimeout(`${API_BASE_URL}/upload-document`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ documentName, type, file: base64String }), // API expects 'file' for base64String
+    body: formData,
   });
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ error: 'Failed to upload document and parse error' }));
+    const errorData = await parseErrorResponse(response);
     console.error('Add document error:', response.status, errorData);
     throw new Error(errorData.error || `Failed to upload document. Status: ${response.status}`);
   }
-  return response.json(); 
+
+  const result = await response.json();
+  return result.document;
 };
 
-// Get all documents for the user
+// Get all documents
 export const getDocuments = async (): Promise<DocumentData[]> => {
   const token = await getIdToken();
-  if (!token) {
-    throw new Error('User not authenticated');
-  }
+  if (!token) throw new Error('User not authenticated');
 
-  const response = await fetch(`${API_BASE_URL}/upload-document`, {
+  const response = await fetchWithTimeout(`${API_BASE_URL}/upload-document`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -69,67 +119,75 @@ export const getDocuments = async (): Promise<DocumentData[]> => {
   });
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ error: 'Failed to get documents and parse error' }));
+    const errorData = await parseErrorResponse(response);
     console.error('Get documents error:', response.status, errorData);
     throw new Error(errorData.error || `Failed to get documents. Status: ${response.status}`);
   }
+
   const result = await response.json();
   return result.documents as DocumentData[];
 };
 
-// Update an existing document
+// Update existing document
 export const updateDocument = async (
-  documentId: string, 
+  documentId: string,
   documentName?: string,
-  type?: DocumentData['type'], 
-  base64String?: string // Optional: only if file is being replaced
-): Promise<{ documentId: string, fileUrl?: string, documentName?: string, type?: string }> => {
+  type?: DocumentData['type'],
+  file?: File,
+  issuedDate?: string,
+  credentialId?: string,
+  expireDate?: string
+): Promise<{ documentId: string; fileUrl?: string; documentName?: string; type?: string; issuedDate?: string; credentialId?: string; expireDate?: string }> => {
   const token = await getIdToken();
-  if (!token) {
-    throw new Error('User not authenticated');
-  }
-  if (!documentId) {
-    throw new Error('Document ID is required for update.');
-  }
-  
-  const payload: { documentName?: string, type?: DocumentData['type'], base64String?: string } = {};
-  if (documentName) payload.documentName = documentName;
-  if (type) payload.type = type;
-  if (base64String) payload.base64String = base64String;
+  if (!token) throw new Error('User not authenticated');
+  if (!documentId) throw new Error('Document ID is required for update.');
 
+  const formData = new FormData();
+  if (documentName) formData.append('documentName', documentName);
+  if (type) formData.append('type', type);
+  if (file) formData.append('document', file);
+  if (type === 'sertifikat') {
+    if (issuedDate !== undefined) formData.append('issuedDate', issuedDate);
+    if (credentialId !== undefined) formData.append('credentialId', credentialId);
+    if (expireDate !== undefined) formData.append('expireDate', expireDate);
+  } else if (type === 'cv') {
+    // Ensure certificate-specific fields are not sent for cv type
+    formData.append('issuedDate', '');
+    formData.append('credentialId', '');
+    formData.append('expireDate', '');
+  }
 
-  if (Object.keys(payload).length === 0) {
+  if ([...formData.entries()].length === 0) {
     throw new Error("No fields provided for update.");
   }
 
-  const response = await fetch(`${API_BASE_URL}/upload-document/${documentId}`, {
+  const response = await fetchWithTimeout(`${API_BASE_URL}/upload-document/${documentId}`, {
     method: 'PATCH',
     headers: {
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(payload),
+    body: formData,
   });
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ error: 'Failed to update document and parse error' }));
+    const errorData = await parseErrorResponse(response);
     console.error('Update document error:', response.status, errorData);
     throw new Error(errorData.error || `Failed to update document. Status: ${response.status}`);
   }
-  return response.json();
+
+  const result = await response.json();
+  return result.updatedFields;
 };
 
-// Delete a document
-export const deleteDocument = async (documentId: string): Promise<{ message: string }> => {
+// Delete document
+export const deleteDocument = async (
+  documentId: string
+): Promise<{ message: string }> => {
   const token = await getIdToken();
-  if (!token) {
-    throw new Error('User not authenticated');
-  }
-  if (!documentId) {
-    throw new Error('Document ID is required for deletion.');
-  }
+  if (!token) throw new Error('User not authenticated');
+  if (!documentId) throw new Error('Document ID is required for deletion.');
 
-  const response = await fetch(`${API_BASE_URL}/upload-document/${documentId}`, {
+  const response = await fetchWithTimeout(`${API_BASE_URL}/upload-document/${documentId}`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -137,9 +195,10 @@ export const deleteDocument = async (documentId: string): Promise<{ message: str
   });
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ error: 'Failed to delete document and parse error' }));
+    const errorData = await parseErrorResponse(response);
     console.error('Delete document error:', response.status, errorData);
     throw new Error(errorData.error || `Failed to delete document. Status: ${response.status}`);
   }
+
   return response.json();
 };

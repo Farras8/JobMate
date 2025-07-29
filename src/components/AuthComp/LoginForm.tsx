@@ -1,7 +1,7 @@
 // src/components/AuthComp/LoginForm.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../../services/firebase';
 import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
@@ -27,7 +27,10 @@ const LoginForm: React.FC = () => {
     }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const token = await user.getIdToken();
+      console.log('User ID Token (email/password):', token);
       // Navigasi ditangani oleh onAuthStateChanged di App.tsx
     } catch (err: any) {
       console.error("Firebase login error:", err.code, err.message);
@@ -86,6 +89,27 @@ const LoginForm: React.FC = () => {
           }
         });
       }
+    }
+  };
+
+  // Handler for Google Login
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    setError(null);
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const token = await user.getIdToken();
+      console.log('User ID Token (google):', token);
+      // Navigasi tetap dihandle oleh onAuthStateChanged di App.tsx
+    } catch (err: unknown) {
+      let message = 'Gagal login dengan Google. Silakan coba lagi.';
+      if (err instanceof Error) message = err.message;
+      else if (typeof err === 'object' && err && 'message' in err) message = (err as { message?: string }).message || message;
+      setError(message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -218,6 +242,17 @@ const LoginForm: React.FC = () => {
                 <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform duration-200" />
               </>
             )}
+          </button>
+
+          {/* Google Login Button */}
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={isLoading}
+            className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-2xl py-3 px-6 mt-2 shadow-sm hover:shadow-md transition-all duration-200 text-gray-700 font-semibold hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            <img src="/google_drive.png" alt="Google" className="w-5 h-5" />
+            <span>Sign In dengan Google</span>
           </button>
         </form>
 

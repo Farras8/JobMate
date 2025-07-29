@@ -1,13 +1,14 @@
 // src/components/AuthComp/SignUpForm.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../../services/firebase';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import { User, Mail, Lock, Phone, MapPin, AtSign, Eye, EyeOff, ArrowRight, Shield, Sparkles, UserPlus } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
 
 const SignUpForm: React.FC = () => {
     const [email, setEmail] = useState("");
@@ -17,15 +18,135 @@ const SignUpForm: React.FC = () => {
     const [username, setUsername] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [city, setCity] = useState("");
-    
+
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    
+
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    // Handler for Google Sign Up (must be inside component)
+    const handleGoogleSignUp = async () => {
+        setError(null);
+        setLoading(true);
+        const provider = new GoogleAuthProvider();
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            // Write only email, others empty
+            const userDocRef = doc(db, "users", user.uid);
+            const userPersonalInfoRef = doc(userDocRef, "user_personal", "info");
+            await setDoc(userPersonalInfoRef, {
+                username: "",
+                fullName: "",
+                email: user.email || "",
+                phoneNumber: "",
+                city: "",
+                address: "",
+                photoUrl: "",
+                github: "",
+                instagram: "",
+                linkedin: "",
+                portfolioSite: "",
+                status: "",
+                createdAt: serverTimestamp(),
+                updatedAt: serverTimestamp(),
+            });
+            setLoading(false);
+            Swal.fire({
+                title: 'Pendaftaran Berhasil!',
+                text: 'Akun Google Anda berhasil didaftarkan. Apa yang ingin Anda lakukan selanjutnya?',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: 'Lengkapi Profil Sekarang',
+                cancelButtonText: 'Nanti Saja, ke Dashboard',
+                confirmButtonColor: '#1e3a8a',
+                cancelButtonColor: '#6B7280',
+                reverseButtons: true,
+                allowOutsideClick: false,
+                customClass: {
+                  popup: 'rounded-2xl',
+                  confirmButton: 'rounded-xl',
+                  cancelButton: 'rounded-xl'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate('/profile/edit');
+                } else {
+                    navigate('/');
+                }
+            });
+        } catch (err: unknown) {
+            let message = "Gagal mendaftar dengan Google. Silakan coba lagi.";
+            if (err instanceof Error) message = err.message;
+            else if (typeof err === 'object' && err && 'message' in err) message = (err as { message?: string }).message || message;
+            setError(message);
+            setLoading(false);
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
+    // Handler for Google Sign Up
+    const handleGoogleSignUp = async () => {
+        setError(null);
+        setLoading(true);
+        const provider = new GoogleAuthProvider();
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            // Write only email, others empty
+            const userDocRef = doc(db, "users", user.uid);
+            const userPersonalInfoRef = doc(userDocRef, "user_personal", "info");
+            await setDoc(userPersonalInfoRef, {
+                username: "",
+                fullName: "",
+                email: user.email || "",
+                phoneNumber: "",
+                city: "",
+                address: "",
+                photoUrl: "",
+                github: "",
+                instagram: "",
+                linkedin: "",
+                portfolioSite: "",
+                status: "",
+                createdAt: serverTimestamp(),
+                updatedAt: serverTimestamp(),
+            });
+            setLoading(false);
+            Swal.fire({
+                title: 'Pendaftaran Berhasil!',
+                text: 'Akun Google Anda berhasil didaftarkan. Apa yang ingin Anda lakukan selanjutnya?',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: 'Lengkapi Profil Sekarang',
+                cancelButtonText: 'Nanti Saja, ke Dashboard',
+                confirmButtonColor: '#1e3a8a',
+                cancelButtonColor: '#6B7280',
+                reverseButtons: true,
+                allowOutsideClick: false,
+                customClass: {
+                  popup: 'rounded-2xl',
+                  confirmButton: 'rounded-xl',
+                  cancelButton: 'rounded-xl'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate('/profile/edit');
+                } else {
+                    navigate('/');
+                }
+            });
+        } catch (err: unknown) {
+            let message = "Gagal mendaftar dengan Google. Silakan coba lagi.";
+            if (err instanceof Error) message = err.message;
+            // @ts-ignore
+            if (typeof err === 'object' && err && 'message' in err) message = (err as any).message;
+            setError(message);
+            setLoading(false);
+        }
+    };
         e.preventDefault();
         setError(null);
 
@@ -91,14 +212,20 @@ const SignUpForm: React.FC = () => {
                 }
             });
             
-        } catch (err: any) {
-            console.error("Sign up error:", err.code, err.message);
-            if (err.code === 'auth/email-already-in-use') {
+        } catch (err: unknown) {
+            let code = '';
+            let message = "Gagal mendaftar. Silakan coba lagi.";
+            if (typeof err === 'object' && err !== null) {
+                code = (err as { code?: string }).code || '';
+                message = (err as { message?: string }).message || message;
+            }
+            console.error("Sign up error:", code, message);
+            if (code === 'auth/email-already-in-use') {
                 setError("Email sudah terdaftar. Silakan gunakan email lain atau login.");
-            } else if (err.code === 'auth/weak-password') {
+            } else if (code === 'auth/weak-password') {
                 setError("Kata sandi terlalu lemah. Gunakan minimal 6 karakter.");
             } else {
-                setError(err.message || "Gagal mendaftar. Silakan coba lagi.");
+                setError(message);
             }
             setLoading(false);
         }
@@ -368,6 +495,17 @@ const SignUpForm: React.FC = () => {
                                 <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform duration-200" />
                             </>
                         )}
+                    </button>
+
+                    {/* Google Sign Up Button */}
+                    <button
+                        type="button"
+                        onClick={handleGoogleSignUp}
+                        disabled={loading}
+                        className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-2xl py-3 px-6 mt-2 shadow-sm hover:shadow-md transition-all duration-200 text-gray-700 font-semibold hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                        <img src="/google_drive.png" alt="Google" className="w-5 h-5" />
+                        <span>Daftar dengan Google</span>
                     </button>
                 </form>
 

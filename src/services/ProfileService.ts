@@ -1,7 +1,6 @@
-// src/services/profileService.ts
 import { auth } from '../services/firebase'; // Your Firebase auth instance
 
-const API_BASE_URL = 'https://jobseeker-capstone-347777124386.asia-southeast2.run.app';
+const API_BASE_URL = 'https://jobmate-rest-api-819767094904.asia-southeast2.run.app';
 
 interface ProfileData {
   uid?: string;
@@ -15,7 +14,6 @@ interface ProfileData {
   username?: string;
   status?: string;
   photoUrl?: string | null;
-  // Add any other fields that your profile might have
 }
 
 // Helper function to get the ID token
@@ -37,7 +35,7 @@ export const fetchProfile = async (): Promise<ProfileData> => {
   const response = await fetch(`${API_BASE_URL}/profile`, {
     method: 'GET',
     headers: {
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
   });
@@ -51,35 +49,40 @@ export const fetchProfile = async (): Promise<ProfileData> => {
 };
 
 // Update user profile
-export const updateProfile = async (profileData: Partial<ProfileData>): Promise<any> => {
+export const updateProfile = async (profileData: Partial<ProfileData>, file?: File): Promise<ProfileData> => {
   const token = await getIdToken();
   if (!token) {
     throw new Error('User not authenticated');
   }
 
-  // Filter out undefined values from profileData, except for photoUrl which can be null
-  const dataToUpdate: Partial<ProfileData> = {};
+  // Create FormData for sending profile data and optional file
+  const formData = new FormData();
+  // Append profile fields (excluding undefined values)
   for (const key in profileData) {
     if (Object.prototype.hasOwnProperty.call(profileData, key)) {
       const typedKey = key as keyof ProfileData;
-      if (profileData[typedKey] !== undefined) {
-        dataToUpdate[typedKey] = profileData[typedKey];
+      if (profileData[typedKey] !== undefined && typedKey !== 'photoUrl') {
+        formData.append(key, profileData[typedKey] as string);
       }
     }
   }
-  
-  if (Object.keys(dataToUpdate).length === 0) {
-    console.warn("No data provided to update profile.");
-    return { message: "No data provided to update." };
+  // Append file if provided
+  if (file) {
+    formData.append('photo', file);
+  }
+
+  if (formData.entries().next().done && !file) {
+    console.warn('No data provided to update profile.');
+    return { message: 'No data provided to update.' } as any;
   }
 
   const response = await fetch(`${API_BASE_URL}/profile`, {
     method: 'PATCH',
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      // Do not set Content-Type; browser sets it automatically for FormData
     },
-    body: JSON.stringify(dataToUpdate),
+    body: formData,
   });
 
   if (!response.ok) {
@@ -100,7 +103,7 @@ export const deleteProfilePhoto = async (): Promise<any> => {
   const response = await fetch(`${API_BASE_URL}/profile/photo`, {
     method: 'DELETE',
     headers: {
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   });
 

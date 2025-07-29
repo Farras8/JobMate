@@ -1,9 +1,8 @@
-// src/services/applicationService.ts
 import { auth, db } from '../services/firebase';
 import { doc, getDoc, type DocumentData, FieldValue } from "firebase/firestore";
 import { type DisplayJob } from './jobService'; // Assuming this type is available and comprehensive
 
-const API_BASE_URL = 'https://jobseeker-capstone-347777124386.asia-southeast2.run.app';
+const API_BASE_URL = 'https://jobmate-rest-api-819767094904.asia-southeast2.run.app';
 
 export const applicationStatuses = ['pending', 'reviewed', 'interview', 'offered', 'rejected'] as const;
 export type ApplicationStatus = typeof applicationStatuses[number];
@@ -36,16 +35,11 @@ const getIdToken = async (): Promise<string | null> => {
 };
 
 /**
- * [FUNGSI BARU] Submits a new job application.
+ * Submits a new job application.
  * Calls POST /applications
- * @param payload - The application data containing jobId, resumeFile (base64), etc.
+ * @param formData - The FormData containing jobId, resumeFile (File), coverLetter, and notes
  */
-export const submitApplication = async (payload: {
-    jobId: string;
-    resumeFile: string;
-    coverLetter?: string;
-    notes?: string;
-}): Promise<any> => {
+export const submitApplication = async (formData: FormData): Promise<any> => {
     const token = await getIdToken();
     if (!token) {
         throw new Error('User not authenticated');
@@ -55,21 +49,19 @@ export const submitApplication = async (payload: {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            // Tidak perlu 'Content-Type': FormData otomatis menetapkan 'multipart/form-data'
         },
-        body: JSON.stringify(payload),
+        body: formData,
     });
 
     const responseData = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-        // Berikan pesan error yang lebih spesifik dari backend jika ada
         throw new Error(responseData.error || 'Failed to submit application');
     }
 
     return responseData;
 };
-
 
 /**
  * Fetches the raw list of applications for the current user.
@@ -151,7 +143,7 @@ export const getAppliedJobs = async (): Promise<AppliedJob[]> => {
 };
 
 /**
- * [FUNGSI BARU] Fetches the details for a single application by its ID and enriches it with job data.
+ * Fetches the details for a single application by its ID and enriches it with job data.
  * @param applicationId The ID of the application to fetch.
  */
 export const getApplicationDetail = async (applicationId: string): Promise<AppliedJob | null> => {

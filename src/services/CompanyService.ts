@@ -1,7 +1,7 @@
 // src/services/companyService.ts
 import { FieldValue } from "firebase/firestore";
 
-const API_BASE_URL = 'https://jobseeker-capstone-347777124386.asia-southeast2.run.app';
+const API_BASE_URL = 'https://jobmate-rest-api-819767094904.asia-southeast2.run.app';
 
 export interface Company {
   id: string;
@@ -38,7 +38,7 @@ export const fetchCompanies = async (filters: CompanyFilter = {}): Promise<Compa
   }
 
   // Choose endpoint based on whether filters are applied
-  const endpoint = params.toString() ? 'companiesFilter' : 'companies';
+  const endpoint = params.toString() ? 'companies' : 'companies';
   const url = `${API_BASE_URL}/${endpoint}?${params.toString()}`;
 
   const response = await fetch(url);

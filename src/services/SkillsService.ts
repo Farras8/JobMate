@@ -2,7 +2,7 @@
 import { auth, db } from '../services/firebase'; // Your Firebase auth instance and Firestore db instance
 import { collection, getDocs, FieldValue } from "firebase/firestore"; // Firestore imports
 
-const API_BASE_URL = 'https://jobseeker-capstone-347777124386.asia-southeast2.run.app';
+const API_BASE_URL = 'https://jobmate-rest-api-819767094904.asia-southeast2.run.app';
 
 export interface Skill {
   id?: string; // ID unik untuk skill pengguna (dari subkoleksi pengguna)

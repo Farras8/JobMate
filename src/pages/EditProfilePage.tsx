@@ -198,7 +198,7 @@ const EditProfilePage: React.FC = () => {
     { id: 'experience', label: 'Pengalaman', icon: BriefcaseIcon, color: 'from-orange-500 to-red-600' },
     { id: 'skills', label: 'Keterampilan', icon: Star, color: 'from-yellow-500 to-orange-600' },
     { id: 'portfolio', label: 'Portfolio', icon: LayersIcon, color: 'from-purple-500 to-pink-600' },
-    { id: 'documents', label: 'Dokumen', icon: FileTextIcon, color: 'from-indigo-500 to-blue-600' },
+    { id: 'documents', label: 'CV/Certificate', icon: FileTextIcon, color: 'from-indigo-500 to-blue-600' },
     { id: 'preferences', label: 'Preferensi', icon: TargetIcon, color: 'from-pink-500 to-rose-600' },
   ];
 
