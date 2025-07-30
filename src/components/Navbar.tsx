@@ -162,7 +162,7 @@ const Navbar: React.FC = () => {
         }
       >
         <Briefcase size={16} className="mr-2 text-blue-600" />
-        JobSearch
+        Lowongan
       </Link>
 
       <Link

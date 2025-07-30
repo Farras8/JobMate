@@ -267,14 +267,7 @@ const AddHardSkillsForm: React.FC<AddHardSkillsFormProps> = ({ onClose, onAddSuc
                         </ul>
                       )}
                       
-                      {!isLoadingMasterSkills && getFilteredMasterSkills(index).length === 0 && searchTerms[index] && (
-                        <div className="absolute z-20 w-full bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/60 rounded-xl mt-2 p-4 text-sm text-green-700 shadow-xl animate-fade-in">
-                          <div className="flex items-center">
-                            <Star size={14} className="mr-2 text-green-600" />
-                            <span>"{searchTerms[index]}" akan ditambahkan sebagai skill baru.</span>
-                          </div>
-                        </div>
-                      )}
+                      {/* No alert for new skill if not found in dropdown */}
                     </>
                   )}
                 </div>

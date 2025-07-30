@@ -66,6 +66,10 @@ const FloatingChatbot: React.FC = () => {
     checkApiHealth();
   }, []);
 
+  // Typing animation state
+  const [botTypingText, setBotTypingText] = useState<string | null>(null);
+  const [botTypingMeta, setBotTypingMeta] = useState<{confidence?: number; source?: string} | null>(null);
+
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
 
@@ -84,30 +88,36 @@ const FloatingChatbot: React.FC = () => {
     try {
       // Use ChatbotService instead of static responses
       const result = await chatbotService.processQuestion(currentInput);
-      
-      // Add realistic delay for better UX
-      const delay = Math.min(1000 + (result.response.length * 20), 3000);
-      
-      setTimeout(() => {
-        const botResponse: Message = {
-          id: (Date.now() + 1).toString(),
-          text: result.response,
-          sender: 'bot',
-          timestamp: new Date(),
-          confidence: result.confidence,
-          source: result.source
-        };
-        
-        setMessages(prev => [...prev, botResponse]);
-        setIsTyping(false);
-        
-        // Update API health status
-        setIsApiHealthy(result.source === 'api');
-      }, delay);
-      
+
+      // Typing animation logic
+      let i = 0;
+      setBotTypingText('');
+      setBotTypingMeta({confidence: result.confidence, source: result.source});
+      const typeChar = () => {
+        i++;
+        setBotTypingText(result.response.slice(0, i));
+        if (i < result.response.length) {
+          setTimeout(typeChar, 18 + Math.random() * 30); // randomize speed a bit
+        } else {
+          // After typing animation, push full message
+          const botResponse: Message = {
+            id: (Date.now() + 1).toString(),
+            text: result.response,
+            sender: 'bot',
+            timestamp: new Date(),
+            confidence: result.confidence,
+            source: result.source
+          };
+          setMessages(prev => [...prev, botResponse]);
+          setIsTyping(false);
+          setBotTypingText(null);
+          setBotTypingMeta(null);
+          setIsApiHealthy(result.source === 'api');
+        }
+      };
+      setTimeout(typeChar, 500); // initial delay before typing starts
     } catch (error) {
       console.error('Error getting bot response:', error);
-      
       setTimeout(() => {
         const errorResponse: Message = {
           id: (Date.now() + 1).toString(),
@@ -117,9 +127,10 @@ const FloatingChatbot: React.FC = () => {
           confidence: 0,
           source: 'fallback'
         };
-        
         setMessages(prev => [...prev, errorResponse]);
         setIsTyping(false);
+        setBotTypingText(null);
+        setBotTypingMeta(null);
         setIsApiHealthy(false);
       }, 1000);
     }
@@ -268,7 +279,6 @@ const FloatingChatbot: React.FC = () => {
                               })}
                             </p>
                           </div>
-                          
                           {/* Message tail */}
                           <div className={`absolute bottom-0 ${
                             message.sender === 'user' 
@@ -279,6 +289,21 @@ const FloatingChatbot: React.FC = () => {
                       </div>
                     </div>
                   ))}
+                  {/* Bot typing animation bubble */}
+                  {botTypingText !== null && (
+                    <div className="flex justify-start animate-in fade-in slide-in-from-bottom-1 duration-300">
+                      <div className="flex items-end space-x-1.5 xs:space-x-2 max-w-[80%]">
+                        <div className="w-5 h-5 xs:w-6 xs:h-6 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0 shadow-sm">
+                          <Bot size={10} className="xs:w-3 xs:h-3 text-white" />
+                        </div>
+                        <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 px-3 xs:px-4 py-2 xs:py-3 rounded-xl xs:rounded-2xl rounded-bl-sm shadow-lg shadow-gray-200/30 relative">
+                          <p className="text-xs xs:text-sm leading-relaxed break-words whitespace-pre-line">{botTypingText}</p>
+                          {/* Typing indicator tail */}
+                          <div className="absolute bottom-0 left-0 -translate-x-1 border-r-4 xs:border-r-6 sm:border-r-8 border-r-white border-t-4 xs:border-t-6 sm:border-t-8 border-t-transparent"></div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   
                   {/* Typing Indicator */}
                   {isTyping && (

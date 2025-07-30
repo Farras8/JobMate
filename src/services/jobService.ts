@@ -1,6 +1,3 @@
-// src/services/jobService.ts
-
-// Interface untuk data mentah dari API
 export interface ApiJob {
   id: string;
   jobTitle: string;
@@ -24,13 +21,11 @@ export interface ApiJob {
   };
 }
 
-// Interface untuk respons API yang mengembalikan daftar pekerjaan
 interface ApiResponse {
   jobs: ApiJob[];
-  total?: number; // Tambahkan total untuk paginasi
+  total?: number;
 }
 
-// Interface untuk data yang telah diformat dan siap ditampilkan di UI
 export interface DisplayJob {
   id: string;
   logo: string;
@@ -49,21 +44,17 @@ export interface DisplayJob {
   skillsRequired?: string[];
 }
 
-// Interface untuk parameter filter pada fungsi searchJobs
 export interface SearchJobFilters {
   category?: string;
   location?: string;
-  minSalary?: number;
-  maxSalary?: number;
   companyName?: string;
   city?: string;
   jobTitle?: string;
-  jobType?: string; // Tambahkan jobType
+  jobType?: string;
 }
 
 const API_BASE_URL = 'https://jobmate-rest-api-819767094904.asia-southeast2.run.app';
 
-// Fungsi helper untuk fetch dengan timeout
 const fetchWithTimeout = async (url: string, options: RequestInit = {}, timeout = 10000) => {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
@@ -77,7 +68,6 @@ const fetchWithTimeout = async (url: string, options: RequestInit = {}, timeout 
   }
 };
 
-// Fungsi helper untuk memformat tanggal posting
 const formatPostedDate = (postedAtSeconds: number): string => {
   if (typeof postedAtSeconds !== 'number') return "Tanggal tidak valid";
   const date = new Date(postedAtSeconds * 1000);
@@ -104,7 +94,6 @@ const formatPostedDate = (postedAtSeconds: number): string => {
   }
 };
 
-// Fungsi helper untuk mentransformasi data API mentah menjadi DisplayJob
 const transformApiJobToDisplayJob = (apiJob: ApiJob): DisplayJob => {
   const companyName = apiJob.companyName || "Perusahaan Tidak Diketahui";
   let description = `Kami sedang mencari seorang ${apiJob.jobTitle.toLowerCase()}...`;
@@ -128,7 +117,6 @@ const transformApiJobToDisplayJob = (apiJob: ApiJob): DisplayJob => {
   };
 };
 
-// Fungsi untuk mengambil pekerjaan terbaru (untuk homepage)
 export const fetchRecentJobs = async (): Promise<DisplayJob[]> => {
   const start = performance.now();
   try {
@@ -156,14 +144,11 @@ export const fetchRecentJobs = async (): Promise<DisplayJob[]> => {
   }
 };
 
-// Fungsi untuk mencari pekerjaan dengan filter dan paginasi
 export const searchJobs = async (filters: SearchJobFilters, page: number = 1, limit: number = 6): Promise<{ jobs: DisplayJob[], total: number }> => {
   const start = performance.now();
   const queryParams = new URLSearchParams();
   if (filters.category) queryParams.append('category', filters.category);
   if (filters.location) queryParams.append('location', filters.location);
-  if (filters.minSalary) queryParams.append('minSalary', String(filters.minSalary));
-  if (filters.maxSalary) queryParams.append('maxSalary', String(filters.maxSalary));
   if (filters.companyName) queryParams.append('companyName', filters.companyName);
   if (filters.city) queryParams.append('city', filters.city);
   if (filters.jobTitle) queryParams.append('jobTitle', filters.jobTitle);
@@ -200,7 +185,6 @@ export const searchJobs = async (filters: SearchJobFilters, page: number = 1, li
   }
 };
 
-// Fungsi untuk mengambil detail pekerjaan berdasarkan ID
 export const fetchJobById = async (jobId: string): Promise<ApiJob | null> => {
   const start = performance.now();
   const url = `${API_BASE_URL}/jobs/${jobId}`;

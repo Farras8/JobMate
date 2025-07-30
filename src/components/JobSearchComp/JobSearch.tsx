@@ -209,11 +209,7 @@ const JobSearch: React.FC = () => {
                     placeholder="Posisi"
                     className="w-full pl-12 pr-6 py-4 rounded-2xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none transition-all duration-300 text-gray-700 placeholder-gray-400 bg-white/70"
                     value={mainSearchTerm}
-                    onChange={(e) => {
-                      setMainSearchTerm(e.target.value);
-                      handleMainSearch();
-                    }}
-                    onKeyPress={(e) => e.key === 'Enter' && handleMainSearch()}
+                    onChange={(e) => setMainSearchTerm(e.target.value)}
                   />
                 </div>
                 <div className="flex items-center gap-3 w-full sm:w-auto">
