@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import OverallScoreCard from '../components/analysis/OverallScoreCard';
-import ScoreBreakdown from '../components/analysis/ScoreBreakdown';
 import CriticalIssues from '../components/analysis/CriticalIssues';
 import Strengths from '../components/analysis/Strengths';
-import KeywordAnalysis from "../components/analysis/KeywordAnalysis.tsx";
+import KeywordAnalysis from '../components/analysis/KeywordAnalysis';
 import LineAnalysis from '../components/analysis/LineAnalysis';
-import BenchmarkSection from '../components/analysis/BenchmarkSection';
-import { BarChart3, Target, Sparkles, CheckCircle, AlertTriangle } from 'lucide-react';
-import FloatingChatbot from '../components/FloatingChatbot.tsx';
+import { AlertTriangle, Target, CheckCircle, BarChart3, Sparkles } from 'lucide-react';
+import FloatingChatbot from '../components/FloatingChatbot';
 
 const ResumeAnalysisPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState('Critical Issues');
@@ -64,15 +62,10 @@ const ResumeAnalysisPage: React.FC = () => {
                     </p>
                 </section>
 
-                {/* Score Cards Section */}
+                {/* Score Card Section */}
                 <section className="mb-12">
-                    <div className="grid md:grid-cols-2 gap-8">
-                        <div className="transform hover:scale-105 transition-all duration-300">
-                            <OverallScoreCard />
-                        </div>
-                        <div className="transform hover:scale-105 transition-all duration-300">
-                            <ScoreBreakdown />
-                        </div>
+                    <div className="transform hover:scale-105 transition-all duration-300">
+                        <OverallScoreCard />
                     </div>
                 </section>
 
@@ -92,7 +85,7 @@ const ResumeAnalysisPage: React.FC = () => {
                             </p>
                         </div>
 
-                        {/* Enhanced Tabs */}
+                        {/* Tabs */}
                         <div className="mb-8">
                             <div className="flex flex-wrap justify-center gap-2 p-2 bg-gray-100/80 rounded-2xl backdrop-blur-sm">
                                 {['Critical Issues', 'Strengths', 'Keywords', 'Line Analysis'].map((tab) => (
@@ -114,7 +107,7 @@ const ResumeAnalysisPage: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Tab Content with Animation */}
+                        {/* Tab Content */}
                         <div className="animate-fade-in-up">
                             {activeTab === 'Critical Issues' && (
                                 <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-6 border border-red-200/30">
@@ -140,22 +133,6 @@ const ResumeAnalysisPage: React.FC = () => {
                     </div>
                 </section>
 
-                {/* Benchmark Section */}
-                <section className="mb-8">
-                    <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-blue-900/10 p-8 border border-gray-200/50 transform hover:scale-105 transition-all duration-300">
-                        <div className="text-center mb-6">
-                            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-yellow-100 to-orange-100 border border-yellow-200/50 text-yellow-700 px-4 py-2 rounded-full text-sm font-semibold mb-4 shadow-sm">
-                                <BarChart3 size={14} className="text-yellow-600" />
-                                <span>Perbandingan Industri</span>
-                            </div>
-                            <h3 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-yellow-900 to-orange-900 bg-clip-text text-transparent">
-                                Benchmark Analysis
-                            </h3>
-                        </div>
-                        <BenchmarkSection />
-                    </div>
-                </section>
-
                 {/* Call to Action */}
                 <section className="text-center">
                     <div className="bg-gradient-to-r from-blue-900 to-purple-900 rounded-3xl p-8 text-white shadow-xl shadow-blue-900/20">
@@ -178,7 +155,7 @@ const ResumeAnalysisPage: React.FC = () => {
                     </div>
                 </section>
             </main>
-            <FloatingChatbot/>
+            <FloatingChatbot />
             <Footer />
 
             <style>{`

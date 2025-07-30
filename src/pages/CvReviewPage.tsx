@@ -65,17 +65,7 @@ const CvReviewPage: React.FC = () => {
                             </p>
                         </div>
 
-                        {/* Upload Buttons */}
-                        <div className="grid grid-cols-2 gap-3 mb-6">
-                            <button className="group bg-white hover:bg-gray-50 border border-gray-200 hover:border-blue-200 text-gray-700 font-medium py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-sm hover:shadow-md transform hover:scale-105">
-                                <img src="/google_drive.png" alt="Google Drive" className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-                                <span className="text-sm">Drive</span>
-                            </button>
-                            <button className="group bg-white hover:bg-gray-50 border border-gray-200 hover:border-blue-200 text-gray-700 font-medium py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-sm hover:shadow-md transform hover:scale-105">
-                                <img src="/browseicon.png" alt="Browse File" className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-                                <span className="text-sm">Browse</span>
-                            </button>
-                        </div>
+
 
                         <div className="text-xs text-gray-400 text-center mb-6 flex items-center justify-center gap-2">
                             <div className="w-1 h-1 bg-gray-300 rounded-full"></div>

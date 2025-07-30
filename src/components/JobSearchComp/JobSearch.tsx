@@ -306,7 +306,7 @@ const JobSearch: React.FC = () => {
                         className="w-full pl-12 pr-10 py-3 rounded-2xl border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none appearance-none bg-gray-50/50 font-medium text-gray-700"
                       >
                         <option value="Semua Tipe">Semua Tipe</option>
-                        <option value="Fulltime">Full-time</option>
+                        <option value="Full-time">Full-time</option>
                         <option value="Part-time">Part-time</option>
                         <option value="Contract">Contract</option>
                         <option value="Internship">Internship</option>

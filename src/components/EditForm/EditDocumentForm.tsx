@@ -158,8 +158,8 @@ const EditDocumentForm: React.FC<EditDocumentFormProps> = ({ initialData, onClos
     try {
       const result = await updateDocument(
         initialData.id!,
-        documentName !== initialData.documentName ? documentName : undefined,
-        type !== initialData.type ? type : undefined,
+        documentName,
+        type,
         selectedFile || undefined,
         type === 'sertifikat' ? issuedDate : undefined,
         type === 'sertifikat' ? credentialId || undefined : undefined,
@@ -428,7 +428,11 @@ const EditDocumentForm: React.FC<EditDocumentFormProps> = ({ initialData, onClos
                       </div>
                     </div>
                     <p className="text-sm font-medium text-gray-700">
-                      {selectedFile ? 'File baru dipilih' : 'Pilih file PDF baru'}
+                      {selectedFile
+                        ? 'File baru dipilih'
+                        : initialData.fileUrl
+                          ? `File saat ini: ${initialData.fileUrl.split('/').pop()}`
+                          : 'Pilih file PDF baru'}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
                       {selectedFile ? fileNameDisplay : 'Maks. 5MB • Format PDF'}
