@@ -236,15 +236,6 @@ const PortfolioList: React.FC<PortfolioListProps> = ({ portfolioProjects, isLoad
           ))}
           
           {/* Add more projects button at the bottom */}
-          <div className="mt-8 text-center">
-            <button
-              onClick={onAddClick}
-              className="group inline-flex items-center gap-2 text-purple-600 hover:text-purple-800 font-medium py-3 px-6 rounded-2xl bg-purple-50 hover:bg-purple-100 transition-all duration-300 border border-purple-200 hover:border-purple-300"
-            >
-              <PlusCircle size={18} className="group-hover:rotate-90 transition-transform duration-300" />
-              <span className="hidden lg:inline">Tambah Proyek Lainnya</span>
-            </button>
-          </div>
         </div>
       )}
       

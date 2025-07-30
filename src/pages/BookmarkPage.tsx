@@ -68,7 +68,7 @@ const BookmarkPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50/30 flex flex-col">
       <Navbar />
       
-      {/* Enhanced Hero Section */}
+      {/* Hero Section Tanpa Elemen Putih */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-900 via-blue-800 to-purple-900">
         {/* Animated background elements */}
         <div className="absolute inset-0">
@@ -79,19 +79,19 @@ const BookmarkPage: React.FC = () => {
         
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
           <div className="text-center">
-            {/* Enhanced header with floating icons */}
+            {/* Header dengan ikon floating tanpa background putih */}
             <div className="relative inline-flex items-center justify-center mb-6">
-              <div className="absolute -top-4 -left-4 w-8 h-8 bg-yellow-400/80 rounded-2xl flex items-center justify-center animate-bounce delay-100">
-                <Sparkles size={16} className="text-yellow-800" />
+              <div className="absolute -top-4 -left-4 w-8 h-8 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-2xl flex items-center justify-center animate-bounce delay-100 shadow-lg">
+                <Sparkles size={16} className="text-white" />
               </div>
-              <div className="absolute -top-2 -right-6 w-6 h-6 bg-pink-400/80 rounded-full flex items-center justify-center animate-bounce delay-300">
-                <Heart size={12} className="text-pink-800 fill-current" />
+              <div className="absolute -top-2 -right-6 w-6 h-6 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center animate-bounce delay-300 shadow-lg">
+                <Heart size={12} className="text-white fill-current" />
               </div>
-              <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-7 h-7 bg-blue-400/80 rounded-xl flex items-center justify-center animate-bounce delay-500">
-                <Star size={14} className="text-blue-800 fill-current" />
+              <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-7 h-7 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl flex items-center justify-center animate-bounce delay-500 shadow-lg">
+                <Star size={14} className="text-white fill-current" />
               </div>
               
-              <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-4 border border-white/20">
+              <div className="bg-gradient-to-br from-blue-600/40 to-purple-600/40 backdrop-blur-sm rounded-3xl p-4 border border-white/10 shadow-2xl">
                 <Bookmark size={48} className="text-white" strokeWidth={1.5} />
               </div>
             </div>
@@ -106,10 +106,10 @@ const BookmarkPage: React.FC = () => {
               Kumpulan pekerjaan pilihan yang telah Anda simpan untuk memudahkan pencarian karir impian Anda
             </p>
             
-            {/* Stats preview */}
+            {/* Stats preview tanpa background putih */}
             {!isLoading && !error && (
-              <div className="mt-8 inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-3 border border-white/20">
-                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+              <div className="mt-8 inline-flex items-center gap-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm rounded-2xl px-6 py-3 border border-white/10 shadow-lg">
+                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-sm"></div>
                 <span className="text-white font-semibold">
                   {bookmarks.length} lowongan tersimpan
                 </span>
@@ -117,16 +117,9 @@ const BookmarkPage: React.FC = () => {
             )}
           </div>
         </div>
-        
-        {/* Wave separator */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg className="w-full h-12 md:h-20 text-blue-50" viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="currentColor"></path>
-          </svg>
-        </div>
       </div>
       
-      <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 -mt-8 md:-mt-12 relative z-10">
+      <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         {/* Enhanced content section */}
         <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-2xl border border-white/50">
           <BookmarkList 

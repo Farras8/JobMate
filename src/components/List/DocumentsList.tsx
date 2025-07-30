@@ -235,15 +235,6 @@ const DocumentList: React.FC<DocumentListProps> = ({ documents, isLoading, error
             />
           ))}
           
-          <div className="mt-8 text-center">
-            <button
-              onClick={onAddClick}
-              className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-medium py-3 px-6 rounded-2xl border-2 border-dashed border-green-300 hover:bg-green-50/50 transition-all duration-300 group"
-            >
-              <PlusCircle size={18} className="group-hover:rotate-90 transition-transform duration-300" />
-              Tambah Dokumen Lain
-            </button>
-          </div>
         </div>
       )}
     </div>

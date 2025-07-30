@@ -89,16 +89,27 @@ const HomepageContent: React.FC = () => {
             </div>
             
             {/* Logo grid with enhanced styling */}
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-6 items-center justify-items-center max-w-6xl mx-auto px-6">
-              {['unilever', 'danone', 'bca', 'pertamina', 'hsbc', 'grab'].map((logo, i) => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-12 items-center justify-items-center max-w-7xl mx-auto px-6">
+              {[
+                { src: '/sponsor/logoDBS.png', alt: 'DBS' },
+                { src: '/sponsor/logoGoogle.png', alt: 'Google' },
+                { src: '/sponsor/logoGojek.png', alt: 'Gojek' },
+                { src: '/sponsor/grab.png', alt: 'Grab' },
+                { src: '/sponsor/logoTraveloka.png', alt: 'Traveloka', large: true },
+                { src: '/sponsor/logoDicoding.png', alt: 'Dicoding' }
+              ].map((logo, i) => (
                 <div 
                   key={i}
-                  className="group relative p-4 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-110 hover:shadow-xl"
+                  className="group relative flex items-center justify-center h-20 w-48 mx-4 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-xl"
                 >
                   <img 
-                    src={`/sponsor/${logo}.png`} 
-                    alt={logo} 
-                    className="h-6 md:h-10 filter brightness-0 invert opacity-80 group-hover:opacity-100 transition-all duration-300" 
+                    src={logo.src}
+                    alt={logo.alt}
+                    className={
+                      logo.large
+                        ? "max-h-20 max-w-[220px] object-contain mx-auto opacity-80 group-hover:opacity-100 transition-all duration-300 p-2"
+                        : "max-h-16 max-w-[170px] object-contain mx-auto opacity-80 group-hover:opacity-100 transition-all duration-300 p-2"
+                    }
                   />
                   {/* Subtle glow effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>

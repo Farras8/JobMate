@@ -206,7 +206,7 @@ const EditProfilePage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50/30 flex flex-col">
       <Navbar />
       
-      {/* Enhanced Hero Section */}
+      {/* Hero Section Tanpa Elemen Putih */}
       <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 via-blue-800 to-purple-900">
         {/* Animated background elements */}
         <div className="absolute inset-0">
@@ -218,19 +218,19 @@ const EditProfilePage: React.FC = () => {
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
           <div className="flex justify-between items-start">
             <div className="flex-1">
-              {/* Enhanced header with floating icons */}
+              {/* Header dengan ikon floating tanpa background putih */}
               <div className="relative inline-flex items-center justify-center mb-6">
-                <div className="absolute -top-4 -left-4 w-8 h-8 bg-green-400/80 rounded-2xl flex items-center justify-center animate-bounce delay-100">
-                  <TrendingUp size={16} className="text-green-800" />
+                <div className="absolute -top-4 -left-4 w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center animate-bounce delay-100 shadow-lg">
+                  <TrendingUp size={16} className="text-white" />
                 </div>
-                <div className="absolute -top-2 -right-6 w-6 h-6 bg-pink-400/80 rounded-full flex items-center justify-center animate-bounce delay-300">
-                  <Heart size={12} className="text-pink-800 fill-current" />
+                <div className="absolute -top-2 -right-6 w-6 h-6 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center animate-bounce delay-300 shadow-lg">
+                  <Heart size={12} className="text-white fill-current" />
                 </div>
-                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-7 h-7 bg-blue-400/80 rounded-xl flex items-center justify-center animate-bounce delay-500">
-                  <Star size={14} className="text-blue-800 fill-current" />
+                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-7 h-7 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl flex items-center justify-center animate-bounce delay-500 shadow-lg">
+                  <Star size={14} className="text-white fill-current" />
                 </div>
                 
-                <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-4 border border-white/20">
+                <div className="bg-gradient-to-br from-indigo-600/40 to-purple-600/40 backdrop-blur-sm rounded-3xl p-4 border border-white/10 shadow-2xl">
                   <Settings size={48} className="text-white" strokeWidth={1.5} />
                 </div>
               </div>
@@ -246,26 +246,19 @@ const EditProfilePage: React.FC = () => {
               </p>
             </div>
             
-            {/* Back to Home Button - Enhanced */}
+            {/* Back to Home Button - Tanpa background putih */}
             <Link 
               to="/" 
-              className="hidden md:inline-flex items-center text-sm text-white hover:text-blue-200 transition-all duration-300 group py-3 px-6 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 hover:scale-105"
+              className="hidden md:inline-flex items-center text-sm text-white hover:text-blue-200 transition-all duration-300 group py-3 px-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 hover:scale-105 shadow-lg"
             >
               <ChevronLeft size={18} className="mr-2 group-hover:-translate-x-1 transition-transform duration-300" />
               Kembali ke Beranda 
             </Link>
           </div>
         </div>
-        
-        {/* Wave separator */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg className="w-full h-12 md:h-20 text-blue-50" viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="currentColor"></path>
-          </svg>
-        </div>
       </div>
 
-      <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 -mt-8 md:-mt-12 relative z-10">
+      <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         {/* Mobile Back Button */}
         <div className="md:hidden mb-6">
           <Link 
@@ -307,16 +300,7 @@ const EditProfilePage: React.FC = () => {
           {activeTab === 'preferences' && <div className="p-6 md:p-8"><PreferenceList preferences={preferences} isLoading={isLoadingPreferences} error={preferencesError} onAddClick={handleOpenAddPreferenceModal} onEditClick={handleOpenEditPreferenceModal} /></div>}
         </div>
 
-        {/* Decorative elements */}
-        <div className="mt-16 text-center">
-          <div className="inline-flex items-center gap-3 text-gray-500">
-            <div className="w-12 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-            <Sparkles size={16} className="text-purple-400" />
-            <span className="text-sm font-medium">Profil yang lengkap meningkatkan peluang karir Anda!</span>
-            <Sparkles size={16} className="text-indigo-400" />
-            <div className="w-12 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-          </div>
-        </div>
+
 
         {/* Modals */}
         {isEditProfileModalOpen && currentProfile && <EditProfileForm initialData={currentProfile} onClose={handleCloseEditProfileModal} onSaveSuccess={handleProfileSaveSuccess} />}

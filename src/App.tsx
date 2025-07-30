@@ -1,6 +1,7 @@
+import NotFoundPage from './pages/NotFoundPage';
 // src/App.tsx
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate, useNavigate, useLocation, Link as RouterLink } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import HomePage from './pages/HomePage';
@@ -207,16 +208,7 @@ function App() {
       <Route path="/kerjasama" element={<ProtectedRoute isLoggedIn={isLoggedIn}><KerjasamaPageWithAlert /></ProtectedRoute>} />
       <Route path="/premium" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
 
-      <Route path="*" element={
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column' }}>
-          <img src="https://placehold.co/300x200/FF6347/FFFFFF?text=404&font=montserrat" alt="404 Not Found" className="mb-4 rounded-lg shadow-md" />
-          <h1 className="text-4xl font-bold text-gray-800">Oops! Halaman Tidak Ditemukan</h1>
-          <p className="text-gray-600 mt-2">Maaf, halaman yang Anda cari tidak ada atau telah dipindahkan.</p>
-          <RouterLink to="/" className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">
-            Kembali ke Beranda
-          </RouterLink>
-        </div>
-      } />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
