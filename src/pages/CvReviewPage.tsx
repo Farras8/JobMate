@@ -29,6 +29,10 @@ const CvReviewPage: React.FC = () => {
                     <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent leading-tight mb-6">
                         Analisis CV dengan Teknologi ATS
                     </h1>
+                    <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-green-100 to-emerald-100 border border-green-200/50 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-6 shadow-sm">
+                        <Sparkles size={14} className="text-green-600" />
+                        <span>Gratis & Instan!</span>
+                    </div>
 
                     <p className="text-gray-600 max-w-3xl mx-auto text-sm md:text-base leading-relaxed">
                         Optimalkan CV-mu agar terbaca oleh Applicant Tracking System (ATS) dan tingkatkan peluang suksesmu dalam melamar kerja dengan analisis mendalam dan saran perbaikan.
@@ -104,6 +108,13 @@ const CvReviewPage: React.FC = () => {
                                 <p className="text-sm text-gray-600">Dapatkan rekomendasi untuk meningkatkan kualitas CV</p>
                             </div>
 
+                            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-200/50 hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                                <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-4">
+                                    <Sparkles size={24} className="text-white" />
+                                </div>
+                                <h3 className="text-lg font-bold text-gray-800 mb-2">Gratis & Cepat</h3>
+                                <p className="text-sm text-gray-600">Analisis instan tanpa biaya dan registrasi</p>
+                            </div>
 
                             <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-200/50 hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                                 <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center mb-4">

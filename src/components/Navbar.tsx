@@ -10,7 +10,7 @@ import { auth } from '../services/firebase';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 // --- PERUBAHAN 1: Import fetchProfile dan tipe data ProfileData ---
-import { fetchProfile } from '../services/ProfileService'; 
+import { fetchProfile } from '../services/ProfileService';
 
 // Definisikan tipe data untuk profil, bisa juga diimpor dari profileService.ts
 interface ProfileData {
@@ -64,8 +64,8 @@ const Navbar: React.FC = () => {
           // Opsional: Tampilkan notifikasi jika gagal mengambil profil
           // Swal.fire('Error', 'Gagal memuat data profil.', 'error');
         } finally {
-            // Selesaikan loading setelah data firebase dan profil custom selesai dimuat
-            setIsLoadingAuth(false);
+          // Selesaikan loading setelah data firebase dan profil custom selesai dimuat
+          setIsLoadingAuth(false);
         }
       };
       loadProfile();
@@ -366,7 +366,12 @@ const Navbar: React.FC = () => {
                         </div>
                         <span className="font-medium">Lowongan Dilamar</span>
                       </button>
-
+                      <button onClick={() => handleProtectedLink('/create-cv')} className="w-full text-left flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-indigo-100 rounded-xl transition-all duration-300 group">
+                        <div className="w-8 h-8 bg-gradient-to-r from-indigo-100 to-indigo-200 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
+                          <FileText className="h-4 w-4 text-indigo-600" />
+                        </div>
+                        <span className="font-medium">Create CV</span>
+                      </button>
                     </div>
 
                     <div className="border-t border-gray-200/50 mt-3 pt-2 px-2">
