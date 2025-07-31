@@ -55,19 +55,19 @@ export default function ResumePreview({ cvData }: ResumePreviewProps) {
       if (notableProject?.title) {
         projectSentence += `, termasuk "${notableProject.title}"`;
         if (notableProject.technologies && notableProject.technologies.length > 0) {
-          projectSentence += ` yang memanfaatkan teknologi ${notableProject.technologies.slice(0,2).join(', ')}.`;
+          projectSentence += ` yang memanfaatkan teknologi ${notableProject.technologies.slice(0, 2).join(', ')}.`;
         } else {
-            projectSentence += ".";
+          projectSentence += ".";
         }
       } else {
-         projectSentence += ".";
+        projectSentence += ".";
       }
       summarySentences.push(projectSentence);
     }
 
     // If only default intro and no other data, don't show summary
     if (summarySentences.length <= 1 && summarySentences[0].includes("berdedikasi dan bermotivasi tinggi")) {
-        return null; 
+      return null; 
     }
     
     return summarySentences.join(' ').replace(/\.\.+/g, '.').trim();
@@ -218,6 +218,29 @@ export default function ResumePreview({ cvData }: ResumePreviewProps) {
             ))
           ) : (
             <div style={{ fontStyle: "italic" }}>No portfolio projects listed.</div>
+          )}
+        </section>
+
+        {/* Certificates */}
+        <section style={{ marginBottom: '24px' }}>
+          <h2 style={{ fontWeight: "bold", fontSize: '16px', borderBottom: '1px solid #000000', paddingBottom: '4px', marginBottom: '8px', color: '#000000' }}>
+            Certificates
+          </h2>
+          {cvData.certificates && cvData.certificates.length > 0 ? (
+            cvData.certificates.map((cert, idx) => (
+              <div key={idx} style={{ marginBottom: '12px' }}>
+                <div style={{ fontWeight: "bold" }}>{cert.documentName || "Certificate"}</div>
+                <div style={{ fontStyle: "italic", fontSize: '11px' }}>
+                  {formatDate(cert.issuedDate)}
+                  {cert.expireDate ? ` - ${formatDate(cert.expireDate)}` : " - Does not expire"}
+                </div>
+                {cert.credentialId && (
+                  <div style={{ marginTop: '4px' }}>Credential ID: {cert.credentialId}</div>
+                )}
+              </div>
+            ))
+          ) : (
+            <div style={{ fontStyle: "italic" }}>No certificates listed.</div>
           )}
         </section>
 
