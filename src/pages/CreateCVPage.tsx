@@ -475,60 +475,6 @@ const CreateCVPage: React.FC = () => {
                 )}
               </div>
 
-              {/* Certificate Selection */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center">
-                    <Award size={20} className="text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-800">Sertifikat</h3>
-                    <p className="text-sm text-gray-600">Pilih sertifikat yang akan ditampilkan</p>
-                  </div>
-                </div>
-
-                {allCertificates.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <Award size={32} className="mx-auto mb-2 opacity-50" />
-                    <p>Belum ada data sertifikat</p>
-                    <button
-                      onClick={() => navigate('/profile/edit?section=certificates')}
-                      className="mt-2 text-blue-500 hover:text-blue-600 text-sm underline"
-                    >
-                      Tambah data sertifikat
-                    </button>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {allCertificates.map((cert) => (
-                      <label
-                        key={cert.id}
-                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 flex items-start justify-between ${
-                          selectedCertificates.includes(cert.id!)
-                            ? 'border-yellow-500 bg-yellow-50'
-                            : 'border-gray-200 hover:border-yellow-300 bg-white'
-                        }`}
-                      >
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-gray-800">{cert.documentName}</h4>
-                          <p className="text-sm text-gray-500">
-                            {new Date(cert.issuedDate).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}
-                            {cert.expireDate ? ` - ${new Date(cert.expireDate).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}` : ' - Tidak kedaluwarsa'}
-                            {cert.credentialId && ` • Credential ID: ${cert.credentialId}`}
-                          </p>
-                        </div>
-                        <input
-                          type="checkbox"
-                          checked={selectedCertificates.includes(cert.id!)}
-                          onChange={() => toggleCertificateSelection(cert.id!)}
-                          className="w-5 h-5 text-yellow-500 rounded focus:ring-yellow-500"
-                        />
-                      </label>
-                    ))}
-                  </div>
-                )}
-              </div>
-
               {/* Generate Preview Button */}
               <div className="text-center">
                 <button
