@@ -1,13 +1,25 @@
 import React from 'react';
 import { Trophy, Star, Target, CheckCircle } from 'lucide-react';
 
-const OverallScoreCard: React.FC = () => {
-    const overallScore = 71;
+interface OverallScoreCardProps {
+    overallScore?: number;
+    scores?: {
+        ats: number;
+        content: number;
+        format: number;
+        impact: number;
+    };
+}
+
+const OverallScoreCard: React.FC<OverallScoreCardProps> = ({ 
+    overallScore = 71, 
+    scores = { ats: 70, content: 75, format: 60, impact: 80 }
+}) => {
     const scoreData = [
-        { label: 'ATS Score', value: 70, icon: Target, color: 'from-green-500 to-emerald-500', bgColor: 'from-green-50 to-emerald-50' },
-        { label: 'Content Score', value: 75, icon: Star, color: 'from-blue-500 to-cyan-500', bgColor: 'from-blue-50 to-cyan-50' },
-        { label: 'Format Score', value: 60, icon: CheckCircle, color: 'from-purple-500 to-violet-500', bgColor: 'from-purple-50 to-violet-50' },
-        { label: 'Impact Score', value: 80, icon: Trophy, color: 'from-orange-500 to-amber-500', bgColor: 'from-orange-50 to-amber-50' },
+        { label: 'ATS Score', value: scores.ats, icon: Target, color: 'from-green-500 to-emerald-500', bgColor: 'from-green-50 to-emerald-50' },
+        { label: 'Content Score', value: scores.content, icon: Star, color: 'from-blue-500 to-cyan-500', bgColor: 'from-blue-50 to-cyan-50' },
+        { label: 'Format Score', value: scores.format, icon: CheckCircle, color: 'from-purple-500 to-violet-500', bgColor: 'from-purple-50 to-violet-50' },
+        { label: 'Impact Score', value: scores.impact, icon: Trophy, color: 'from-orange-500 to-amber-500', bgColor: 'from-orange-50 to-amber-50' },
     ];
 
     const getScoreColor = (score: number) => {

@@ -69,23 +69,6 @@ const ComingSoon: React.FC = () => {
     );
 };
 
-// Komponen wrapper untuk CvReviewPage dengan alert
-const CvReviewPageWithAlert: React.FC = () => {
-    useEffect(() => {
-        Swal.fire({
-            title: 'Fitur Dalam Pengembangan',
-            text: 'Fitur CV Review ini masih dalam tahap pengembangan. Yang ditampilkan saat ini hanya template saja dan belum sepenuhnya fungsional.',
-            icon: 'warning',
-            confirmButtonText: 'Mengerti',
-            customClass: { popup: 'rounded-xl' },
-            backdrop: 'rgba(0,0,0,0.3)', // Background buram dengan transparansi
-            allowOutsideClick: true
-        });
-    }, []);
-
-    return <CvReviewPage />;
-};
-
 // Komponen wrapper untuk AIInterviewPage dengan alert
 const AIInterviewPageWithAlert: React.FC = () => {
     useEffect(() => {
@@ -194,12 +177,12 @@ function App() {
       <Route path="/profile/saved-jobs" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Navigate to="/bookmarks" replace /></ProtectedRoute>} />
       <Route path="/profile/applied-jobs" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Navigate to="/applications" replace /></ProtectedRoute>} />
 
-      {/* CV Review dengan alert pengembangan */}
+      {/* CV Review dan Resume Analysis - tanpa alert pengembangan */}
       <Route path="/create-cv" element={<ProtectedRoute isLoggedIn={isLoggedIn}><CreateCVPage /></ProtectedRoute>} />
-      <Route path="/cvreview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><CvReviewPageWithAlert /></ProtectedRoute>} />
+      <Route path="/cvreview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><CvReviewPage /></ProtectedRoute>} />
       <Route path="/resumeanalysis" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ResumeAnalysisPage/></ProtectedRoute>} />
-      {/* Fitur lain yang masih coming soon */}
       
+      {/* Fitur lain yang masih coming soon */}
       <Route path="/services/jobchat" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
       <Route path="/services/ai-interview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><AIInterviewPageWithAlert /></ProtectedRoute>} />
       <Route path="/ai-interview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><AIInterviewPageWithAlert /></ProtectedRoute>} />

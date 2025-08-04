@@ -1,60 +1,54 @@
 import React from 'react';
 import { AlertTriangle, TrendingDown, Zap } from 'lucide-react';
 
-const issues = [
-    {
-        title: 'Kurangnya Kuantifikasi Pencapaian',
-        description: 'Beberapa poin dalam bagian pengalaman kerja kurang kuantitatif. Tambahkan data spesifik untuk mengukur dampak pekerjaan, misalnya, persentase peningkatan, jumlah proyek yang diselesaikan, atau nilai finansial yang dihasilkan.',
-        badge: 'Tinggi Impact',
-        badgeColor: 'from-red-500 to-red-600',
-        badgeBg: 'from-red-100 to-red-200',
-        button: 'See Detailed Fix',
-        icon: TrendingDown,
-        severity: 'high'
-    },
-    {
-        title: 'Format CV yang Tidak Terstruktur',
-        description: 'CV terlihat kurang terstruktur dan sulit dibaca. Pertimbangkan untuk menggunakan format yang lebih profesional dan mudah dinavigasi, dengan pemisahan bagian yang jelas dan penggunaan bullet points yang konsisten.',
-        badge: 'Sedang Impact',
-        badgeColor: 'from-amber-500 to-orange-500',
-        badgeBg: 'from-amber-100 to-orange-100',
-        button: 'See Detailed Fix',
-        icon: AlertTriangle,
-        severity: 'medium'
-    },
-    {
-        title: 'Ringkasan Profil yang Kurang Menarik',
-        description: 'Bagian "Memiliki keahlian kuat dalam SEO, SEM, dan media sosial..." terlalu umum dan tidak memberikan gambaran yang jelas tentang keahlian dan nilai jual Budi Santoso. Ganti dengan ringkasan yang lebih personal dan berfokus pada pencapaian.',
-        badge: 'Sedang Impact',
-        badgeColor: 'from-amber-500 to-orange-500',
-        badgeBg: 'from-amber-100 to-orange-100',
-        button: 'See Detailed Fix',
-        icon: AlertTriangle,
-        severity: 'medium'
-    },
-    {
-        title: 'Informasi Kontak yang Tidak Lengkap',
-        description: 'Nomor telepon dan email Budi Santoso tidak tercantum dalam CV. Informasi kontak yang lengkap sangat penting agar rekruter dapat menghubungi Budi Santoso dengan mudah.',
-        badge: 'Sedang Impact',
-        badgeColor: 'from-amber-500 to-orange-500',
-        badgeBg: 'from-amber-100 to-orange-100',
-        button: 'See Detailed Fix',
-        icon: AlertTriangle,
-        severity: 'medium'
-    },
-    {
-        title: 'Pengalaman Kerja di CV Cipta Karya Terlalu Singkat',
-        description: 'Deskripsi pengalaman kerja di CV Cipta Karya terlalu singkat dan kurang informatif. Tambahkan detail pencapaian dan tanggung jawab yang lebih spesifik untuk memperkuat profil.',
-        badge: 'Rendah Impact',
-        badgeColor: 'from-yellow-400 to-yellow-500',
-        badgeBg: 'from-yellow-100 to-yellow-200',
-        button: 'See Modern Format',
-        icon: AlertTriangle,
-        severity: 'low'
-    },
-];
+interface Issue {
+    title: string;
+    description: string;
+    impact: 'Tinggi' | 'Sedang' | 'Rendah';
+}
 
-const CriticalIssues: React.FC = () => {
+interface CriticalIssuesProps {
+    issues?: Issue[];
+}
+
+const CriticalIssues: React.FC<CriticalIssuesProps> = ({ issues = [] }) => {
+    const getIssueConfig = (impact: string) => {
+        switch (impact) {
+            case 'Tinggi':
+                return {
+                    badge: 'Tinggi Impact',
+                    badgeColor: 'from-red-500 to-red-600',
+                    badgeBg: 'from-red-100 to-red-200',
+                    icon: TrendingDown,
+                    severity: 'high'
+                };
+            case 'Sedang':
+                return {
+                    badge: 'Sedang Impact',
+                    badgeColor: 'from-amber-500 to-orange-500',
+                    badgeBg: 'from-amber-100 to-orange-100',
+                    icon: AlertTriangle,
+                    severity: 'medium'
+                };
+            case 'Rendah':
+                return {
+                    badge: 'Rendah Impact',
+                    badgeColor: 'from-yellow-400 to-yellow-500',
+                    badgeBg: 'from-yellow-100 to-yellow-200',
+                    icon: Zap,
+                    severity: 'low'
+                };
+            default:
+                return {
+                    badge: 'Unknown Impact',
+                    badgeColor: 'from-gray-400 to-gray-500',
+                    badgeBg: 'from-gray-100 to-gray-200',
+                    icon: AlertTriangle,
+                    severity: 'medium'
+                };
+        }
+    };
+
     const getSeverityColors = (severity: string) => {
         switch (severity) {
             case 'high':
@@ -68,7 +62,7 @@ const CriticalIssues: React.FC = () => {
         }
     };
 
-    const highImpactCount = issues.filter(issue => issue.severity === 'high').length;
+    const highImpactCount = issues.filter(issue => issue.impact === 'Tinggi').length;
 
     return (
         <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl lg:rounded-3xl shadow-xl shadow-red-900/10 p-4 sm:p-6 lg:p-8 relative overflow-hidden mx-auto max-w-7xl">
@@ -94,8 +88,9 @@ const CriticalIssues: React.FC = () => {
 
                 <div className="space-y-3 sm:space-y-4">
                     {issues.map((issue, idx) => {
-                        const IconComponent = issue.icon;
-                        const colors = getSeverityColors(issue.severity);
+                        const config = getIssueConfig(issue.impact);
+                        const IconComponent = config.icon;
+                        const colors = getSeverityColors(config.severity);
                         
                         return (
                             <div key={idx} className={`group bg-gradient-to-br ${colors.bg} border ${colors.border} rounded-xl lg:rounded-2xl p-4 sm:p-5 lg:p-6 transition-all duration-300 transform hover:scale-[1.01] lg:hover:scale-[1.02] hover:shadow-xl relative overflow-hidden`}>
@@ -109,21 +104,21 @@ const CriticalIssues: React.FC = () => {
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
                                                     <h4 className="text-sm sm:text-base font-bold text-gray-800 leading-tight">{issue.title}</h4>
-                                                    <div className={`sm:hidden inline-flex items-center space-x-1 bg-gradient-to-r ${issue.badgeBg} border border-current/20 text-gray-700 px-2.5 py-1 rounded-full text-xs font-semibold shadow-sm w-fit`}>
-                                                        <div className={`w-1.5 h-1.5 bg-gradient-to-r ${issue.badgeColor} rounded-full`}></div>
-                                                        <span>{issue.badge}</span>
+                                                    <div className={`sm:hidden inline-flex items-center space-x-1 bg-gradient-to-r ${config.badgeBg} border border-current/20 text-gray-700 px-2.5 py-1 rounded-full text-xs font-semibold shadow-sm w-fit`}>
+                                                        <div className={`w-1.5 h-1.5 bg-gradient-to-r ${config.badgeColor} rounded-full`}></div>
+                                                        <span>{config.badge}</span>
                                                     </div>
                                                 </div>
                                                 <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 pr-2">{issue.description}</p>
                                                 <button className="inline-flex items-center gap-2 text-xs sm:text-sm bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg lg:rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg group-hover:scale-105">
                                                     <Zap size={12} className="sm:w-3.5 sm:h-3.5" />
-                                                    <span className="whitespace-nowrap">{issue.button}</span>
+                                                    <span className="whitespace-nowrap">See Detailed Fix</span>
                                                 </button>
                                             </div>
                                         </div>
-                                        <div className={`hidden sm:inline-flex items-center space-x-1 bg-gradient-to-r ${issue.badgeBg} border border-current/20 text-gray-700 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm flex-shrink-0`}>
-                                            <div className={`w-1.5 h-1.5 bg-gradient-to-r ${issue.badgeColor} rounded-full`}></div>
-                                            <span>{issue.badge}</span>
+                                        <div className={`hidden sm:inline-flex items-center space-x-1 bg-gradient-to-r ${config.badgeBg} border border-current/20 text-gray-700 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm flex-shrink-0`}>
+                                            <div className={`w-1.5 h-1.5 bg-gradient-to-r ${config.badgeColor} rounded-full`}></div>
+                                            <span>{config.badge}</span>
                                         </div>
                                     </div>
                                 </div>
