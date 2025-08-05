@@ -65,21 +65,39 @@ const addJobs = async (jobs) => {
 
 // Mendapatkan semua job dengan filter dan pencarian
 const getJobs = async (queryParams) => {
-  const { category, location, minSalary, maxSalary, lastDocId, companyName, city, jobTitle } = queryParams;
+  const {
+    jobTitle,
+    companyName,
+    city,
+    jobType,
+    category,
+    minSalary,
+    lastDocId
+  } = queryParams;
 
   let query = db.collection("jobs").where("isActive", "==", true);
 
-  if (category) query = query.where("category", "==", category);
-  if (location) query = query.where("location", "==", location);
-  if (minSalary) query = query.where("salary.min", ">=", Number(minSalary));
-  if (maxSalary) query = query.where("salary.max", "<=", Number(maxSalary));
-
-  if (companyName) {
-    query = query.orderBy("companyNameLowercase").startAt(companyName.toLowerCase()).endAt(companyName.toLowerCase() + '\uf8ff');
-  } else if (city) {
-    query = query.orderBy("city").startAt(city).endAt(city + '\uf8ff');
-  } else if (jobTitle) {
-    query = query.orderBy("jobTitleLowercase").startAt(jobTitle.toLowerCase()).endAt(jobTitle.toLowerCase() + '\uf8ff');
+  if (city) {
+    query = query.where("city", "==", city);
+  }
+  if (jobType) {
+    query = query.where("jobType", "==", jobType);
+  }
+  if (category) {
+    query = query.where("category", "==", category);
+  }
+  if (minSalary) {
+    query = query.where("salary.min", ">=", Number(minSalary));
+  }
+  
+  if (jobTitle) {
+    query = query.orderBy("jobTitleLowercase")
+                 .startAt(jobTitle.toLowerCase())
+                 .endAt(jobTitle.toLowerCase() + '\uf8ff');
+  } else if (companyName) {
+    query = query.orderBy("companyNameLowercase")
+                 .startAt(companyName.toLowerCase())
+                 .endAt(companyName.toLowerCase() + '\uf8ff');
   } else {
     query = query.orderBy("postedAt", "desc");
   }
