@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle, XCircle, FileText, User, BookOpen, AlertTriangle } from 'lucide-react';
+import { XCircle, FileText, User, BookOpen, AlertTriangle } from 'lucide-react';
 
 interface LineByLineAnalysisItem {
     section: string;
@@ -76,10 +76,6 @@ const LineAnalysis: React.FC<LineAnalysisProps> = ({ lineByLine = [] }) => {
                                                     </p>
                                                 </div>
                                             </div>
-                                            <button className="inline-flex items-center gap-2 text-xs sm:text-sm bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg group-hover:scale-105">
-                                                <CheckCircle size={12} className="sm:w-3.5 sm:h-3.5" />
-                                                <span>See Fix Suggestions</span>
-                                            </button>
                                         </div>
                                     </div>
                                 </div>

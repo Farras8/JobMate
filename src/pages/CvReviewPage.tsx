@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { Upload, FileText, Sparkles, Zap, Target, CheckCircle, ArrowRight, Loader2, AlertTriangle, BarChart3 } from 'lucide-react';
+import { Upload, FileText, Sparkles, Zap, Target, CheckCircle, ArrowRight, Loader2, AlertTriangle, BarChart3, Briefcase } from 'lucide-react';
 import FloatingChatbot from '../components/FloatingChatbot';
 import { reviewCV } from '../services/CVReviewService';
 import type { CVReviewResponse } from '../services/CVReviewService';
@@ -11,6 +11,7 @@ import Strengths from '../components/analysis/Strengths';
 import KeywordAnalysis from '../components/analysis/KeywordAnalysis';
 import LineAnalysis from '../components/analysis/LineAnalysis';
 import ActionPlan from '../components/analysis/ActionPlan';
+import JobRecommendations from '../components/analysis/JobRecommendations';
 
 const CvReviewPage: React.FC = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -77,6 +78,8 @@ const CvReviewPage: React.FC = () => {
                 return <BarChart3 size={16} className="text-purple-600" />;
             case 'Action Plan':
                 return <Zap size={16} className="text-orange-600" />;
+            case 'Job Recommendations':
+                return <Briefcase size={16} className="text-orange-600" />;
             default:
                 return null;
         }
@@ -147,7 +150,7 @@ const CvReviewPage: React.FC = () => {
                             {/* Tabs */}
                             <div className="mb-8">
                                 <div className="flex flex-wrap justify-center gap-2 p-2 bg-gray-100/80 rounded-2xl backdrop-blur-sm">
-                                    {['Critical Issues', 'Strengths', 'Keywords', 'Line Analysis', 'Action Plan'].map((tab) => (
+                                    {['Critical Issues', 'Strengths', 'Keywords', 'Line Analysis', 'Action Plan', 'Job Recommendations'].map((tab) => (
                                         <button
                                             key={tab}
                                             onClick={() => setActiveTab(tab)}
@@ -191,6 +194,11 @@ const CvReviewPage: React.FC = () => {
                                 {activeTab === 'Action Plan' && (
                                     <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl p-6 border border-orange-200/30">
                                         <ActionPlan actionPlan={reviewResult.action_plan} />
+                                    </div>
+                                )}
+                                {activeTab === 'Job Recommendations' && (
+                                    <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl p-6 border border-orange-200/30">
+                                        <JobRecommendations reviewResult={reviewResult} />
                                     </div>
                                 )}
                             </div>

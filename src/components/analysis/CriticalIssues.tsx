@@ -110,10 +110,6 @@ const CriticalIssues: React.FC<CriticalIssuesProps> = ({ issues = [] }) => {
                                                     </div>
                                                 </div>
                                                 <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-3 sm:mb-4 pr-2">{issue.description}</p>
-                                                <button className="inline-flex items-center gap-2 text-xs sm:text-sm bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg lg:rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg group-hover:scale-105">
-                                                    <Zap size={12} className="sm:w-3.5 sm:h-3.5" />
-                                                    <span className="whitespace-nowrap">See Detailed Fix</span>
-                                                </button>
                                             </div>
                                         </div>
                                         <div className={`hidden sm:inline-flex items-center space-x-1 bg-gradient-to-r ${config.badgeBg} border border-current/20 text-gray-700 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm flex-shrink-0`}>

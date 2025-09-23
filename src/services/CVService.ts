@@ -1,6 +1,6 @@
-import { auth } from '../services/firebase';
+import { auth } from './firebase';
 
-const API_BASE_URL = 'https://jobmate-rest-api-819767094904.asia-southeast2.run.app';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export interface CVData {
   fullName?: string;
@@ -243,6 +243,14 @@ export const generateCVHTML = (cvData: CVData): string => {
             padding-bottom: 4px;
             margin-bottom: 8px;
             color: #000000;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        h3 {
+            font-weight: bold;
+            font-size: 14px;
+            margin: 8px 0 4px 0;
+            color: #000000;
         }
         .contact-info {
             margin: 4px 0;
@@ -276,6 +284,21 @@ export const generateCVHTML = (cvData: CVData): string => {
             font-style: italic;
             font-size: 11px;
         }
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 4px;
+        }
+        .item-title-left {
+            font-weight: bold;
+            flex: 1;
+        }
+        .item-date-right {
+            font-style: italic;
+            font-size: 11px;
+            white-space: nowrap;
+        }
         .item-description {
             margin-top: 4px;
         }
@@ -284,6 +307,16 @@ export const generateCVHTML = (cvData: CVData): string => {
         }
         .no-data {
             font-style: italic;
+        }
+        .experience-bullets {
+            margin: 4px 0 0 0;
+            padding-left: 0;
+            list-style-position: outside;
+        }
+        .experience-bullets li {
+            margin-bottom: 2px;
+            margin-left: 16px;
+            line-height: 1.4;
         }
         
         /* Print optimization */
@@ -303,38 +336,49 @@ export const generateCVHTML = (cvData: CVData): string => {
         <!-- Header -->
         <header style="margin-bottom: 24px;">
             <h1>${cvData.fullName || "No Name Provided"}</h1>
-            <p class="contact-info">
-                ${cvData.city || "-"} | ${cvData.phoneNumber || "-"}
-            </p>
+            
+            <!-- Contact Information -->
+            <section class="section">
+                <h2>CONTACT INFORMATION</h2>
+                <p class="contact-info">
+                    ${cvData.city || "-"} | ${cvData.phoneNumber || "-"} | ${cvData.fullName ? `${cvData.fullName.toLowerCase().replace(/\s+/g, '.')}@email.com` : "email@example.com"}
+                </p>
+                
+                <!-- Social Links -->
+                <div class="social-links">
+                    ${cvData.linkedin ? `<a href="${cvData.linkedin}" target="_blank" rel="noopener noreferrer">LinkedIn</a>` : ''}
+                    ${cvData.github ? `<a href="${cvData.github}" target="_blank" rel="noopener noreferrer">GitHub</a>` : ''}
+                    ${cvData.instagram ? `<a href="${cvData.instagram}" target="_blank" rel="noopener noreferrer">Instagram</a>` : ''}
+                    ${cvData.portfolioSite ? `<a href="${cvData.portfolioSite}" target="_blank" rel="noopener noreferrer">Portfolio</a>` : ''}
+                </div>
+            </section>
             
             ${summaryText ? `
-            <p class="summary">
-                ${summaryText}
-            </p>
+            <!-- Professional Summary -->
+            <section class="section">
+                <h2>PROFESSIONAL SUMMARY</h2>
+                <p class="summary">
+                    ${summaryText}
+                </p>
+            </section>
             ` : ''}
-
-            <!-- Social Links -->
-            <div class="social-links">
-                ${cvData.linkedin ? `<a href="${cvData.linkedin}" target="_blank" rel="noopener noreferrer">LinkedIn</a>` : ''}
-                ${cvData.github ? `<a href="${cvData.github}" target="_blank" rel="noopener noreferrer">GitHub</a>` : ''}
-                ${cvData.instagram ? `<a href="${cvData.instagram}" target="_blank" rel="noopener noreferrer">Instagram</a>` : ''}
-                ${cvData.portfolioSite ? `<a href="${cvData.portfolioSite}" target="_blank" rel="noopener noreferrer">Portfolio</a>` : ''}
-            </div>
         </header>
 
         <!-- Main Content -->
         <main>
             <!-- Education -->
             <section class="section">
-                <h2>Education</h2>
+                <h2>EDUCATION</h2>
                 ${cvData.education.length > 0 ? 
                     cvData.education.map(edu => `
                     <div class="item">
-                        <div class="item-title">
-                            ${edu.level || "Education"}${edu.major ? ` - ${edu.major}` : ""}${edu.institution ? `, ${edu.institution}` : ""}
-                        </div>
-                        <div class="item-subtitle">
-                            ${formatDate(edu.startDate)} - ${edu.endDate ? formatDate(edu.endDate) : "Present"}
+                        <div class="item-header">
+                            <div class="item-title-left">
+                                ${edu.level || "Education"}${edu.major ? ` - ${edu.major}` : ""}${edu.institution ? `, ${edu.institution}` : ""}
+                            </div>
+                            <div class="item-date-right">
+                                ${formatDate(edu.startDate)} - ${edu.endDate ? formatDate(edu.endDate) : "Present"}
+                            </div>
                         </div>
                         ${edu.gpa ? `<div class="item-description">GPA: ${edu.gpa}</div>` : ''}
                     </div>
@@ -343,36 +387,39 @@ export const generateCVHTML = (cvData: CVData): string => {
                 }
             </section>
 
-            <!-- Experience -->
+            <!-- Work Experience -->
             <section class="section">
-                <h2>Experience</h2>
+                <h2>WORK EXPERIENCE</h2>
                 ${cvData.experience.length > 0 ? 
                     cvData.experience.map(exp => `
                     <div class="item">
-                        <div class="item-title">${exp.position || "Position"}</div>
-                        <div class="item-subtitle">
-                            ${exp.company || "-"} | ${formatDate(exp.startDate)} - ${exp.endDate ? formatDate(exp.endDate) : "Present"}
+                        <div class="item-header">
+                            <div class="item-title-left">${exp.position || "Position"} - ${exp.company || "Company"}</div>
+                            <div class="item-date-right">${formatDate(exp.startDate)} - ${exp.endDate ? formatDate(exp.endDate) : "Present"}</div>
                         </div>
-                        ${exp.description ? `<div class="item-description">${exp.description}</div>` : ''}
+                        ${exp.description ? `
+                        <ul class="experience-bullets">
+                            ${exp.description.split('\n').filter(line => line.trim()).map(line => `<li>${line.trim()}</li>`).join('')}
+                        </ul>
+                        ` : ''}
                     </div>
                     `).join('') :
                     '<div class="no-data">No experience data available.</div>'
                 }
             </section>
 
-            <!-- Portfolio -->
+            <!-- Projects -->
             <section class="section">
-                <h2>Portfolio</h2>
+                <h2>PROJECTS</h2>
                 ${cvData.portfolio.length > 0 ? 
                     cvData.portfolio.map(project => `
                     <div class="item">
                         <div class="item-title">${project.title}</div>
-                        ${project.projectUrl ? `
-                        <a href="${project.projectUrl}" target="_blank" rel="noopener noreferrer" style="color: #000000; text-decoration: underline;">
-                            ${project.projectUrl}
-                        </a>
+                        ${project.description ? `
+                        <ul class="experience-bullets">
+                            ${project.description.split('\n').filter(line => line.trim()).map(line => `<li>${line.trim()}</li>`).join('')}
+                        </ul>
                         ` : ''}
-                        ${project.description ? `<div class="item-description">${project.description}</div>` : ''}
                         ${project.technologies && project.technologies.length > 0 ? `
                         <div class="tech-list">
                             Technologies: ${project.technologies.join(", ")}
@@ -384,17 +431,17 @@ export const generateCVHTML = (cvData: CVData): string => {
                 }
             </section>
 
-            <!-- Certificates -->
+            <!-- Certifications -->
             <section class="section">
-                <h2>Certificates</h2>
+                <h2>CERTIFICATIONS</h2>
                 ${cvData.certificates.length > 0 ? 
                     cvData.certificates.map(cert => `
                     <div class="item">
-                        <div class="item-title">${cert.documentName}</div>
-                        <div class="item-subtitle">
-                            ${formatDate(cert.issuedDate)}${cert.expireDate ? ` - ${formatDate(cert.expireDate)}` : ""}
-                            ${cert.credentialId ? ` • Credential ID: ${cert.credentialId}` : ""}
+                        <div class="item-header">
+                            <div class="item-title-left">${cert.documentName}</div>
+                            <div class="item-date-right">${formatDate(cert.issuedDate)}${cert.expireDate ? ` - ${formatDate(cert.expireDate)}` : ""}</div>
                         </div>
+                        ${cert.credentialId ? `<div class="item-subtitle">Credential ID: ${cert.credentialId}</div>` : ""}
                     </div>
                     `).join('') :
                     '<div class="no-data">No certificates listed.</div>'
@@ -403,7 +450,7 @@ export const generateCVHTML = (cvData: CVData): string => {
 
             <!-- Skills -->
             <section class="section">
-                <h2>Skills</h2>
+                <h2>SKILLS</h2>
                 <p style="margin-bottom: 4px;">
                     <strong>Hard skills:</strong> ${hardSkillsText}
                 </p>
@@ -419,9 +466,59 @@ export const generateCVHTML = (cvData: CVData): string => {
 };
 
 /**
- * Generate CV PDF using html2canvas and jsPDF
+ * Generate CV PDF using Puppeteer (text-searchable and ATS-friendly)
  */
-export const generateCVPDF = async (cvData: CVData): Promise<Blob> => {
+export const generateCVPDFWithPuppeteer = async (cvData: CVData): Promise<Blob> => {
+  try {
+    // Dynamically import puppeteer
+    const puppeteer = await import('puppeteer');
+    
+    // Create HTML content with improved styling for PDF
+    const htmlContent = generateCVHTML(cvData);
+    
+    // Launch browser in headless mode
+    const browser = await puppeteer.default.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    
+    const page = await browser.newPage();
+    
+    // Set content and wait for it to load
+    await page.setContent(htmlContent, {
+      waitUntil: 'networkidle0'
+    });
+    
+    // Generate PDF with optimized settings for ATS compatibility
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: {
+        top: '20mm',
+        right: '15mm',
+        bottom: '20mm',
+        left: '15mm'
+      },
+      preferCSSPageSize: true
+    }) as Buffer;
+    
+    // Close browser
+    await browser.close();
+    
+    // Convert buffer to blob
+    const pdfBlob = new Blob([pdfBuffer], { type: 'application/pdf' });
+    return pdfBlob;
+    
+  } catch (error) {
+    console.error('Error generating PDF with Puppeteer:', error);
+    throw new Error('Failed to generate PDF');
+  }
+};
+
+/**
+ * Generate CV PDF using html2canvas and jsPDF (legacy method)
+ */
+export const generateCVPDFLegacy = async (cvData: CVData): Promise<Blob> => {
   // Dynamically import the libraries
   const html2canvas = (await import('html2canvas')).default;
   const { jsPDF } = await import('jspdf');
@@ -481,8 +578,24 @@ export const generateCVPDF = async (cvData: CVData): Promise<Blob> => {
   }
 };
 
+/**
+ * Generate CV PDF - uses Puppeteer by default for better ATS compatibility
+ */
+export const generateCVPDF = async (cvData: CVData): Promise<Blob> => {
+  try {
+    // Try Puppeteer first for better ATS compatibility
+    return await generateCVPDFWithPuppeteer(cvData);
+  } catch (error) {
+    console.warn('Puppeteer PDF generation failed, falling back to legacy method:', error);
+    // Fallback to legacy html2canvas method
+    return await generateCVPDFLegacy(cvData);
+  }
+};
+
 export default {
   fetchProfileResume,
   generateCVPDF,
+  generateCVPDFWithPuppeteer,
+  generateCVPDFLegacy,
   generateCVHTML,
 };

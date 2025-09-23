@@ -156,10 +156,7 @@ export const RecommendedJobCard: React.FC<RecommendedJobCardProps> = ({ job, isB
                                 {job.jobTitle}
                             </Link>
                         </h3>
-                        <div className="text-xs text-gray-500 flex items-center">
-                            <div className="w-3 h-3 bg-gray-300 rounded-full mr-1.5"></div>
-                            {job.location}
-                        </div>
+
                     </div>
                     {job.similarityScore !== undefined && (
                         <div className={`flex-shrink-0 text-xs font-bold px-3 py-1.5 rounded-full border shadow-sm ${getScoreColor(job.similarityScore)}`}>
@@ -167,6 +164,28 @@ export const RecommendedJobCard: React.FC<RecommendedJobCardProps> = ({ job, isB
                         </div>
                     )}
                 </div>
+
+                {/* Menampilkan Skills Required */}
+                {job.skillsRequired && job.skillsRequired.length > 0 && (
+                    <div className="mt-3">
+                        <h4 className="text-xs font-bold text-gray-500 mb-2 uppercase">Skills Required</h4>
+                        <div className="flex flex-wrap gap-2">
+                            {job.skillsRequired.slice(0, 5).map((skill, index) => (
+                                <span
+                                    key={index}
+                                    className="text-xs font-semibold capitalize px-2.5 py-1 rounded-full bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border border-blue-200/50"
+                                >
+                                    {skill}
+                                </span>
+                            ))}
+                            {job.skillsRequired.length > 5 && (
+                                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-600 border border-gray-200">
+                                    +{job.skillsRequired.length - 5} lainnya
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 {/** * BAGIAN YANG DIPERBARUI
                  * Menampilkan skill yang cocok, bukan lagi deskripsi umum.
@@ -186,9 +205,11 @@ export const RecommendedJobCard: React.FC<RecommendedJobCardProps> = ({ job, isB
                         </div>
                     </div>
                 ) : (
-                    <p className="mt-3 text-sm text-gray-600 leading-relaxed line-clamp-3">
-                        {job.jobDescription}
-                    </p>
+                    !job.skillsRequired?.length && (
+                        <p className="mt-3 text-sm text-gray-600 leading-relaxed line-clamp-3">
+                            {job.jobDescription}
+                        </p>
+                    )
                 )}
             </div>
 

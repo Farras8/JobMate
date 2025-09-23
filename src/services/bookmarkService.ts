@@ -4,7 +4,7 @@ import { doc, getDoc, type DocumentData } from "firebase/firestore";
 import { type DisplayJob } from './jobService'; // Pastikan tipe ini tersedia dan sesuai
 import { FieldValue } from "firebase/firestore";
 
-const API_BASE_URL = 'https://jobmate-rest-api-819767094904.asia-southeast2.run.app';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export interface Bookmark {
   id: string; // Document ID of the bookmark itself

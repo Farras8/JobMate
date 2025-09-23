@@ -41,6 +41,10 @@ const CreateCVPage: React.FC = () => {
   const [selectedPortfolio, setSelectedPortfolio] = useState<string[]>([]);
   const [selectedCertificates, setSelectedCertificates] = useState<string[]>([]);
   
+  // Edited descriptions for selected items - 3 fields each
+  const [editedExperienceDescriptions, setEditedExperienceDescriptions] = useState<{[key: string]: {field1: string, field2: string, field3: string}}>({});
+  const [editedPortfolioDescriptions, setEditedPortfolioDescriptions] = useState<{[key: string]: {field1: string, field2: string, field3: string}}>({});
+  
   // UI states
   const [currentStep, setCurrentStep] = useState<'select' | 'preview'>('select');
   const [isLoading, setIsLoading] = useState(true);
@@ -66,11 +70,11 @@ const CreateCVPage: React.FC = () => {
       setAllPortfolio(portfolio);
       setAllCertificates(resumeData.certificates || []);
       
-      // Auto-select all items initially
+      // Auto-select all items initially (except certificates - user must select manually)
       setSelectedEducation(education.map(item => item.id).filter(id => id !== undefined) as string[]);
       setSelectedExperience(experience.map(item => item.id).filter(id => id !== undefined) as string[]);
       setSelectedPortfolio(portfolio.map(item => item.id).filter(id => id !== undefined) as string[]);
-      setSelectedCertificates(resumeData.certificates?.map(item => item.id).filter(id => id !== undefined) as string[]);
+      setSelectedCertificates([]); // Don't auto-select certificates
       
     } catch (err: unknown) {
       console.error('Error loading data:', err);
@@ -83,6 +87,32 @@ const CreateCVPage: React.FC = () => {
   useEffect(() => {
     loadAllData();
   }, [loadAllData]);
+
+  // Validation function - check if text has at least 8 words
+  const validateMinWords = (text: string): boolean => {
+    return text.trim().split(/\s+/).filter(word => word.length > 0).length >= 8;
+  };
+
+  // Handle description changes for 3 fields
+  const handleExperienceDescriptionChange = (id: string, field: 'field1' | 'field2' | 'field3', value: string) => {
+    setEditedExperienceDescriptions(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        [field]: value
+      }
+    }));
+  };
+
+  const handlePortfolioDescriptionChange = (id: string, field: 'field1' | 'field2' | 'field3', value: string) => {
+    setEditedPortfolioDescriptions(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        [field]: value
+      }
+    }));
+  };
 
   // Generate CV preview
   const generatePreview = async () => {
@@ -98,6 +128,48 @@ const CreateCVPage: React.FC = () => {
       };
       
       const data = await fetchProfileResume(filters);
+      
+      // Apply edited descriptions to the data - combine 3 fields into bullet points
+      if (data.experience) {
+        data.experience = data.experience.map(exp => {
+          const editedDesc = editedExperienceDescriptions[exp.id!];
+          let description = exp.description;
+          
+          if (editedDesc) {
+            const bullets = [];
+            if (editedDesc.field1 && editedDesc.field1.trim()) bullets.push(editedDesc.field1.trim());
+            if (editedDesc.field2 && editedDesc.field2.trim()) bullets.push(editedDesc.field2.trim());
+            if (editedDesc.field3 && editedDesc.field3.trim()) bullets.push(editedDesc.field3.trim());
+            description = bullets.length > 0 ? bullets.join('\n') : exp.description;
+          }
+          
+          return {
+            ...exp,
+            description
+          };
+        });
+      }
+      
+      if (data.portfolio) {
+        data.portfolio = data.portfolio.map(portfolio => {
+          const editedDesc = editedPortfolioDescriptions[portfolio.id!];
+          let description = portfolio.description;
+          
+          if (editedDesc) {
+            const bullets = [];
+            if (editedDesc.field1 && editedDesc.field1.trim()) bullets.push(editedDesc.field1.trim());
+            if (editedDesc.field2 && editedDesc.field2.trim()) bullets.push(editedDesc.field2.trim());
+            if (editedDesc.field3 && editedDesc.field3.trim()) bullets.push(editedDesc.field3.trim());
+            description = bullets.length > 0 ? bullets.join('\n') : portfolio.description;
+          }
+          
+          return {
+            ...portfolio,
+            description
+          };
+        });
+      }
+      
       setCvData(data);
       setCurrentStep('preview');
       
@@ -162,15 +234,37 @@ const CreateCVPage: React.FC = () => {
   };
 
   const toggleExperienceSelection = (id: string) => {
-    setSelectedExperience(prev => 
-      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
-    );
+    setSelectedExperience(prev => {
+      const newSelected = prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id];
+      
+      // If deselecting, remove from edited descriptions
+      if (prev.includes(id) && !newSelected.includes(id)) {
+        setEditedExperienceDescriptions(prevDescriptions => {
+          const newDescriptions = { ...prevDescriptions };
+          delete newDescriptions[id];
+          return newDescriptions;
+        });
+      }
+      
+      return newSelected;
+    });
   };
 
   const togglePortfolioSelection = (id: string) => {
-    setSelectedPortfolio(prev => 
-      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
-    );
+    setSelectedPortfolio(prev => {
+      const newSelected = prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id];
+      
+      // If deselecting, remove from edited descriptions
+      if (prev.includes(id) && !newSelected.includes(id)) {
+        setEditedPortfolioDescriptions(prevDescriptions => {
+          const newDescriptions = { ...prevDescriptions };
+          delete newDescriptions[id];
+          return newDescriptions;
+        });
+      }
+      
+      return newSelected;
+    });
   };
 
   const toggleCertificateSelection = (id: string) => {
@@ -385,21 +479,117 @@ const CreateCVPage: React.FC = () => {
                         }`}
                       >
                         <div className="flex-1">
-                          <h4 className="font-semibold text-gray-800">{exp.position}</h4>
-                          <p className="text-gray-600">{exp.company} • {exp.employmentType}</p>
-                          <p className="text-sm text-gray-500">
-                            {exp.startDate} - {exp.endDate || 'Sekarang'}
-                          </p>
-                          {exp.description && (
-                            <p className="text-sm text-gray-600 mt-2 line-clamp-2">{exp.description}</p>
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-gray-800">{exp.position}</h4>
+                              <p className="text-gray-600">{exp.company} • {exp.employmentType}</p>
+                              <p className="text-sm text-gray-500">
+                                {exp.startDate} - {exp.endDate || 'Sekarang'}
+                              </p>
+                              {exp.description && (
+                                <p className="text-sm text-gray-600 mt-2 line-clamp-2">{exp.description}</p>
+                              )}
+                            </div>
+                            <input
+                              type="checkbox"
+                              checked={selectedExperience.includes(exp.id!)}
+                              onChange={() => toggleExperienceSelection(exp.id!)}
+                              className="w-5 h-5 text-blue-500 rounded focus:ring-blue-500 ml-4"
+                            />
+                          </div>
+                          
+                          {/* Edit Description Fields - appears when selected */}
+                          {selectedExperience.includes(exp.id!) && (
+                            <div className="mt-4 pt-4 border-t border-gray-200">
+                              <label className="block text-sm font-medium text-gray-700 mb-3">
+                                Edit Deskripsi Pengalaman Kerja (3 Poin Utama)
+                              </label>
+                              
+                              {/* Original Description - Read Only Reference */}
+                              {exp.description && (
+                                <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                                  <label className="block text-xs font-medium text-gray-600 mb-2">
+                                    📋 Deskripsi Asli (Referensi)
+                                  </label>
+                                  <div className="text-sm text-gray-700 whitespace-pre-wrap bg-white p-2 rounded border">
+                                    {exp.description}
+                                  </div>
+                                  <p className="text-xs text-gray-500 mt-1">
+                                    Gunakan sebagai patokan untuk mengisi 3 poin di bawah
+                                  </p>
+                                </div>
+                              )}
+                              
+                              {/* Field 1 */}
+                              <div className="mb-3">
+                                <label className="block text-xs font-medium text-gray-600 mb-1">
+                                  Poin 1: Tanggung Jawab Utama
+                                </label>
+                                <textarea
+                                  value={editedExperienceDescriptions[exp.id!]?.field1 || ''}
+                                  onChange={(e) => handleExperienceDescriptionChange(exp.id!, 'field1', e.target.value)}
+                                  placeholder="Contoh: Mengelola tim pengembangan software dengan 5 anggota untuk mengembangkan aplikasi mobile..."
+                                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
+                                    editedExperienceDescriptions[exp.id!]?.field1 && !validateMinWords(editedExperienceDescriptions[exp.id!].field1) 
+                                      ? 'border-red-300 bg-red-50' 
+                                      : 'border-gray-300'
+                                  }`}
+                                  rows={2}
+                                />
+                                {editedExperienceDescriptions[exp.id!]?.field1 && !validateMinWords(editedExperienceDescriptions[exp.id!].field1) && (
+                                  <p className="text-xs text-red-500 mt-1">Minimal 8 kata diperlukan</p>
+                                )}
+                              </div>
+                              
+                              {/* Field 2 */}
+                              <div className="mb-3">
+                                <label className="block text-xs font-medium text-gray-600 mb-1">
+                                  Poin 2: Pencapaian/Hasil Kerja
+                                </label>
+                                <textarea
+                                  value={editedExperienceDescriptions[exp.id!]?.field2 || ''}
+                                  onChange={(e) => handleExperienceDescriptionChange(exp.id!, 'field2', e.target.value)}
+                                  placeholder="Contoh: Berhasil meningkatkan efisiensi sistem sebesar 30% dan mengurangi bug production hingga 50%..."
+                                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
+                                    editedExperienceDescriptions[exp.id!]?.field2 && !validateMinWords(editedExperienceDescriptions[exp.id!].field2) 
+                                      ? 'border-red-300 bg-red-50' 
+                                      : 'border-gray-300'
+                                  }`}
+                                  rows={2}
+                                />
+                                {editedExperienceDescriptions[exp.id!]?.field2 && !validateMinWords(editedExperienceDescriptions[exp.id!].field2) && (
+                                  <p className="text-xs text-red-500 mt-1">Minimal 8 kata diperlukan</p>
+                                )}
+                              </div>
+                              
+                              {/* Field 3 */}
+                              <div className="mb-3">
+                                <label className="block text-xs font-medium text-gray-600 mb-1">
+                                  Poin 3: Teknologi/Skill yang Digunakan
+                                </label>
+                                <textarea
+                                  value={editedExperienceDescriptions[exp.id!]?.field3 || ''}
+                                  onChange={(e) => handleExperienceDescriptionChange(exp.id!, 'field3', e.target.value)}
+                                  placeholder="Contoh: Menggunakan React, Node.js, PostgreSQL, dan Docker untuk membangun arsitektur microservices yang scalable..."
+                                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
+                                    editedExperienceDescriptions[exp.id!]?.field3 && !validateMinWords(editedExperienceDescriptions[exp.id!].field3) 
+                                      ? 'border-red-300 bg-red-50' 
+                                      : 'border-gray-300'
+                                  }`}
+                                  rows={2}
+                                />
+                                {editedExperienceDescriptions[exp.id!]?.field3 && !validateMinWords(editedExperienceDescriptions[exp.id!].field3) && (
+                                  <p className="text-xs text-red-500 mt-1">Minimal 8 kata diperlukan</p>
+                                )}
+                              </div>
+                              
+                              <p className="text-xs text-gray-500 mt-2">
+                                • Setiap poin akan ditampilkan sebagai bullet point terpisah dalam CV<br/>
+                                • Minimal 8 kata per poin untuk deskripsi yang informatif
+                              </p>
+                            </div>
                           )}
                         </div>
-                        <input
-                          type="checkbox"
-                          checked={selectedExperience.includes(exp.id!)}
-                          onChange={() => toggleExperienceSelection(exp.id!)}
-                          className="w-5 h-5 text-blue-500 rounded focus:ring-blue-500"
-                        />
                       </label>
                     ))}
                   </div>
@@ -441,34 +631,130 @@ const CreateCVPage: React.FC = () => {
                         }`}
                       >
                         <div className="flex-1">
-                          <h4 className="font-semibold text-gray-800">{portfolio.title}</h4>
-                          {portfolio.description && (
-                            <p className="text-gray-600 text-sm mt-1 line-clamp-2">{portfolio.description}</p>
-                          )}
-                          {portfolio.technologies && portfolio.technologies.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-2">
-                              {portfolio.technologies.slice(0, 3).map((tech, techIndex) => (
-                                <span
-                                  key={`${portfolio.id}-tech-${techIndex}`}
-                                  className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
-                                >
-                                  {tech}
-                                </span>
-                              ))}
-                              {portfolio.technologies.length > 3 && (
-                                <span className="text-xs text-gray-500">
-                                  +{portfolio.technologies.length - 3} more
-                                </span>
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-gray-800">{portfolio.title}</h4>
+                              {portfolio.description && (
+                                <p className="text-gray-600 text-sm mt-1 line-clamp-2">{portfolio.description}</p>
                               )}
+                              {portfolio.technologies && portfolio.technologies.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mt-2">
+                                  {portfolio.technologies.slice(0, 3).map((tech, techIndex) => (
+                                    <span
+                                      key={`${portfolio.id}-tech-${techIndex}`}
+                                      className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
+                                    >
+                                      {tech}
+                                    </span>
+                                  ))}
+                                  {portfolio.technologies.length > 3 && (
+                                    <span className="text-xs text-gray-500">
+                                      +{portfolio.technologies.length - 3} more
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                            <input
+                              type="checkbox"
+                              checked={selectedPortfolio.includes(portfolio.id!)}
+                              onChange={() => togglePortfolioSelection(portfolio.id!)}
+                              className="w-5 h-5 text-purple-500 rounded focus:ring-purple-500 ml-4"
+                            />
+                          </div>
+                          
+                          {/* Edit Description Fields - appears when selected */}
+                          {selectedPortfolio.includes(portfolio.id!) && (
+                            <div className="mt-4 pt-4 border-t border-gray-200">
+                              <label className="block text-sm font-medium text-gray-700 mb-3">
+                                Edit Deskripsi Portfolio (3 Poin Utama)
+                              </label>
+                              
+                              {/* Original Description - Read Only Reference */}
+                              {portfolio.description && (
+                                <div className="mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                                  <label className="block text-xs font-medium text-gray-600 mb-2">
+                                    📋 Deskripsi Asli (Referensi)
+                                  </label>
+                                  <div className="text-sm text-gray-700 whitespace-pre-wrap bg-white p-2 rounded border">
+                                    {portfolio.description}
+                                  </div>
+                                  <p className="text-xs text-gray-500 mt-1">
+                                    Gunakan sebagai patokan untuk mengisi 3 poin di bawah
+                                  </p>
+                                </div>
+                              )}
+                              
+                              {/* Field 1 */}
+                              <div className="mb-3">
+                                <label className="block text-xs font-medium text-gray-600 mb-1">
+                                  Poin 1: Deskripsi Proyek & Tujuan
+                                </label>
+                                <textarea
+                                  value={editedPortfolioDescriptions[portfolio.id!]?.field1 || ''}
+                                  onChange={(e) => handlePortfolioDescriptionChange(portfolio.id!, 'field1', e.target.value)}
+                                  placeholder="Contoh: Mengembangkan aplikasi e-commerce mobile untuk meningkatkan penjualan online UMKM dengan fitur pembayaran digital..."
+                                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none ${
+                                    editedPortfolioDescriptions[portfolio.id!]?.field1 && !validateMinWords(editedPortfolioDescriptions[portfolio.id!].field1) 
+                                      ? 'border-red-300 bg-red-50' 
+                                      : 'border-gray-300'
+                                  }`}
+                                  rows={2}
+                                />
+                                {editedPortfolioDescriptions[portfolio.id!]?.field1 && !validateMinWords(editedPortfolioDescriptions[portfolio.id!].field1) && (
+                                  <p className="text-xs text-red-500 mt-1">Minimal 8 kata diperlukan</p>
+                                )}
+                              </div>
+                              
+                              {/* Field 2 */}
+                              <div className="mb-3">
+                                <label className="block text-xs font-medium text-gray-600 mb-1">
+                                  Poin 2: Fitur Utama & Implementasi
+                                </label>
+                                <textarea
+                                  value={editedPortfolioDescriptions[portfolio.id!]?.field2 || ''}
+                                  onChange={(e) => handlePortfolioDescriptionChange(portfolio.id!, 'field2', e.target.value)}
+                                  placeholder="Contoh: Implementasi sistem autentikasi, katalog produk dinamis, keranjang belanja, dan integrasi payment gateway dengan UI/UX responsif..."
+                                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none ${
+                                    editedPortfolioDescriptions[portfolio.id!]?.field2 && !validateMinWords(editedPortfolioDescriptions[portfolio.id!].field2) 
+                                      ? 'border-red-300 bg-red-50' 
+                                      : 'border-gray-300'
+                                  }`}
+                                  rows={2}
+                                />
+                                {editedPortfolioDescriptions[portfolio.id!]?.field2 && !validateMinWords(editedPortfolioDescriptions[portfolio.id!].field2) && (
+                                  <p className="text-xs text-red-500 mt-1">Minimal 8 kata diperlukan</p>
+                                )}
+                              </div>
+                              
+                              {/* Field 3 */}
+                              <div className="mb-3">
+                                <label className="block text-xs font-medium text-gray-600 mb-1">
+                                  Poin 3: Teknologi & Hasil/Impact
+                                </label>
+                                <textarea
+                                  value={editedPortfolioDescriptions[portfolio.id!]?.field3 || ''}
+                                  onChange={(e) => handlePortfolioDescriptionChange(portfolio.id!, 'field3', e.target.value)}
+                                  placeholder="Contoh: Dibangun dengan Flutter, Firebase, dan Stripe API, berhasil meningkatkan konversi penjualan sebesar 40% dalam testing..."
+                                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none ${
+                                    editedPortfolioDescriptions[portfolio.id!]?.field3 && !validateMinWords(editedPortfolioDescriptions[portfolio.id!].field3) 
+                                      ? 'border-red-300 bg-red-50' 
+                                      : 'border-gray-300'
+                                  }`}
+                                  rows={2}
+                                />
+                                {editedPortfolioDescriptions[portfolio.id!]?.field3 && !validateMinWords(editedPortfolioDescriptions[portfolio.id!].field3) && (
+                                  <p className="text-xs text-red-500 mt-1">Minimal 8 kata diperlukan</p>
+                                )}
+                              </div>
+                              
+                              <p className="text-xs text-gray-500 mt-2">
+                                • Setiap poin akan ditampilkan sebagai bullet point terpisah dalam CV<br/>
+                                • Minimal 8 kata per poin untuk deskripsi yang informatif
+                              </p>
                             </div>
                           )}
                         </div>
-                        <input
-                          type="checkbox"
-                          checked={selectedPortfolio.includes(portfolio.id!)}
-                          onChange={() => togglePortfolioSelection(portfolio.id!)}
-                          className="w-5 h-5 text-purple-500 rounded focus:ring-purple-500"
-                        />
                       </label>
                     ))}
                   </div>

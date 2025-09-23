@@ -1,6 +1,6 @@
 import { auth } from '../services/firebase'; // Your Firebase auth instance
 
-const API_BASE_URL = 'https://jobmate-rest-api-819767094904.asia-southeast2.run.app';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface ProfileData {
   uid?: string;
@@ -27,25 +27,78 @@ const getIdToken = async (): Promise<string | null> => {
 
 // Fetch user profile
 export const fetchProfile = async (): Promise<ProfileData> => {
+  // Development mode protection - return mock data if API is not available
+  const isDevelopment = import.meta.env.VITE_DEVELOPMENT_MODE === 'true';
+  if (isDevelopment) {
+    console.warn('Development mode: Returning mock profile data');
+    return {
+      uid: 'dev-user',
+      fullName: 'Development User',
+      username: 'devuser',
+      photoUrl: null,
+      status: 'active'
+    };
+  }
+
   const token = await getIdToken();
   if (!token) {
     throw new Error('User not authenticated');
   }
 
-  const response = await fetch(`${API_BASE_URL}/profile`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ error: 'Failed to fetch profile and parse error' }));
-    console.error('Fetch profile error:', response.status, errorData);
-    throw new Error(errorData.error || `Failed to fetch profile. Status: ${response.status}`);
+    const response = await fetch(`${API_BASE_URL}/profile`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      // Handle 404 specifically - profile might not exist yet
+      if (response.status === 404) {
+        console.warn('Profile not found (404) - user may need to create profile');
+        return {
+          uid: auth.currentUser?.uid || '',
+          fullName: auth.currentUser?.displayName || '',
+          username: auth.currentUser?.email?.split('@')[0] || '',
+          photoUrl: auth.currentUser?.photoURL || null,
+          status: 'incomplete'
+        };
+      }
+
+      const errorData = await response.json().catch(() => ({ error: 'Failed to fetch profile and parse error' }));
+      console.error('Fetch profile error:', response.status, errorData);
+      throw new Error(errorData.error || `Failed to fetch profile. Status: ${response.status}`);
+    }
+    return response.json();
+  } catch (error: any) {
+    if (error.name === 'AbortError') {
+      console.error('Profile fetch timeout');
+      throw new Error('Profile fetch timed out');
+    }
+    
+    // Check for CORS or network errors
+    if (error.message?.includes('CORS') || error.message?.includes('fetch')) {
+      console.warn('CORS or network error when fetching profile, using fallback data');
+      return {
+        uid: auth.currentUser?.uid || '',
+        fullName: auth.currentUser?.displayName || '',
+        username: auth.currentUser?.email?.split('@')[0] || '',
+        photoUrl: auth.currentUser?.photoURL || null,
+        status: 'network_error'
+      };
+    }
+    
+    throw error;
   }
-  return response.json();
 };
 
 // Update user profile

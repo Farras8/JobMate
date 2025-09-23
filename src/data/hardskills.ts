@@ -61,6 +61,7 @@ export const hardSkillsData: HardSkill[] = [
   { id: 'jupyter', name: 'Jupyter', category: 'Data Science & AI' },
   { id: 'r', name: 'R', category: 'Data Science & AI' },
   { id: 'matlab', name: 'MATLAB', category: 'Data Science & AI' },
+  { id: 'data-analysis', name: 'Data Analysis', category: 'Data Science & AI' },
 
   // Design & Creative
   { id: 'photoshop', name: 'Adobe Photoshop', category: 'Design & Creative' },

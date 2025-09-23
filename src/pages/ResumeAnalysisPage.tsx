@@ -6,11 +6,18 @@ import CriticalIssues from '../components/analysis/CriticalIssues';
 import Strengths from '../components/analysis/Strengths';
 import KeywordAnalysis from '../components/analysis/KeywordAnalysis';
 import LineAnalysis from '../components/analysis/LineAnalysis';
-import { AlertTriangle, Target, CheckCircle, BarChart3, Sparkles } from 'lucide-react';
+import JobRecommendations from '../components/analysis/JobRecommendations';
+import { AlertTriangle, Target, CheckCircle, BarChart3, Sparkles, Briefcase, Upload, FileText } from 'lucide-react';
 import FloatingChatbot from '../components/FloatingChatbot';
+import { reviewCV } from '../services/CVReviewService';
+import type { CVReviewResponse } from '../services/CVReviewService';
 
 const ResumeAnalysisPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState('Critical Issues');
+    const [cvFile, setCvFile] = useState<File | null>(null);
+    const [reviewResult, setReviewResult] = useState<CVReviewResponse | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const getTabIcon = (tabName: string) => {
         switch (tabName) {
@@ -22,8 +29,60 @@ const ResumeAnalysisPage: React.FC = () => {
                 return <Target size={16} className="text-blue-600" />;
             case 'Line Analysis':
                 return <BarChart3 size={16} className="text-purple-600" />;
+            case 'Job Recommendations':
+                return <Briefcase size={16} className="text-orange-600" />;
             default:
                 return null;
+        }
+    };
+
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            if (file.type === 'application/pdf') {
+                setCvFile(file);
+                setError(null);
+                setIsLoading(true);
+                
+                try {
+                    const result = await reviewCV(file);
+                    setReviewResult(result);
+                } catch (err: any) {
+                    console.error('Error reviewing CV:', err);
+                    setError(`Gagal menganalisis CV: ${err.message}`);
+                } finally {
+                    setIsLoading(false);
+                }
+            } else {
+                setError('Hanya file PDF yang diizinkan');
+                setCvFile(null);
+            }
+        }
+    };
+
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+    };
+
+    const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        const file = event.dataTransfer.files[0];
+        if (file && file.type === 'application/pdf') {
+            setCvFile(file);
+            setError(null);
+            setIsLoading(true);
+            
+            try {
+                const result = await reviewCV(file);
+                setReviewResult(result);
+            } catch (err: any) {
+                console.error('Error reviewing CV:', err);
+                setError(`Gagal menganalisis CV: ${err.message}`);
+            } finally {
+                setIsLoading(false);
+            }
+        } else {
+            setError('Hanya file PDF yang diizinkan');
         }
     };
 
@@ -62,12 +121,64 @@ const ResumeAnalysisPage: React.FC = () => {
                     </p>
                 </section>
 
+                {/* CV Upload Section for Job Recommendations */}
+                {activeTab === 'Job Recommendations' && !cvFile && (
+                    <section className="mb-12">
+                        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl shadow-orange-900/10 p-8 border border-gray-200/50">
+                            <div className="text-center mb-6">
+                                <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-orange-100 to-yellow-100 border border-orange-200/50 text-orange-700 px-4 py-2 rounded-full text-sm font-semibold mb-4 shadow-sm">
+                                    <Upload size={14} className="text-orange-600" />
+                                    <span>Upload CV untuk Rekomendasi</span>
+                                </div>
+                                <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-gray-900 via-orange-900 to-yellow-900 bg-clip-text text-transparent leading-tight mb-2">
+                                    Upload CV Anda
+                                </h2>
+                                <p className="text-gray-600 text-sm">
+                                    Upload CV untuk mendapatkan rekomendasi pekerjaan berdasarkan keahlian yang terdeteksi
+                                </p>
+                            </div>
+
+                            <div
+                                className="border-2 border-dashed border-orange-300 rounded-2xl p-8 text-center hover:border-orange-400 transition-colors cursor-pointer bg-gradient-to-br from-orange-50 to-yellow-50"
+                                onDragOver={handleDragOver}
+                                onDrop={handleDrop}
+                                onClick={() => document.getElementById('cv-upload')?.click()}
+                            >
+                                <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                    <FileText size={32} className="text-white" />
+                                </div>
+                                <h3 className="text-lg font-bold text-gray-800 mb-2">Drag & Drop CV Anda di sini</h3>
+                                <p className="text-gray-600 mb-4">atau klik untuk memilih file</p>
+                                <div className="inline-flex items-center space-x-2 bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-700 transition-colors">
+                                    <Upload size={16} />
+                                    <span>Pilih File PDF</span>
+                                </div>
+                                <input
+                                    id="cv-upload"
+                                    type="file"
+                                    accept=".pdf"
+                                    onChange={handleFileUpload}
+                                    className="hidden"
+                                />
+                            </div>
+
+                            {error && (
+                                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+                                    <p className="text-red-600 text-sm font-medium">{error}</p>
+                                </div>
+                            )}
+                        </div>
+                    </section>
+                )}
+
                 {/* Score Card Section */}
-                <section className="mb-12">
-                    <div className="transform hover:scale-105 transition-all duration-300">
-                        <OverallScoreCard />
-                    </div>
-                </section>
+                {activeTab !== 'Job Recommendations' && (
+                    <section className="mb-12">
+                        <div className="transform hover:scale-105 transition-all duration-300">
+                            <OverallScoreCard />
+                        </div>
+                    </section>
+                )}
 
                 {/* Analysis Tabs Section */}
                 <section className="mb-8">
@@ -88,7 +199,7 @@ const ResumeAnalysisPage: React.FC = () => {
                         {/* Tabs */}
                         <div className="mb-8">
                             <div className="flex flex-wrap justify-center gap-2 p-2 bg-gray-100/80 rounded-2xl backdrop-blur-sm">
-                                {['Critical Issues', 'Strengths', 'Keywords', 'Line Analysis'].map((tab) => (
+                                {['Critical Issues', 'Strengths', 'Keywords', 'Line Analysis', 'Job Recommendations'].map((tab) => (
                                     <button
                                         key={tab}
                                         onClick={() => setActiveTab(tab)}
@@ -127,6 +238,11 @@ const ResumeAnalysisPage: React.FC = () => {
                             {activeTab === 'Line Analysis' && (
                                 <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200/30">
                                     <LineAnalysis />
+                                </div>
+                            )}
+                            {activeTab === 'Job Recommendations' && (
+                                <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl p-6 border border-orange-200/30">
+                                    <JobRecommendations reviewResult={reviewResult} />
                                 </div>
                             )}
                         </div>

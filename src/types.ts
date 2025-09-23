@@ -28,4 +28,5 @@ export interface JobData {
 // Tipe pekerjaan yang direkomendasikan, dengan skor kemiripan
 export interface RecommendedJob extends JobData {
     similarityScore?: number;
+    matchedSkills?: string[];
 }

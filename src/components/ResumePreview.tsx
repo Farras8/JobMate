@@ -99,70 +99,84 @@ export default function ResumePreview({ cvData }: ResumePreviewProps) {
         <h1 style={{ fontSize: '24px', fontWeight: 'bold', margin: 0 }}>
           {cvData.fullName || "No Name Provided"}
         </h1>
-        <p style={{ margin: "4px 0" }}>
-          {cvData.city || "-"} | {cvData.phoneNumber || "-"}
-        </p>
         
-        {/* Summary */}
-        {summaryText && (
-          <p style={{ 
-            margin: "12px 0",
-            fontSize: '11.5px',
-            lineHeight: 1.5,
-            textAlign: 'justify',
-            fontStyle: 'normal'
-          }}>
-            {summaryText}
+        {/* Contact Information Section */}
+        <section style={{ marginBottom: '16px' }}>
+          <h2 style={{ fontWeight: "bold", fontSize: '16px', borderBottom: '1px solid #000000', paddingBottom: '4px', marginBottom: '8px', color: '#000000', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            CONTACT INFORMATION
+          </h2>
+          <p style={{ margin: "4px 0" }}>
+            {cvData.city || "-"} | {cvData.phoneNumber || "-"} | {(cvData.fullName || "user").toLowerCase().replace(/\s+/g, '.')}@email.com
           </p>
+          
+          {/* Social Links */}
+          <p style={{ 
+            margin: "8px 0 0 0",
+            display: "flex", 
+            gap: '16px', 
+            flexWrap: "wrap" 
+          }}>
+            {cvData.linkedin && (
+              <a href={cvData.linkedin} target="_blank" rel="noopener noreferrer" style={{ color: '#000000', textDecoration: "underline" }}>
+                LinkedIn
+              </a>
+            )}
+            {cvData.github && (
+              <a href={cvData.github} target="_blank" rel="noopener noreferrer" style={{ color: '#000000', textDecoration: "underline" }}>
+                GitHub
+              </a>
+            )}
+            {cvData.instagram && (
+              <a href={cvData.instagram} target="_blank" rel="noopener noreferrer" style={{ color: '#000000', textDecoration: "underline" }}>
+                Instagram
+              </a>
+            )}
+            {cvData.portfolioSite && (
+              <a href={cvData.portfolioSite} target="_blank" rel="noopener noreferrer" style={{ color: '#000000', textDecoration: "underline" }}>
+                Portfolio
+              </a>
+            )}
+          </p>
+        </section>
+        
+        {/* Professional Summary */}
+        {summaryText && (
+          <section style={{ marginBottom: '16px' }}>
+            <h2 style={{ fontWeight: "bold", fontSize: '16px', borderBottom: '1px solid #000000', paddingBottom: '4px', marginBottom: '8px', color: '#000000', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              PROFESSIONAL SUMMARY
+            </h2>
+            <p style={{ 
+              margin: "0",
+              fontSize: '11.5px',
+              lineHeight: 1.5,
+              textAlign: 'justify',
+              fontStyle: 'normal'
+            }}>
+              {summaryText}
+            </p>
+          </section>
         )}
-
-        {/* Social Links */}
-        <p style={{ 
-          margin: summaryText ? "12px 0 0 0" : "8px 0 0 0",
-          display: "flex", 
-          gap: '16px', 
-          flexWrap: "wrap" 
-        }}>
-          {cvData.linkedin && (
-            <a href={cvData.linkedin} target="_blank" rel="noopener noreferrer" style={{ color: '#000000', textDecoration: "underline" }}>
-              LinkedIn
-            </a>
-          )}
-          {cvData.github && (
-            <a href={cvData.github} target="_blank" rel="noopener noreferrer" style={{ color: '#000000', textDecoration: "underline" }}>
-              GitHub
-            </a>
-          )}
-          {cvData.instagram && (
-            <a href={cvData.instagram} target="_blank" rel="noopener noreferrer" style={{ color: '#000000', textDecoration: "underline" }}>
-              Instagram
-            </a>
-          )}
-          {cvData.portfolioSite && (
-            <a href={cvData.portfolioSite} target="_blank" rel="noopener noreferrer" style={{ color: '#000000', textDecoration: "underline" }}>
-              Portfolio
-            </a>
-          )}
-        </p>
       </header>
 
       {/* Sections */}
       <main>
         {/* Education */}
         <section style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontWeight: "bold", fontSize: '16px', borderBottom: '1px solid #000000', paddingBottom: '4px', marginBottom: '8px', color: '#000000' }}>
-            Education
+          <h2 style={{ fontWeight: "bold", fontSize: '16px', borderBottom: '1px solid #000000', paddingBottom: '4px', marginBottom: '8px', color: '#000000', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            EDUCATION
           </h2>
           {cvData.education.length > 0 ? (
             cvData.education.map((edu, idx) => (
               <div key={idx} style={{ marginBottom: '12px' }}>
-                <div style={{ fontWeight: "bold" }}>
-                  {edu.level || "Education"}{" "}
-                  {edu.major ? `- ${edu.major}` : ""}
-                  {edu.institution ? `, ${edu.institution}` : ""}
-                </div>
-                <div style={{ fontStyle: "italic", fontSize: '11px' }}>
-                  {formatDate(edu.startDate)} - {edu.endDate ? formatDate(edu.endDate) : "Present"}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
+                  <div style={{ fontWeight: "bold", flex: 1 }}>
+                    {edu.level || "Education"}{" "}
+                    {edu.major ? `- ${edu.major}` : ""}
+                    {edu.institution ? `, ${edu.institution}` : ""}
+                  </div>
+                  <div style={{ fontStyle: "italic", fontSize: '11px', whiteSpace: 'nowrap' }}>
+                    {formatDate(edu.startDate)} - {edu.endDate ? formatDate(edu.endDate) : "Present"}
+                  </div>
                 </div>
                 {edu.gpa && (
                   <div style={{ marginTop: '4px' }}>GPA: {edu.gpa}</div>
@@ -176,17 +190,23 @@ export default function ResumePreview({ cvData }: ResumePreviewProps) {
 
         {/* Experience */}
         <section style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontWeight: "bold", fontSize: '16px', borderBottom: '1px solid #000000', paddingBottom: '4px', marginBottom: '8px', color: '#000000' }}>
-            Experience
+          <h2 style={{ fontWeight: "bold", fontSize: '16px', borderBottom: '1px solid #000000', paddingBottom: '4px', marginBottom: '8px', color: '#000000', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            WORK EXPERIENCE
           </h2>
           {cvData.experience.length > 0 ? (
             cvData.experience.map((exp, idx) => (
               <div key={idx} style={{ marginBottom: '12px' }}>
-                <div style={{ fontWeight: "bold" }}>{exp.position || "Position"}</div>
-                <div style={{ fontStyle: "italic", fontSize: '11px' }}>
-                  {exp.company || "-"} | {formatDate(exp.startDate)} - {exp.endDate ? formatDate(exp.endDate) : "Present"}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
+                  <div style={{ fontWeight: "bold", flex: 1 }}>{exp.position || "Position"} - {exp.company || "Company"}</div>
+                  <div style={{ fontStyle: "italic", fontSize: '11px', whiteSpace: 'nowrap' }}>{formatDate(exp.startDate)} - {exp.endDate ? formatDate(exp.endDate) : "Present"}</div>
                 </div>
-                {exp.description && <div style={{ marginTop: '4px' }}>{exp.description}</div>}
+                {exp.description && (
+                   <ul style={{ marginTop: '4px', paddingLeft: '0px', margin: '4px 0 0 0', listStylePosition: 'outside' }}>
+                     {exp.description.split('\n').filter(line => line.trim()).map((line, lineIdx) => (
+                       <li key={lineIdx} style={{ marginBottom: '2px', marginLeft: '16px' }}>{line.trim()}</li>
+                     ))}
+                   </ul>
+                 )}
               </div>
             ))
           ) : (
@@ -196,21 +216,22 @@ export default function ResumePreview({ cvData }: ResumePreviewProps) {
 
         {/* Portfolio */}
         <section style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontWeight: "bold", fontSize: '16px', borderBottom: '1px solid #000000', paddingBottom: '4px', marginBottom: '8px', color: '#000000' }}>
-            Portfolio
+          <h2 style={{ fontWeight: "bold", fontSize: '16px', borderBottom: '1px solid #000000', paddingBottom: '4px', marginBottom: '8px', color: '#000000', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            PROJECTS
           </h2>
           {cvData.portfolio.length > 0 ? (
             cvData.portfolio.map((project, idx) => (
               <div key={idx} style={{ marginBottom: '12px' }}>
                 <div style={{ fontWeight: "bold" }}>{project.title}</div>
-                {project.projectUrl && (
-                  <a href={project.projectUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#000000', textDecoration: "underline" }}>
-                    {project.projectUrl}
-                  </a>
+                {project.description && (
+                  <ul style={{ marginTop: '4px', paddingLeft: '0px', margin: '4px 0 0 0', listStylePosition: 'outside' }}>
+                    {project.description.split('\n').filter(line => line.trim()).map((line, lineIdx) => (
+                      <li key={lineIdx} style={{ marginBottom: '2px', marginLeft: '16px' }}>{line.trim()}</li>
+                    ))}
+                  </ul>
                 )}
-                {project.description && <div>{project.description}</div>}
                 {project.technologies && project.technologies.length > 0 && (
-                  <div style={{ fontSize: '11px' }}>
+                  <div style={{ fontSize: '11px', marginTop: '4px' }}>
                     Technologies: {project.technologies.join(", ")}
                   </div>
                 )}
@@ -223,19 +244,18 @@ export default function ResumePreview({ cvData }: ResumePreviewProps) {
 
         {/* Certificates */}
         <section style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontWeight: "bold", fontSize: '16px', borderBottom: '1px solid #000000', paddingBottom: '4px', marginBottom: '8px', color: '#000000' }}>
-            Certificates
+          <h2 style={{ fontWeight: "bold", fontSize: '16px', borderBottom: '1px solid #000000', paddingBottom: '4px', marginBottom: '8px', color: '#000000', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            CERTIFICATIONS
           </h2>
           {cvData.certificates && cvData.certificates.length > 0 ? (
             cvData.certificates.map((cert, idx) => (
               <div key={idx} style={{ marginBottom: '12px' }}>
-                <div style={{ fontWeight: "bold" }}>{cert.documentName || "Certificate"}</div>
-                <div style={{ fontStyle: "italic", fontSize: '11px' }}>
-                  {formatDate(cert.issuedDate)}
-                  {cert.expireDate ? ` - ${formatDate(cert.expireDate)}` : " - Does not expire"}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
+                  <div style={{ fontWeight: "bold", flex: 1 }}>{cert.documentName || "Certificate"}</div>
+                  <div style={{ fontStyle: "italic", fontSize: '11px', whiteSpace: 'nowrap' }}>{formatDate(cert.issuedDate)}{cert.expireDate ? ` - ${formatDate(cert.expireDate)}` : ""}</div>
                 </div>
                 {cert.credentialId && (
-                  <div style={{ marginTop: '4px' }}>Credential ID: {cert.credentialId}</div>
+                  <div style={{ fontStyle: "italic", fontSize: '11px' }}>Credential ID: {cert.credentialId}</div>
                 )}
               </div>
             ))
@@ -246,8 +266,8 @@ export default function ResumePreview({ cvData }: ResumePreviewProps) {
 
         {/* Skills combined */}
         <section>
-          <h2 style={{ fontWeight: "bold", fontSize: '16px', borderBottom: '1px solid #000000', paddingBottom: '4px', marginBottom: '8px', color: '#000000' }}>
-            Skills
+          <h2 style={{ fontWeight: "bold", fontSize: '16px', borderBottom: '1px solid #000000', paddingBottom: '4px', marginBottom: '8px', color: '#000000', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            SKILLS
           </h2>
           <p style={{ marginBottom: '4px' }}>
             <strong>Hard skills:</strong> {hardSkillsText}

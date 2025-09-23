@@ -53,7 +53,7 @@ export interface SearchJobFilters {
   jobType?: string;
 }
 
-const API_BASE_URL = 'https://jobmate-rest-api-819767094904.asia-southeast2.run.app';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const fetchWithTimeout = async (url: string, options: RequestInit = {}, timeout = 10000) => {
   const controller = new AbortController();
@@ -120,10 +120,24 @@ const transformApiJobToDisplayJob = (apiJob: ApiJob): DisplayJob => {
 export const fetchRecentJobs = async (): Promise<DisplayJob[]> => {
   const start = performance.now();
   try {
+    // Check if we're in development mode and API might have CORS issues
+    const isDev = import.meta.env.VITE_DEV_MODE === 'true';
+    if (isDev) {
+      console.warn('Development mode: API might have CORS issues, returning empty array');
+      return [];
+    }
+
     const response = await fetchWithTimeout(`${API_BASE_URL}/jobs/recent`);
     if (!response.ok) {
       const errorBody = await response.text();
       console.error(`Error fetching recent jobs: ${response.status} ${response.statusText}`, errorBody);
+      
+      // If it's a 404, the endpoint might not exist
+      if (response.status === 404) {
+        console.warn('Recent jobs endpoint not found, returning empty array');
+        return [];
+      }
+      
       throw new Error(`Error fetching recent jobs: ${response.status} ${response.statusText}`);
     }
     const data: ApiResponse = await response.json();
@@ -137,6 +151,11 @@ export const fetchRecentJobs = async (): Promise<DisplayJob[]> => {
     console.log(`fetchRecentJobs failed after ${performance.now() - start}ms`);
     if (error instanceof Error) {
       console.error("Failed to fetch recent jobs:", error.message);
+      
+      // Handle specific CORS errors
+      if (error.message.includes('CORS') || error.message.includes('Failed to fetch')) {
+        console.warn('CORS or network error detected, this is likely due to API server configuration');
+      }
     } else {
       console.error("An unknown error occurred while fetching recent jobs:", error);
     }

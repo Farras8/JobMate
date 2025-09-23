@@ -2,7 +2,7 @@
 import { auth } from '../services/firebase'; // Your Firebase auth instance
 import { FieldValue } from "firebase/firestore"; // Firestore type
 
-const API_BASE_URL = 'https://jobmate-rest-api-819767094904.asia-southeast2.run.app';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export interface PortfolioProject {
   id?: string; // Optional: for existing records

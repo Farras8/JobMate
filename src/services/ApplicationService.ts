@@ -2,7 +2,7 @@ import { auth, db } from '../services/firebase';
 import { doc, getDoc, type DocumentData, FieldValue } from "firebase/firestore";
 import { type DisplayJob } from './jobService'; // Assuming this type is available and comprehensive
 
-const API_BASE_URL = 'https://jobmate-rest-api-819767094904.asia-southeast2.run.app';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const applicationStatuses = ['pending', 'reviewed', 'interview', 'offered', 'rejected'] as const;
 export type ApplicationStatus = typeof applicationStatuses[number];

@@ -1,6 +1,6 @@
 // src/services/CVReviewService.ts
 
-const CV_REVIEW_API_URL = "https://cv-review-service-819767094904.asia-southeast2.run.app/review";
+const CV_REVIEW_API_URL = "https://cv-review-service-11168120376.asia-southeast2.run.app/review";
 
 export interface CVReviewResponse {
   action_plan: ActionPlanItem[];
@@ -9,6 +9,10 @@ export interface CVReviewResponse {
   line_by_line: LineByLineAnalysis[];
   overall_score: number;
   scores: Scores;
+  skills: {
+    hardSkills: string[];
+    softSkills: string[];
+  };
   strengths: Strength[];
 }
 
@@ -65,6 +69,23 @@ export const reviewCV = async (cvFile: File): Promise<CVReviewResponse> => {
     return data;
   } catch (error) {
     console.error('Error reviewing CV:', error);
+    throw error;
+  }
+};
+
+/**
+ * Ekstrak skills dari CV yang diupload menggunakan hasil analisis CV
+ */
+export const extractSkillsFromCV = async (cvFile: File): Promise<string[]> => {
+  try {
+    const reviewResult = await reviewCV(cvFile);
+    
+    // Gabungkan well_used keywords sebagai skills yang terdeteksi
+    const detectedSkills = reviewResult.keywords?.well_used || [];
+    
+    return detectedSkills;
+  } catch (error) {
+    console.error('Error extracting skills from CV:', error);
     throw error;
   }
 };

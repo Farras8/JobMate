@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   User, Bookmark, FileText, LogOut, ChevronDown, Briefcase,
-  FileSearch, Mic2, BookOpen, Users, Sparkles, Menu, X, Building,
+  FileSearch, Mic2, BookOpen,  Sparkles, Menu, X, Building,
 } from 'lucide-react';
 import { signOut, onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
 import { auth } from '../services/firebase';
@@ -59,10 +59,30 @@ const Navbar: React.FC = () => {
         try {
           const profileData = await fetchProfile();
           setUserProfile(profileData);
+          
+          // Check if profile status indicates issues and handle accordingly
+          if (profileData.status === 'incomplete') {
+            console.warn('User profile is incomplete - may need to create profile');
+          } else if (profileData.status === 'network_error') {
+            console.warn('Network error when loading profile - using fallback data');
+          }
         } catch (error) {
           console.error("Failed to fetch user profile:", error);
-          // Opsional: Tampilkan notifikasi jika gagal mengambil profil
-          // Swal.fire('Error', 'Gagal memuat data profil.', 'error');
+          
+          // Set fallback profile data using Firebase user info
+          const fallbackProfile = {
+            uid: currentUser.uid,
+            fullName: currentUser.displayName || 'User',
+            username: currentUser.email?.split('@')[0] || 'user',
+            photoUrl: currentUser.photoURL || null,
+            status: 'fallback'
+          };
+          setUserProfile(fallbackProfile);
+          
+          // Only show error notification for unexpected errors (not 404 or network issues)
+          if (!error.message?.includes('404') && !error.message?.includes('CORS') && !error.message?.includes('network')) {
+            console.warn('Unexpected profile fetch error:', error.message);
+          }
         } finally {
           // Selesaikan loading setelah data firebase dan profil custom selesai dimuat
           setIsLoadingAuth(false);

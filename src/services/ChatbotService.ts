@@ -11,7 +11,7 @@ export interface ChatbotError {
 }
 
 class ChatbotService {
-  private readonly API_BASE_URL = 'https://faq-jobmate-api-819767094904.asia-southeast2.run.app';
+  private readonly API_BASE_URL = 'https://faq-jobmate-api-11168120376.asia-southeast2.run.app';
   private readonly FAQ_ENDPOINT = '/faq';
 
   /**
@@ -138,13 +138,28 @@ class ChatbotService {
    */
   async healthCheck(): Promise<boolean> {
     try {
+      // Check if we're in development mode
+      const isDev = import.meta.env.VITE_DEV_MODE === 'true';
+      if (isDev) {
+        return false; // Return false to use fallback responses
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
       const response = await fetch(`${this.API_BASE_URL}/health`, {
         method: 'GET',
-        timeout: 5000 // 5 second timeout
+        signal: controller.signal,
+        headers: {
+          'Content-Type': 'application/json',
+        }
       });
+
+      clearTimeout(timeoutId);
       return response.ok;
     } catch (error) {
       console.warn('Health check failed:', error);
+      // Always return false to use fallback responses when API is unavailable
       return false;
     }
   }
