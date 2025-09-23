@@ -467,9 +467,16 @@ export const generateCVHTML = (cvData: CVData): string => {
 
 /**
  * Generate CV PDF using Puppeteer (text-searchable and ATS-friendly)
+ * Falls back to legacy method if Puppeteer is not available
  */
 export const generateCVPDFWithPuppeteer = async (cvData: CVData): Promise<Blob> => {
   try {
+    // Check if we're in a browser environment where Puppeteer won't work
+    if (typeof window !== 'undefined') {
+      console.warn('Puppeteer not available in browser environment, falling back to legacy method');
+      return await generateCVPDFLegacy(cvData);
+    }
+    
     // Dynamically import puppeteer
     const puppeteer = await import('puppeteer');
     
@@ -511,7 +518,8 @@ export const generateCVPDFWithPuppeteer = async (cvData: CVData): Promise<Blob> 
     
   } catch (error) {
     console.error('Error generating PDF with Puppeteer:', error);
-    throw new Error('Failed to generate PDF');
+    console.warn('Falling back to legacy PDF generation method');
+    return await generateCVPDFLegacy(cvData);
   }
 };
 
